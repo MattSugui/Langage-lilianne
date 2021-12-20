@@ -1,0 +1,142 @@
+Syntax for Lilian
+
+program ProgramName:
+	title "", output "", version "", copyright "", author "";
+
+mainstream method
+{
+	enter here;
+
+	leave here;
+}
+
+class ClassName
+{
+	implementation
+	{
+		inherit InheriterClass;
+		implement SomeInterface;
+		follow SomeProtocol;
+		feminine pronominalisation;
+	}
+
+	construction()
+	{
+		// constructor
+	}
+
+	destruction()
+	{
+		// destructor
+	}
+
+	Type property PropertyName
+	{
+		getter method
+		{
+			// Line comment
+		}
+		setter method
+		{
+			/* comment */
+		}
+	}
+	Type field @Field;
+
+	private Type field PrivateField;
+	public Type field PublicField;
+	internal Type field AssemblyField;
+	protected Type field DerivedField;
+	
+	portable AnonymousMethod
+	{
+		definition
+		{
+			
+		}
+	}
+
+	method @Method(Type Argument1, optional Type OptArg = "d", Type array ParamArray)
+	{
+		if (true | false)
+		{
+			switch (value)
+			{
+				case true: go;
+				otherwise: raise new Exception();
+			}
+		}
+		else leave;
+
+		repeat 10 times
+		{
+			pass;
+		}
+
+		loop
+		{
+			definition
+			{
+				use integer i;
+				repeat until (i = 100);
+				everytime { increment i; };
+			}
+		}
+	}
+
+	Type function RetMet()
+	{
+		implementation => borrow InheriterClass.RetMet;
+
+		print "hello, world!";
+
+		return "boxing" as Type;
+	}
+
+	method LINQ()
+	{
+		create Type array SomeArray with { 9, 10, 21, 69, 420 };
+
+		create Type array SortedArray from query
+		{
+			from Number in SomeArray,
+			where Number >= 21;
+			orderby Number;
+		}
+
+		foreach variable item in SortedArray print item;
+
+		
+	}
+
+	event BruhMoment();
+
+	BruhMoment handler method Bruh();
+	{
+		//
+	}
+}
+
+protocol ProtocolName
+{
+	requirements
+	{
+		implements InterfaceName;
+	}
+}
+
+page OohWebpageTime
+{
+	head
+	{
+		title "";
+		metadata
+		{
+			
+		}
+		style
+		{
+			h1 { background-color: red; } /* just use some version of css here */
+		}
+	}
+}

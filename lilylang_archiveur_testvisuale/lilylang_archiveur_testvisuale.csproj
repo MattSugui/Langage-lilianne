@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    
+    <RootNamespace>fonder.Lilian.New.Stuffer.GUI</RootNamespace>
+    <Deterministic>False</Deterministic>
+
+    <AssemblyTitle>Lilian Language File Compilation System</AssemblyTitle>
+    <AssemblyVersion>0.1.*</AssemblyVersion>
+    <Authors>Matt Sugui</Authors>
+    <Copyright>Created 2021</Copyright>
+    <ProductName>Lilian language stuffer</ProductName>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\lilylang_archiveur\lilylang_archiveur.csproj" />
+  </ItemGroup>
+
+</Project>

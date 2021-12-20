@@ -1,0 +1,62 @@
+            /*
+            #if Level0TestingMode
+                        for (int i = 0; i != 2; i++)
+            #else
+                        for (int i = 0; i < 3; i++)
+            #endif
+                        {
+                            SmallBasket = new();
+                            Collector = new();
+                            CurrentLevel = i;
+                            var CurrentContext = 
+                            (
+                                from token in CurrentTokens
+                                where token.Level == CurrentLevel
+                                //orderby token.Name ascending
+                                select token
+                            ).ToArray();
+
+                            foreach (TokenFruit fruit in Orchard)
+                            {
+                                switch (fruit.AssociatedToken.Name)
+                                {
+                                    case "Whitespace" or "Terminator"
+                                    :
+                                        SmallBasket.Add(fruit); // preserve order for statement tokens (level 2)
+                                        continue;
+                                    default: break;
+                                }
+
+                                if (i > 0) Collector.Append(fruit.GetSeed()); else { Collector.Clear(); Collector.Append(fruit.GetSeed()); }
+                                foreach (Token token in CurrentContext)
+                                {
+                                    if (Regex.IsMatch(Collector.ToString(), token.Value))
+                                    {
+                                        SmallBasket.Add(new(token, Collector.ToString()));
+                                        Collector.Clear();
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if (CurrentContext.IndexOf(token) != CurrentContext.Length - 1) continue;
+                                        else
+                                        {
+                                            if (Orchard.IndexOf(fruit) != Orchard.Count - 1) continue;
+                                            else if (i < 1) continue;
+                                            else throw new Lamentation(0x0002);
+                                        }
+                                    }
+                                }
+                            }
+                            Orchard.Clear();
+                            Orchard = SmallBasket;
+                        }
+            */
+            // post-scan
+
+            //Status = InterpreterStatus.ScanningTokens;
+#if DEBUG
+            //foreach (var fruit in Tokeniser.Orchard) WriteLine(fruit.ToString());
+
+            //Status = InterpreterStatus.Idle;
+#endif

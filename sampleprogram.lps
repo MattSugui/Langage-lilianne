@@ -1,0 +1,26 @@
+program "hello, world";
+
+identification:
+	assembly:
+		name is "hello, world!";
+		output is "hello.lprg";
+	end;
+	options:
+		option compile yes;
+	end;
+end;
+
+public module main:
+	public entrypoint method main:
+					| on error goto errortime;
+		1			) print "hello, world!";
+		2			) ask for string as Var;
+		3			) if Var is insensitively equal to "hey" --
+		4			) print "hoi!";
+		5			) exit;
+		6			) else --
+		7			) throw exception 1;
+		errortime	]
+			10		) print "error caught?";
+	end;	
+end.

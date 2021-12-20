@@ -1,0 +1,40 @@
+Version 0.8
+
+Use As Schema
+
+Schema "Test"
+	CatchAll
+	End CatchAll
+End Schema
+/#
+	Instruction "Print"
+		Procedure
+			Takes First Parameter input As Anything
+			Print input
+		End Procedure
+	End Instruction
+
+	Token "Print keyword"
+		Opcode {00000000-acee-2021-1216-174808000001}
+
+	End Token
+#/
+
+
+                        if (CurrentTokens.Exists(token => token.Name == fruit.AssociatedToken.MingleWith)) scopekey = fruit.AssociatedToken.MingleWith; else throw new Lamentation(0x000D, fruit.AssociatedToken.MingleWith, fruit.AssociatedToken.Name);
+                        scopelocked = true;
+
+
+
+program "hello, world!";
+
+the implementation:
+	method entry;
+end;
+
+the construction:
+	method entry:
+		
+end;
+
+the 

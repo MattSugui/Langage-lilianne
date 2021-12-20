@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<doc>
+	<brackets left="{" right="}" />
+	<style name="Default" color="#F8F8F8"/>
+	<style name="Verb" color="#BEB7FF"/>
+	<style name="String" color="#D69385"/>
+	<style name="Method" color="#DCDCAA"/>
+	<style name="Keyword" color="#569CD6"/>
+	<style name="LoopKeyword" color="#D8A0DF"/>
+	<style name="Class" color="#4EC980"/>
+	<style name="Structure" color="#86C699"/>
+	<style name="Interface" color="#B8D7A3"/>
+	<style name="Protocol" color="#C84149"/>
+	<style name="Number" color="#B5CEA8"/>
+	<style name="Identifier" color="#9CDCFE"/>
+	<style name="NamedType" color="#5F95FA"/>
+	<style name="Exception" color="#F979AE"/>
+	<style name="Comment" color="#57A64A"/>
+	<style name="Coco" color="#98D1E1"/>
+
+	<rule style="Comment" options="Singleline">//(?&lt;range&gt;[^\n]*)$</rule>
+	<rule style="Comment" options="Multiline">/\*(?&lt;range&gt;[\w\d\s]*)\*/</rule>
+	<rule style="Coco" options="Singleline">\\\\(?&lt;range&gt;[\w\d\s]*)</rule>
+	<rule style="Coco" options="Multiline">\\\*(?&lt;range&gt;[\w\d\s]*)\*\\</rule>
+	<rule style="Verb" options="Singleline">print</rule>
+	<rule style="String" options="Multiline">"[^"]*"</rule>
+	<rule style="String" options="Multiline">'(?&lt;range&gt;\\?.)'</rule>
+	<rule style="Method" options="Singleline">(?&lt;range&gt;[\w\d]+)\s*\(.*\)\s*;</rule>
+	<rule style="Class" options="Singleline">class\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Structure" options="Singleline">struct\s+(?&lt;range&gt;[\w\d]+)|structure\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Interface" options="Singleline">interface\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Protocol" options="Singleline">protocol\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Number" options="Singleline">enumeration\s+(?&lt;range&gt;[\w\d]+)|enum\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<!--<rule style="NamedType" options="Singleline">(?&lt;range&gt;[\w\d]+)\s[A-Za-z][0-9A-Za-z]*</rule>-->
+	<rule style="Exception" options="Singleline">exception\s+(?&lt;range&gt;[\w\d]+)|throw\s+(?&lt;range&gt;[\w\d]+)|catch\s+(?&lt;range&gt;[\w\d]+)|lamentation\s+(?&lt;range&gt;[\w\d]+)|cry\s+(?&lt;range&gt;[\w\d]+)|notice\s+(?&lt;range&gt;[\w\d]+)</rule>
+	<!--
+	<rule style="Identifier" options="Singleline">(?&lt;range&gt;[\w\d]+)\s*.?=</rule>
+	<rule style="Identifier" options="Singleline">.?=\s*(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Identifier" options="Singleline">(?&lt;range&gt;[\w\d]+)\s*.?</rule>
+	<rule style="Identifier" options="Singleline">.?\s*(?&lt;range&gt;[\w\d]+)</rule>
+	<rule style="Identifier" options="Singleline">(?&lt;range&gt;[\w\d]+)\s?(?:.)?=</rule>
+	-->
+	<!--<rule style="Identifier" options="Singleline">(?&lt;range&gt;[\w\d]+)</rule>-->
+	<rule style="Number" options="Singleline">(?&lt;range&gt;[0-9]+(?:.[0-9]+)?)?</rule>
+	<rule style="Keyword" options="Singleline">\b(?&lt;range&gt;private|public|internal|protected|sealed|class|interface|protocol|struct|structure|enum|enumeration|exception|lamentation|partial|static|new)\b</rule>
+	<rule style="LoopKeyword" options="Singleline">\b(?&lt;range&gt;if|else|switch|case|goto|otherwise|default|unless|do|while|until|break|continue|try|throw|catch|finally|attempt|cry|notice)\b</rule>
+	<!--<rule style="Default" options="Singleline">(?&lt;range&gt;[\w\d]+)</rule>-->
+</doc>

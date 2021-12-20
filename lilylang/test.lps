@@ -1,0 +1,3 @@
+begin main procedure:
+	print "hello, world!";
+end.

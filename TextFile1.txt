@@ -1,0 +1,18 @@
+Forme de rayon centrique
+C(h,k) = r
+(x-h)*(x-h) - (y-k)*(y-k) = r*r
+
+Formule d'un cercle
+
+par exemple :
+(x-5)²+(y+3)² = 100 -> FRC
+
+Forme étandard
+x²+y²-ax+by+c+d-r = 0
+
+(x-5)² -> x² - 10x + 25
+(y+3)² -> y² + 6y +  9
+
+x² + y² - 10x + 6y + 25 + 9 = 100
+
+x² + y² - 10x + 6y + 34 - 100 = 0
