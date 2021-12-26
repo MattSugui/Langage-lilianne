@@ -80,10 +80,12 @@ namespace fonder.Lilian.New
         {
             foreach (string line in CurrentFile) ScanTokens(line);
 
+            /*
             foreach (List<TokenFruit> toklist in CurrentWordPacks)
             {
                 foreach (TokenFruit tok in toklist) WriteLine($"{tok.Value}");
             }
+            */
         }
     }
 }
