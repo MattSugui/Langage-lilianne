@@ -88,9 +88,9 @@ namespace fonder.Lilian.New
             for (int i = 0; i < CurrentFile.Count; i++)
             {
                 ScanTokens(CurrentFile[i]);
-                WriteLine($"Scanning {i + 1} out of {CurrentFile.Count} line{(CurrentFile.Count!=1?"s":"")}, {(i + 1) / CurrentFile.Count:0.00} %.");
+                WriteLine($"Scanning {i + 1} out of {CurrentFile.Count} line{(CurrentFile.Count!=1?"s":"")}.");
                 WriteLine($"{(((CurrentFile.Count - (i + 1)) / 3000) >= 1 ? $"{(CurrentFile.Count - (i + 1)) / 3000:0} second{(((CurrentFile.Count - (i + 1)) / 3000) != 1 ? "s" : "")}" : "Less than 1 second")} left");
-                SetCursorPosition(0, CursorTop - 2);
+                SetCursorPosition(0, CursorTop - 2); WriteLine("\n"); SetCursorPosition(0, CursorTop - 2);
             }
 
             /*
@@ -99,6 +99,8 @@ namespace fonder.Lilian.New
                 foreach (TokenFruit tok in toklist) WriteLine($"{tok.Value}");
             }
             */
+
+            WriteLine("\n\n");
         }
     }
 }
