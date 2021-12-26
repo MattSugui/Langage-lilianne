@@ -83,7 +83,7 @@ try
     }    
     else
     {
-        write-host "Aucun argument propre défini"
+        write-host "Aucun argument correct défini. Utilisez cette moment pour essayer une commande qui pointe à ici pour tous erreurs de référence. Si vous pouvez ce voir, félicitations ! C'est fonctionnant."
     }
 }
 <# redundant
