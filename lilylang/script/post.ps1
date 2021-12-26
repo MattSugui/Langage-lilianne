@@ -31,7 +31,7 @@ try
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
     
     [string] $fpath = $pathpart2 + "\lilylang.csproj"
-    [System.Windows.Forms.MessageBox]::Show($fpath, "Check to see if this is the correct path!")
+    #[System.Windows.Forms.MessageBox]::Show($fpath, "Check to see if this is the correct path!")
     $filematches
     if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("how the fuck, why woudlnt the project file exist bruh") }
     $filecont = [System.IO.File]::ReadAllText($fpath)
