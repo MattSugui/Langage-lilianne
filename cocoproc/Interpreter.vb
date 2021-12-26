@@ -29,6 +29,11 @@ Partial Public Module Interpreter
     Public CurrentFile As String
 
     ''' <summary>
+    ''' The current consummate file.
+    ''' </summary>
+    Public CurrentSource As New List(Of String)
+
+    ''' <summary>
     ''' The currently-collected list of compiler errors to regurgitate all at once after compilation.
     ''' </summary>
     Public CompilerErrors As New List(Of Lamentation)
@@ -102,6 +107,20 @@ Partial Public Module Interpreter
     End Sub
 
     ''' <summary>
+    ''' Reads from a path.
+    ''' </summary>
+    ''' <param name="path">The path to the file.</param>
+    Public Sub ReadFile(path As String)
+        If File.Exists(path) Then
+            For Each line As String In File.ReadAllLines(path)
+                CurrentSource.Add(line)
+            Next
+        Else
+            Throw New Lamentation("nri")
+        End If
+    End Sub
+
+    ''' <summary>
     ''' The primary interpretation session.
     ''' </summary>
     ''' <param name="Line">One of the lines of the consummate text.</param>
@@ -119,37 +138,37 @@ Partial Public Module Interpreter
                 If Regex.IsMatch(Line, Feature) Then
                     Select Case Array.IndexOf(FeatureConstants, Feature)
                         Case 0
-                            'act = New Action(3, Regex.Match(Line, "^(\s*)?Define\s(?<SymbolLiteral>.+)$").Groups("SymbolLiteral").Value)
+                            'act = New Action(3, Regex.Match(Line, "^\s*Define\s(?<SymbolLiteral>.+)\s*$").Groups("SymbolLiteral").Value)
 
-                            obj = New FELObject(Regex.Match(Line, "^(\s*)?Define\s(?<SymbolLiteral>.+)$").Groups("SymbolLiteral").Value)
+                            obj = New FELObject(Regex.Match(Line, "^\s*Define\s(?<SymbolLiteral>.+)\s*$").Groups("SymbolLiteral").Value)
                             MotherStack.Add(obj)
                         Case 1 To 3
                             Console.WriteLine("hey!")
                         Case 4
-                            If Regex.IsMatch(Line, "^(\s*)?(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+"")$") Then
-                                Dim cont = Regex.Match(Line, "^(\s*)?(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+"")$")
+                            If Regex.IsMatch(Line, "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+"")\s*$") Then
+                                Dim cont = Regex.Match(Line, "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+"")\s*$")
                                 ManipulationTime(cont, act)
-                            ElseIf Regex.IsMatch(Line, "^(\s*)?(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")$") Then
-                                Dim cont = Regex.Match(Line, "^(\s*)?(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")$")
+                            ElseIf Regex.IsMatch(Line, "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s*$") Then
+                                Dim cont = Regex.Match(Line, "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s*$")
                                 ManipulationTime(cont, act)
                             End If
-                Case 7
+                        Case 7
                             End
                         Case 8
 #If Not ContextualisationTesting Then
-                            If Regex.IsMatch(Line, "^(\s*)?Print\s(?<Value>[0-9A-Za-z]+)$") Then
+                            If Regex.IsMatch(Line, "^\s*Print\s(?<Value>[0-9A-Za-z]+)\s*$") Then
                                 Dim Number As Long
-                                If Long.TryParse(Regex.Match(Line, "^(\s*)?Print\s(?<Value>[0-9]+)$").Groups("Value").Value, Number) Then
+                                If Long.TryParse(Regex.Match(Line, "^\s*Print\s(?<Value>[0-9]+)\s*$").Groups("Value").Value, Number) Then
                                     act = New Action(1, Number)
                                 Else
-                                    Dim oop = Regex.Match(Line, "^(\s*)?Print\s(?<Value>[0-9A-Za-z]+)$")
+                                    Dim oop = Regex.Match(Line, "^\s*Print\s(?<Value>[0-9A-Za-z]+)\s*$")
                                     If MotherStack.Exists(Function(thing As FELObject) thing.Name = oop.Groups("Value").Value) Then
                                         act = New Action(1, CType(MotherStack.Find(Function(thing As FELObject) thing.Name = oop.Groups("Value").Value), FELObject).Value)
                                     Else Throw New Lamentation("bruh111234", 111234)
                                     End If
                                 End If
-                            ElseIf Regex.IsMatch(Line, "^(\s*)?Print\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|\<\>|\<|\>|\<=|\>=|Is|IsNot|Or|Or|Xor|IsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")$") Then
-                                Dim thing = Regex.Match(Line, "^(\s*)?Print\s(?<LeftOperand>[0-9]+)\s(?<Operator>=|\+|-|\*|\/|%|&|`|^|~|\\|\$|<<|>>|\<\>|\<|\>|\<=|\>=|Is|IsNot|Or|Or|Xor|IsLike)\s(?<RightOperand>[0-9]+)$")
+                            ElseIf Regex.IsMatch(Line, "^\s*Print\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|\<\>|\<|\>|\<=|\>=|Is|IsNot|Or|Or|Xor|IsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$") Then
+                                Dim thing = Regex.Match(Line, "^\s*Print\s(?<LeftOperand>[0-9]+)\s(?<Operator>=|\+|-|\*|\/|%|&|`|^|~|\\|\$|<<|>>|\<\>|\<|\>|\<=|\>=|Is|IsNot|Or|Or|Xor|IsLike)\s(?<RightOperand>[0-9]+)\s*$")
                                 Dim Number1, Number2 As Long
                                 If Long.TryParse(thing.Groups("LeftOperand").Value, Number1) AndAlso Long.TryParse(thing.Groups("RightOperand").Value, Number2) Then
                                     Select Case thing.Groups("Operator").Value
@@ -169,7 +188,7 @@ Partial Public Module Interpreter
                                             act = New Action(1, Number1 Or Number2)
                                         Case "|", "Or"
                                             act = New Action(1, Number1 Or Number2)
-                                        Case "^(\s*)?", "Xor"
+                                        Case "^\s*", "Xor"
                                             act = New Action(1, Number1 Xor Number2)
                                         Case "~"
                                             Throw New Lamentation("sorry, my bad")
@@ -194,21 +213,21 @@ Partial Public Module Interpreter
                                         Case "Is", "IsNot", "IsLike"
                                             Throw New Lamentation("wrong", 2)
                                     End Select
-                                ElseIf Regex.IsMatch(Line, "^(\s*)?Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")$") Then
-                                    act = New Action(1, Regex.Match(Line, "^(\s*)?Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")$").Value.Trim("""") & Regex.Match(Line, "^(\s*)?Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")$").Groups("RightOperand").Value.Trim(""""))
+                                ElseIf Regex.IsMatch(Line, "^\s*Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")\s*$") Then
+                                    act = New Action(1, Regex.Match(Line, "^\s*Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")\s*$").Value.Trim("""") & Regex.Match(Line, "^\s*Print\s(?<LeftOperand>"".+"")\s(?<Operator>\$)\s(?<RightOperand>"".+"")\s*$").Groups("RightOperand").Value.Trim(""""))
                                 End If
-                            ElseIf Regex.IsMatch(Line, "^(\s*)?Print\s(?<Value>"".*"")$") Then
-                                act = New Action(1, Regex.Match(Line, "^(\s*)?Print\s(?<Value>"".*"")$").Groups("Value").Value.Trim(""""))
+                            ElseIf Regex.IsMatch(Line, "^\s*Print\s(?<Value>"".*"")\s*$") Then
+                                act = New Action(1, Regex.Match(Line, "^\s*Print\s(?<Value>"".*"")\s*$").Groups("Value").Value.Trim(""""))
                             End If
 #Else
                             If MotherStack.Exists(Function(thing As FELObject) thing.Name = Regex.Match(Line, Feature).Groups("Value").ToString()) Then
                                 act = New Action(1, MotherStack.Find(Function(thing As FELObject) thing.Name = Regex.Match(Line, Feature).Groups("Value").ToString()))
                             Else
-                                If Regex.IsMatch(Line, "(\s*)?Print\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".*"")$") Then
-                                    Dim cont = Regex.Match(Line, "(\s*)?Print\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".*"")$")
+                                If Regex.IsMatch(Line, "\s*Print\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".*"")\s*$") Then
+                                    Dim cont = Regex.Match(Line, "\s*Print\s(?<InnerLeft>[0-9A-Za-z]+|"".*"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".*"")\s*$")
                                     ManipulationTime(cont, act, False, True)
-                                ElseIf Regex.IsMatch(Line, "^(\s*)?Print\s(?<Value>[0-9]+|"".*"")$") Then
-                                    Dim cont = Regex.Match(Line, "^(\s*)?Print\s(?<Value>[0-9]+|"".*"")$")
+                                ElseIf Regex.IsMatch(Line, "^\s*Print\s(?<Value>[0-9]+|"".*"")\s*$") Then
+                                    Dim cont = Regex.Match(Line, "^\s*Print\s(?<Value>[0-9]+|"".*"")\s*$")
                                     act = New Action(1, cont.Groups("Value").Value.Trim(""""c))
                                     'ManipulationTime(Nothing, cont.Groups("Value").Value, Nothing, act, Nothing, Nothing, False, True)
                                 End If
@@ -224,6 +243,8 @@ Partial Public Module Interpreter
                         Case 11
                             Curse(MotherContext)
                             Exit Sub
+                        Case 13
+
                         Case Else
                             Console.WriteLine("hey!")
                     End Select
@@ -245,8 +266,7 @@ Finished:
             Curse(act)
             Exit Sub
         End If
-
-
+        Exit Sub
     End Sub
 
     ''' <summary>
@@ -602,18 +622,19 @@ Public Module GrammarFeatureConstants
     ''' </summary>
     Public ReadOnly FeatureConstants As String() =
     {
-        "^(\s*)?Define\s(?<SymbolLiteral>.+)$",
-        "^(\s*)?Create\s(?<SymbolLiteral>.+)$",
-        "^(\s*)?If\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")$",
-        "^(\s*)?ElseIf\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")$",
-        "^(\s*)?(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<RightOperand>[0-9A-Za-z]+|"".+""|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))$",
-        "^(\s*)?Option$",
-        "^(\s*)?End(?<CurrentMode>(?:\s)[A-Za-z]+)?$",
-        "^(\s*)?Exit$",
-        "^(\s*)?Print\s(?<Value>[0-9A-Za-z]+|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))$",
-        "^(\s*)?Version\s(?<MajorVersion>[0-9]+).(?<MinorVersion>[0-9]+)$",
-        "^(\s*)?'.*$",
-        "^(\s*)?Run$",
-        "^(\s*)?Destroy\s(?<LeftOperand>[0-9A-Za-z]+)$"
+        "^\s*Define\s(?<SymbolLiteral>.+)\s*$",
+        "^\s*Create\s(?<SymbolLiteral>.+)\s*$",
+        "^\s*If\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
+        "^\s*ElseIf\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
+        "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<RightOperand>[0-9A-Za-z]+|"".+""|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
+        "^\s*Option\s*$",
+        "^\s*End(?<CurrentMode>(?:\s)[A-Za-z]+)?\s*$",
+        "^\s*Exit\s*$",
+        "^\s*Print\s(?<Value>[0-9A-Za-z]+|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
+        "^\s*Version\s(?<MajorVersion>[0-9]+).(?<MinorVersion>[0-9]+)\s*$",
+        "^\s*'.*\s*$",
+        "^\s*Run\s*$",
+        "^\s*Destroy\s(?<LeftOperand>[0-9A-Za-z]+)\s*$",
+        "^\s*Statement\s(?<Name>[0-9A-Za-z]*)\s*$"
     }
 End Module

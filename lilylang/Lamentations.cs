@@ -52,6 +52,7 @@ namespace fonder.Lilian.New
             /// <summary>
             /// Initialises a new instance of the Lamentation class with a specified error message.
             /// </summary>
+            /// <param name="msg">The error message.</param>
             public Lamentation(string msg)
             {
                 Message = msg;
@@ -61,6 +62,8 @@ namespace fonder.Lilian.New
             /// <summary>
             /// Initialises a new instance of the Lamentation class with a specified error message and error code.
             /// </summary>
+            /// <param name="msg">The error message.</param>
+            /// <param name="err">The error code.</param>
             public Lamentation(string msg, int err)
             {
                 Message = msg;
@@ -72,6 +75,7 @@ namespace fonder.Lilian.New
             ///will check for a code-message pair to find that error. Else, throw a Lamentation, whilst creating
             ///one.
             /// </summary>
+            /// <param name="code">The error code.</param>
             public Lamentation(int code)
             {
                 if (def.ContainsKey(code))
@@ -80,13 +84,15 @@ namespace fonder.Lilian.New
                     ErrorCode = code;
                 }
                 else throw new InvalidOperationException($"Lamentation provider failed to retrieve error code {code} because it does not exist. How ironic.");
-            } 
+            }
 
             /// <summary>
             /// Initialises a new instance of the Lamentation class with a specified error code and appropriate
             ///data such as line numbers or current tokens. The constructor will check for a code-message pair
             ///to find that error. Else, throw a Lamentation, whilst creating one.
             /// </summary>
+            /// <param name="code">The error code.</param>
+            /// <param name="data">Related data such as line numbers or current tokens.</param>
             public Lamentation(int code, params string[] data)
             {
                 if (def.ContainsKey(code))
@@ -116,8 +122,6 @@ namespace fonder.Lilian.New
             /// Creates and returns a string representation of the current lamentation.
             /// </summary>
             public override string ToString() => string.Format("LP{0:0000}: {1}", ErrorCode, Message);
-
         }
-
     }
 }

@@ -23,7 +23,7 @@ namespace fonder.Lilian.New
 		{
 			WriteLine(
 				"Fonder Lilian Language Environment\n"+
-				"Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", 2021\n"
+				"Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion + "\n"
 			);
 
 			WriteLine(
@@ -59,8 +59,8 @@ namespace fonder.Lilian.New
 			string filepath = ReadLine();
 			try
             {
-				LoadFile(filepath);
-				Interpret(CurrentFile.ToArray());
+				ReadFile(path: filepath);
+				Interpret();
             }
 			catch (Lamentation cry)
             {
