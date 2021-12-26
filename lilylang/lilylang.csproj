@@ -28,11 +28,11 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(ProjectDir)script\post.ps1 -pre" />
+    <Exec Command="&quot;$(ProjectDir)script\post.ps1&quot; -pre" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(ProjectDir)script\post.ps1 -IncrementBuild" />
+    <Exec Command="&quot;$(ProjectDir)script\post.ps1&quot; -IncrementBuild" />
   </Target>
 
 </Project>
