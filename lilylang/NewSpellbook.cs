@@ -97,7 +97,7 @@ namespace fonder.Lilian.New
                     }
                     else
                     {
-                        if ((CurrentTokens.IndexOf(tok) != CurrentTokens.Count - 1) && (CurrentLine.Length < line.Length)) continue;
+                        if ((CurrentTokens.IndexOf(tok) != CurrentTokens.Count - 1) || (CurrentLine.Length < line.Length)) continue;
                         else throw new Lamentation(2, currentWord.ToString());
                     }
                 }
