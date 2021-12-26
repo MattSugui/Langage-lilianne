@@ -23,9 +23,9 @@ write-host "Evènements pour la compilation du langage Lilian"
 #write-host $PSScriptRoot.ToString()
 try
 {   
-    [string] $filecont
+    $filecont = ""
     $pathpart = get-location -Verbose
-    [string] $miscpath
+    $miscpath = ""
     if ($GoDeeper.IsPresent) { $miscpath = "\lilylang" } else { $miscpath = "" }
     
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
@@ -68,7 +68,7 @@ try
         $vernums[2]++
         if ($BigUpgrade.IsPresent) { $vernums[0]++ } elseif ($SmallUpgrade.IsPresent) { $vernums[1]++ }
 
-        write-host $vernums
+        #write-host $vernums
 
         $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]\.[0-9]\.[0-9]\.[0-9]", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2],$vernums[3]))
         [System.IO.File]::WriteAllText($fpath, $filecont)

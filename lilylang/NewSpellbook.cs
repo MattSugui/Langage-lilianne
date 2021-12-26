@@ -1,5 +1,5 @@
 ﻿//#define OrbPonderingTime
-#define TemporaryTokenTestingTime // test for recognising patterns
+//#define TemporaryTokenTestingTime // test for recognising patterns
 
 using System;
 using System.Collections.Generic;
@@ -56,6 +56,8 @@ namespace fonder.Lilian.New
                 }
                 public Token AssociatedToken { get; }
                 public string Value { get; }
+
+                public override string ToString() => $"{AssociatedToken.Name}: '{Value}'";
             }
 
             public class SentenceStructure

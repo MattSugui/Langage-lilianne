@@ -83,7 +83,15 @@ namespace fonder.Lilian.New
         /// </summary>
         public static void Interpret()
         {
-            foreach (string line in CurrentFile) ScanTokens(line);
+            //foreach (string line in CurrentFile) ScanTokens(line);
+
+            for (int i = 0; i < CurrentFile.Count; i++)
+            {
+                ScanTokens(CurrentFile[i]);
+                WriteLine($"Scanning {i + 1} out of {CurrentFile.Count} line{(CurrentFile.Count!=1?"s":"")}, {(i + 1) / CurrentFile.Count:0.00} %.");
+                WriteLine($"{(((CurrentFile.Count - (i + 1)) / 3000) >= 1 ? $"{(CurrentFile.Count - (i + 1)) / 3000:0} second{(((CurrentFile.Count - (i + 1)) / 3000) != 1 ? "s" : "")}" : "Less than 1 second")} left");
+                SetCursorPosition(0, CursorTop - 2);
+            }
 
             /*
             foreach (List<TokenFruit> toklist in CurrentWordPacks)
