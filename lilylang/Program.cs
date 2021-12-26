@@ -28,7 +28,7 @@ namespace fonder.Lilian.New
 
 			WriteLine(
 				"Welcome to the REPL mode! Type EXIT if you've had your fun."
-			)
+			)//
 			;
 
 			/*

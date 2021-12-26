@@ -15,6 +15,7 @@
 )
 
 add-type -AssemblyName System.Runtime
+add-type -AssemblyName System.Windows.Forms
 
 write-host "Evènements pour la compilation du langage Lilian" 
 #write-host $PSScriptRoot.ToString()
