@@ -11,7 +11,9 @@
     [Parameter(Mandatory = $false)]
     [string] $NewVerName,
     [Parameter(Mandatory = $false)]
-    [switch] $Move
+    [switch] $Copy,
+    [Parameter(Mandatory = $false)]
+    [switch] $GoDeeper
 )
 
 add-type -AssemblyName System.Runtime
@@ -24,11 +26,14 @@ try
     [string] $filecont
     $pathpart = get-location -Verbose
     $pathpart2 = split-path -Path $pathpart
-    [string] $fpath = $pathpart2 + "\lilylang.csproj"
+    [string] $miscpath
+    if ($GoDeeper.IsPresent) { $miscpath = "\lilylang" } else { $miscpath = "" }
+    [string] $fpath = $pathpart2 + $miscpath + "\lilylang.csproj"
     [System.Windows.Forms.MessageBox]::Show($fpath, "Check to see if this is the correct path!")
     $filematches
     if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("how the fuck, why woudlnt the project file exist bruh") }
     $filecont = [System.IO.File]::ReadAllText($fpath)
+
     if ($Pre.IsPresent)
     {
         $filematches = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
