@@ -90,7 +90,9 @@ namespace fonder.Lilian.New
             {
                 CurrentLine.Append(character);
                 currentWord.Append(character);
+#if TemporaryTokenTestingTime
                 WriteLine(currentWord.ToString());
+#endif
 
                 if (currentWord.ToString() == "//") break; // comment!
                 foreach (Token tok in CurrentTokens)
@@ -112,7 +114,7 @@ namespace fonder.Lilian.New
             CurrentLine.Clear();
 #if TemporaryTokenTestingTime
             foreach (TokenFruit token in CurrentWords) WriteLine(token.ToString());
-#endif 
+#endif
             if (CurrentWords.Count > 0) CurrentWordPacks.Add(CurrentWords);
             CurrentWords.Clear();
         }
