@@ -38,7 +38,7 @@ try
 
     if ($Pre.IsPresent)
     {
-        $filematches = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
+        $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
         $currdate = [DateTime]::Now.ToString("yyMMdd-HHmm")
         $stage
         if (![string]::IsNullOrWhiteSpace($NewVerName)) { $stage = $NewVerName } else { $stage = $filematch.Groups["stage"].Value }
@@ -85,10 +85,10 @@ try
 
         $newdest = $dossier + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5}", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"])
 
-        copy-item -path $outpath + "lilylang.exe" -destination $newdest + "\lilylang.exe"
-        copy-item -path $outpath + "lilylang.dll" -destination $newdest + "\lilylang.dll"
-        copy-item -path $outpath + "lilylang.runtimeconfig.json" -destination $newdest + "\lilylang.runtimeconfig.json"
-        copy-item -path $outpath + "system.codedom.dll" -destination $newdest + "\system.codedom.dll"
+        copy-item -path ($outpath + "lilylang.exe") -destination ($newdest + "\lilylang.exe")
+        copy-item -path ($outpath + "lilylang.dll") -destination ($newdest + "\lilylang.dll")
+        copy-item -path ($outpath + "lilylang.runtimeconfig.json") -destination ($newdest + "\lilylang.runtimeconfig.json")
+        copy-item -path ($outpath + "system.codedom.dll") -destination ($newdest + "\system.codedom.dll")
     }    
     else
     {
