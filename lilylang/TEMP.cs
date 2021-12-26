@@ -22,6 +22,7 @@ namespace fonder.Lilian.New
             CurrentTokens.Add(new("INTL", @"[0-9]", true));
             CurrentTokens.Add(new("SMCL", @";"));
             CurrentTokens.Add(new("ANY", @".", true));
+            CurrentTokens.Add(new("WTSP", @"\s", true, true));
             //CurrentTokens.Add(new("TOSL", @"\/\/"));
 
             CurrentSentenceStructures.Add(new("PrintString", "PRNT", "QUOT", "SMCL"));

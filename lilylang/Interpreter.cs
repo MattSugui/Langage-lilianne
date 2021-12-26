@@ -25,6 +25,11 @@ namespace fonder.Lilian.New
     /// </summary>
     public static partial class Interpreter
     {
+        static Interpreter()
+        {
+            TEMP.LOADPATTERNS();
+        }
+
         /// <summary>
         /// The current file. Not exactly a single file, but a merger of all source files.
         /// </summary>

@@ -34,15 +34,17 @@ namespace fonder.Lilian.New
 
             public struct Token
             {
-                public Token(string name, string value, bool lookahead = false)
+                public Token(string name, string value, bool lookahead = false, bool ignore = false)
                 {
                     Name = name;
                     Value = value;
                     Look = lookahead;
+                    IgnoreOnRefinement = ignore;
                 }
                 public string Name { get; }
                 public string Value { get; }
                 public bool Look { get; }
+                public bool IgnoreOnRefinement { get; }
             }
 
             public struct TokenFruit
