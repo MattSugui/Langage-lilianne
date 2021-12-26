@@ -93,7 +93,7 @@ namespace fonder.Lilian.New
                 if (currentWord.ToString() == "//") break; // comment!
                 foreach (Token tok in CurrentTokens)
                 {
-                    if (Regex.IsMatch(currentWord.ToString(), tok.Value))
+                    if (Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase))
                     {
                         CurrentWords.Add(new(tok, currentWord.ToString()));
                         currentWord.Clear();
