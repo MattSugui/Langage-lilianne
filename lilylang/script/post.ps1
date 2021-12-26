@@ -32,7 +32,7 @@ try
     
     [string] $fpath = $pathpart2 + "\lilylang.csproj"
     #[System.Windows.Forms.MessageBox]::Show($fpath, "Check to see if this is the correct path!")
-    $filematches
+    $filematches = $null
     if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("how the fuck, why woudlnt the project file exist bruh") }
     $filecont = [System.IO.File]::ReadAllText($fpath)
 
@@ -40,7 +40,7 @@ try
     {
         $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
         $currdate = [DateTime]::Now.ToString("yyMMdd-HHmm")
-        $stage
+        $stage = ""
         if (![string]::IsNullOrWhiteSpace($NewVerName)) { $stage = $NewVerName } else { $stage = $filematch.Groups["stage"].Value }
         $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>", [string]::Format("<InformationalVersion>{0} {1}</InformationalVersion>", $stage, $currdate))
         [System.IO.File]::WriteAllText($fpath, $filecont)

@@ -97,6 +97,7 @@ namespace fonder.Lilian.New
                     {
                         CurrentWords.Add(new(tok, currentWord.ToString()));
                         currentWord.Clear();
+                        break;
                     }
                     else
                     {
