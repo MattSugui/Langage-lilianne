@@ -57,7 +57,7 @@ namespace fonder.Lilian.New
 
         public static class Bureau
         {
-            private struct MalleableInst
+            public struct MalleableInst
             {
                 public MalleableInst(int ind, Instruction ins)
                 {
