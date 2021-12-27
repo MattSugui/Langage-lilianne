@@ -15,6 +15,8 @@ using System.Diagnostics;
 //using System.Management.Automation;
 //using Microsoft.PowerShell;
 
+using ShellProgressBar;
+
 using static fonder.Lilian.New.Interpreter.Spellbook;
 using static fonder.Lilian.New.Interpreter.IntegratedThirdPartyContent;
 using static System.Console;
@@ -93,24 +95,36 @@ namespace fonder.Lilian.New
             //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
             //PowerShell ps = PowerShell.Create();
 
-            ProgressBar pb = new();
-
-            watch.Start();
-            for (int i = 1; i < CurrentFile.Count + 1; i++)
+            ProgressBarOptions opt = new()
             {
-                ScanTokens(CurrentFile[i - 1]);
-                /*
-                timerem.SecondsRemaining = (watch.Elapsed.Seconds / i) * (i - CurrentFile.Count);
-                timerem.PercentComplete = int.Parse($"{i / CurrentFile.Count:0}");
-                timerem.StatusDescription = $"{i} lines scanned";
-                timerem.CurrentOperation = "Scanning lines";
-                */
-                ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
-                var p = (double)i / CurrentFile.Count;
-                string stat = $"Scanning tokens. {o} seconds remaining ";
-                Write(stat + new string(':', 50 - stat.Length));
-                pb.Report(p);
-                /*WriteLine($"\n{o} seconds left");*/ SetCursorPosition(0, CursorTop);
+                ProgressBarOnBottom = false,
+                DenseProgressBar = true,
+                ShowEstimatedDuration = true,
+                ProgressCharacter = '\u2590',
+                BackgroundCharacter = '\u2588',
+                CollapseWhenFinished = false,
+                DisplayTimeInRealTime = true,
+            };
+
+            //watch.Start();
+            using (var pbm = new ProgressBar(CurrentFile.Count, "Scanning tokens", opt))
+            {
+                for (int i = 1; i < CurrentFile.Count + 1; i++)
+                {
+                    ScanTokens(CurrentFile[i - 1]);
+                    /*
+                    timerem.SecondsRemaining = (watch.Elapsed.Seconds / i) * (i - CurrentFile.Count);
+                    timerem.PercentComplete = int.Parse($"{i / CurrentFile.Count:0}");
+                    timerem.StatusDescription = $"{i} lines scanned";
+                    timerem.CurrentOperation = "Scanning lines";
+                    */
+                    //ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
+                    var p = (double)i / CurrentFile.Count;
+                    //string stat = $"Scanning tokens. {o} seconds remaining ";
+                    //pb.Report(p, stat);
+                    /*WriteLine($"\n{o} seconds left*/
+                    pbm.Tick();
+                }
             }
             WriteLine("complet");
 
