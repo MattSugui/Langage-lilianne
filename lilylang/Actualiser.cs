@@ -30,40 +30,30 @@ namespace fonder.Lilian.New
             [Serializable]
             public class Statement
             {
-                public Statement(string assc, int opcode)
-                {
-                    AssociatedStructure = assc;
-                    if (CurrentActions.ContainsKey(opcode)) AssociatedAction = opcode;
-                    else throw new Lamentation(0x0e, opcode.ToString());
-                }
-                public string AssociatedStructure { get; }
-                public virtual int AssociatedAction { get; }
+                public string AssociatedStructure;
+                public int AssociatedAction;
             }
 
             [Serializable]
             public class Instruction
             {
-                public Instruction(SentenceFruit assc, Statement ascst)
-                {
-                    AssociatedFruit = assc;
-                    AssociatedStatement = ascst;
-                }
-                public SentenceFruit AssociatedFruit { get; }
-                public Statement AssociatedStatement { get; }
+                public SentenceFruit AssociatedFruit;
+                public Statement AssociatedStatement;
+
                 public void Invoke()
                 {
-                    CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[0]);
+                    if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction)) CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[0]);
+                    else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
                 }
             }
         }
 
         public static class Bureau
         {
+            [Serializable]
             public class MalleableInst
             {
-                [XmlAttribute]
                 public int Index;
-                [XmlAttribute]
                 public Instruction Inst;
             }
             internal static (byte[], int) Package()

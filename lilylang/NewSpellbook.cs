@@ -36,13 +36,6 @@ namespace fonder.Lilian.New
             [Serializable]
             public class Token
             {
-                public Token(string name, string value, bool lookahead = false, bool ignore = false)
-                {
-                    Name = name;
-                    Value = value;
-                    Look = lookahead;
-                    IgnoreOnRefinement = ignore;
-                }
                 public string Name;
                 public string Value;
                 public bool Look;
@@ -52,11 +45,6 @@ namespace fonder.Lilian.New
             [Serializable]
             public class TokenFruit
             {
-                public TokenFruit(Token assc, string value)
-                {
-                    AssociatedToken = assc;
-                    Value = value;
-                }
                 public Token AssociatedToken;
                 public string Value;
 
@@ -66,14 +54,6 @@ namespace fonder.Lilian.New
             [Serializable]
             public class SentenceStructure
             {
-                public SentenceStructure(string name, int code, int[] points, string[] tokenstruct)
-                {
-                    Name = name;
-                    TokenStruct = tokenstruct;
-                    Code = code;
-                    PointersToValues = points;
-                }
-
                 public string Name;
                 public string[] TokenStruct;
                 public int[] PointersToValues;
@@ -83,12 +63,6 @@ namespace fonder.Lilian.New
             [Serializable]
             public class SentenceFruit
             {
-                public SentenceFruit(SentenceStructure structure, string[] tokens)
-                {
-                    AssociatedSentence = structure;
-                    Value = tokens;
-                }
-
                 public SentenceStructure AssociatedSentence;
                 public string[] Value;
             }
@@ -133,7 +107,7 @@ namespace fonder.Lilian.New
 
                 if (CurrentTokens.Exists(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)))
                 {
-                    CurrentWords.Add(new(CurrentTokens.Find(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)), currentWord.ToString()));
+                    CurrentWords.Add(new() { AssociatedToken = CurrentTokens.Find(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)), Value = currentWord.ToString() });
                     currentWord.Clear();
                     continue;
                 }
@@ -166,7 +140,7 @@ namespace fonder.Lilian.New
                 {
                     List<string> values = new();
                     foreach (TokenFruit fruit1 in other) values.Add(fruit1.Value);
-                    CurrentSentences.Add(new(CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), values.ToArray()));
+                    CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
                 }
                 else
                 {
@@ -179,7 +153,7 @@ namespace fonder.Lilian.New
         {
             if (CurrentStatements.Exists(state => state.AssociatedStructure == sent.AssociatedSentence.Name))
             {
-                CurrentInstructions.Add(CurrentInstructions.Count - 1, new(sent, CurrentStatements.Find(state => state.AssociatedStructure == sent.AssociatedSentence.Name)));
+                CurrentInstructions.Add(CurrentInstructions.Count - 1, new() { AssociatedFruit = sent, AssociatedStatement = CurrentStatements.Find(state => state.AssociatedStructure == sent.AssociatedSentence.Name) });
             }
             else throw new Lamentation(14, sent.AssociatedSentence.Name);
         }

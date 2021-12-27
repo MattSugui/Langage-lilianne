@@ -19,16 +19,16 @@ namespace fonder.Lilian.New
     {
         public static void LOADPATTERNS()
         {
-            CurrentTokens.Add(new("PRNT", "^print$"));
-            CurrentTokens.Add(new("QUOT", @"^"".*""$"));
-            CurrentTokens.Add(new("INTL", @"^[0-9]$", true));
-            CurrentTokens.Add(new("SMCL", @"^;$"));
-            //CurrentTokens.Add(new("ANY", @".", true));
-            CurrentTokens.Add(new("WTSP", @"^\s$", true, true));
+            CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
+            CurrentTokens.Add(new() { Name = "QUOT", Value = @"^"".*""$" });
+            CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]$", Look = true });
+            CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$" });
+            //CurrentTokens.Add(ne) { Name = w("ANY" Value =, @".", true));
+            CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
             //CurrentTokens.Add(new("TOSL", @"\/\/"));
 
-            CurrentSentenceStructures.Add(new("PrintString", 1, new int[] {1}, new string[] { "PRNT", "QUOT", "SMCL" }));
-            CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
+            CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
+            //CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
 
             CurrentActions.Add(1, (string val) => WriteLine(val));
 
