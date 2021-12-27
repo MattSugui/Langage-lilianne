@@ -119,8 +119,8 @@ namespace fonder.Lilian.New
                     timerem.StatusDescription = $"{i} lines scanned";
                     timerem.CurrentOperation = "Scanning lines";
                     */
-                    ulong o = (ulong)(((watch.ElapsedMilliseconds / 1000) / (i - 1)) * (CurrentFile.Count - (i - 1)));
-                    //var p = (double)(i) / CurrentFile.Count;
+                    ulong o = (ulong)(((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i));
+                    //var p = (double)i / CurrentFile.Count;
                     //string stat = $"Scanning tokens. {o} seconds remaining ";
                     //pb.Report(p, stat);
                     /*WriteLine($"\n{o} seconds left*/
