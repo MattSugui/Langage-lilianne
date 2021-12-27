@@ -57,17 +57,30 @@ namespace fonder.Lilian.New
 
         public static class Bureau
         {
+            private struct MalleableInst
+            {
+                public MalleableInst(int ind, Instruction ins)
+                {
+                    Index = ind;
+                    Inst = ins;
+                }
+                public int Index { get; }
+                public Instruction Inst { get; }
+            }
             internal static (byte[], int) Package()
             {
                 if (CurrentInstructions.Count == 0) return (null, 0);
 
                 try
                 {
+                    List<MalleableInst> things = new();
+                    foreach (KeyValuePair<int, Instruction> state in CurrentInstructions) things.Add(new(state.Key, state.Value));
+
                     byte[] returningvalue;
 
-                    XmlSerializer formatter = new(typeof(Dictionary<int, Instruction>));
+                    XmlSerializer formatter = new(typeof(MalleableInst[]));
                     MemoryStream stream = new();
-                    formatter.Serialize(stream, CurrentInstructions);
+                    formatter.Serialize(stream, things.ToArray());
                     returningvalue = new byte[stream.ToArray().Length]; // hold?
 
                     GZipStream comp = new(stream, CompressionLevel.SmallestSize);
@@ -98,8 +111,9 @@ namespace fonder.Lilian.New
 
                     decmp.Read(things, 0, length);
 
-                    XmlSerializer formatter = new(typeof(Dictionary<int, Instruction>));
-                    CurrentInstructions = formatter.Deserialize(mem) as Dictionary<int, Instruction>;
+                    XmlSerializer formatter = new(typeof(MalleableInst[]));
+                    MalleableInst[] othings = formatter.Deserialize(mem) as MalleableInst[];
+                    foreach (MalleableInst malleableInst in othings) CurrentInstructions.Add(malleableInst.Index, malleableInst.Inst);
                 }
                 catch (Exception e)
                 {
