@@ -10,6 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
+
+using System.Management.Automation;
 
 using static fonder.Lilian.New.Interpreter.Spellbook;
 using static System.Console;
@@ -84,13 +87,26 @@ namespace fonder.Lilian.New
         public static void Interpret()
         {
             //foreach (string line in CurrentFile) ScanTokens(line);
+            Stopwatch watch = new();
+            //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
+            PowerShell ps = PowerShell.Create();
 
+            watch.Start();
             for (int i = 0; i < CurrentFile.Count; i++)
             {
                 ScanTokens(CurrentFile[i]);
-                WriteLine($"Scanning {i + 1} out of {CurrentFile.Count} line{(CurrentFile.Count!=1?"s":"")}.");
-                WriteLine($"{(((CurrentFile.Count - (i + 1)) / 3000) >= 1 ? $"{(CurrentFile.Count - (i + 1)) / 3000:0} second{(((CurrentFile.Count - (i + 1)) / 3000) != 1 ? "s" : "")}" : "Less than 1 second")} left");
-                SetCursorPosition(0, CursorTop - 2); WriteLine("\n"); SetCursorPosition(0, CursorTop - 2);
+                /*
+                timerem.SecondsRemaining = (watch.Elapsed.Seconds / i) * (i - CurrentFile.Count);
+                timerem.PercentComplete = int.Parse($"{i / CurrentFile.Count:0}");
+                timerem.StatusDescription = $"{i} lines scanned";
+                timerem.CurrentOperation = "Scanning lines";
+                */
+                string script = $"write-progress -secondsremaining {(watch.Elapsed.Seconds / i) * (i - CurrentFile.Count):0}" +
+                    $"-percentcomplete {int.Parse($"{i / CurrentFile.Count:0}")}" +
+                    $"-statusdescription '{i} lines scanned'" +
+                    $"-currentoperation 'Scanning lines'";
+                ps.AddScript(script);
+                ps.Invoke();
             }
 
             /*

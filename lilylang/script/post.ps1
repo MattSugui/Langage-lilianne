@@ -90,6 +90,7 @@ try
         copy-item -path ($outpath + "lilylang.dll") -destination ($newdest + "\lilylang.dll")
         copy-item -path ($outpath + "lilylang.runtimeconfig.json") -destination ($newdest + "\lilylang.runtimeconfig.json")
         copy-item -path ($outpath + "system.codedom.dll") -destination ($newdest + "\system.codedom.dll")
+        copy-item -path ($outpath + "Microsoft.PowerShell.SDK.dll") -destination ($newdest + "\Microsoft.PowerShell.SDK.dll")
     }    
     else
     {
