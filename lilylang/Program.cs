@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 
 using static fonder.Lilian.New.Interpreter;
+using static fonder.Lilian.New.Interpreter.Actualiser;
+using static fonder.Lilian.New.Interpreter.Bureau;
 
 using static System.Console;
 
@@ -59,9 +61,22 @@ namespace fonder.Lilian.New
 			string filepath = ReadLine();
 			try
             {
-				ReadFile(path: filepath);
-				Interpret();
-            }
+				if (filepath.Contains(".lps"))
+				{
+					ReadFile(path: filepath);
+					Interpret();
+				}
+				else if (filepath.Contains(".lprg"))
+                {
+					(byte[], int) things;
+					string yes;
+					Read(filepath.Trim('"'), out yes, out things);
+					Title += " - " + yes;
+					Experience(things.Item1, things.Item2);
+					Execute();
+				}
+
+			}
 			catch (Lamentation cry)
             {
 				WriteLine(cry.ToString());
