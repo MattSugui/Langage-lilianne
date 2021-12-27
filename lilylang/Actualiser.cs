@@ -64,7 +64,9 @@ namespace fonder.Lilian.New
                     Index = ind;
                     Inst = ins;
                 }
+                [XmlAttribute]
                 public int Index { get; }
+                [XmlAttribute]
                 public Instruction Inst { get; }
             }
             internal static (byte[], int) Package()
