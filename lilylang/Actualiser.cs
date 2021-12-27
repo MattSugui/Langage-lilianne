@@ -83,7 +83,7 @@ namespace fonder.Lilian.New
                     formatter.Serialize(stream, things.ToArray());
                     returningvalue = new byte[stream.ToArray().Length]; // hold?
 
-                    GZipStream comp = new(stream, CompressionLevel.SmallestSize);
+                    //GZipStream comp = new(stream, CompressionLevel.SmallestSize);
                     comp.Write(returningvalue, 0, stream.ToArray().Length);
 
                     //stream.Close(); comp.Close();
@@ -106,10 +106,10 @@ namespace fonder.Lilian.New
                     byte[] things = new byte[length];
 
                     MemoryStream mem = new();
-                    GZipStream decmp = new(mem, CompressionMode.Decompress);
+                    //GZipStream decmp = new(mem, CompressionMode.Decompress);
 
 
-                    decmp.Read(things, 0, length);
+                    //decmp.Read(things, 0, length);
 
                     XmlSerializer formatter = new(typeof(MalleableInst[]));
                     MalleableInst[] othings = formatter.Deserialize(mem) as MalleableInst[];
