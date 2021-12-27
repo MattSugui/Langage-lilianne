@@ -115,7 +115,7 @@ namespace fonder.Lilian.New
             {
                 try
                 {
-                    using BinaryWriter pen = new(new FileStream(path, FileMode.OpenOrCreate));
+                    using BinaryWriter pen = new(new FileStream(path, FileMode.Create));
                     pen.Write(name); // the name of the programme
                     pen.Write(contents.Item2); // full size
                     pen.Write(contents.Item1.Length); // the compressed size
