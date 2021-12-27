@@ -108,7 +108,7 @@ namespace fonder.Lilian.New
                 ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
                 var p = (double)i / CurrentFile.Count;
                 pb.Report(p);
-                WriteLine($"{o} seconds left");
+                WriteLine($"\n{o} seconds left"); SetCursorPosition(0, CursorTop - 1);
             }
 
             /*
