@@ -13,6 +13,7 @@ using System.IO;
 
 using static fonder.Lilian.New.Interpreter;
 using static fonder.Lilian.New.Interpreter.Spellbook;
+using static fonder.Lilian.New.Interpreter.Actualiser;
 using static System.Console;
 
 // Guide to comments
@@ -62,14 +63,18 @@ namespace fonder.Lilian.New
 
             public class SentenceStructure
             {
-                public SentenceStructure(string name, params string[] tokenstruct)
+                public SentenceStructure(string name, int code, int[] points, string[] tokenstruct)
                 {
                     Name = name;
                     TokenStruct = tokenstruct;
+                    Code = code;
+                    PointersToValues = points;
                 }
 
                 public virtual string Name { get; }
                 public virtual string[] TokenStruct { get; }
+                public virtual int[] PointersToValues { get; }
+                public int Code { get; }
             }
 
             public class SentenceFruit
@@ -82,11 +87,6 @@ namespace fonder.Lilian.New
 
                 public SentenceStructure AssociatedSentence { get; }
                 public string[] Value { get; }
-            }
-
-            public sealed class SentenceCollectionStructure: SentenceStructure
-            {
-                public SentenceCollectionStructure(string name, params string[] tokenstruct): base(name, tokenstruct) { }
             }
         }
 
@@ -169,6 +169,15 @@ namespace fonder.Lilian.New
                     if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
                 }
             }
+        }
+
+        internal static void InterpretSentence(SentenceFruit sent)
+        {
+            if (CurrentStatements.Exists(state => state.AssociatedStructure == sent.AssociatedSentence.Name))
+            {
+                CurrentInstructions.Add(CurrentInstructions.Count - 1, new(sent, CurrentStatements.Find(state => state.AssociatedStructure == sent.AssociatedSentence.Name)));
+            }
+            else throw new Lamentation(14, sent.AssociatedSentence.Name);
         }
     }
 }

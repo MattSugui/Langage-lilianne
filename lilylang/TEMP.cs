@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.IO;
 
+using static System.Console;
+
 using static fonder.Lilian.New.Interpreter;
 using static fonder.Lilian.New.Interpreter.Spellbook;
 
@@ -25,10 +27,14 @@ namespace fonder.Lilian.New
             CurrentTokens.Add(new("WTSP", @"^\s$", true, true));
             //CurrentTokens.Add(new("TOSL", @"\/\/"));
 
-            CurrentSentenceStructures.Add(new("PrintString", "PRNT", "QUOT", "SMCL"));
-            CurrentSentenceStructures.Add(new("PrintInteger", "PRNT", "INTL", "SMCL"));
+            CurrentSentenceStructures.Add(new("PrintString", 1, new int[] {1}, new string[] { "PRNT", "QUOT", "SMCL" }));
+            CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
 
+            CurrentActions.Add(1, (string val) => WriteLine(val));
+
+            CurrentStatements.Add(new("PrintString", 1));
             //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
         }
+
     }
 }

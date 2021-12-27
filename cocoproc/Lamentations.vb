@@ -9,12 +9,12 @@
         ''' Initialises the standard error code-string pairs for a lamentation.
         ''' </summary>
         Shared Sub New()
-            err = New Dictionary(Of Integer, String)
-
-            err.Add(0, "All clear.")
-            err.Add(1, "Syntax error. This command does not exist.")
-            err.Add(2, "The file {0} does not exist.")
-            err.Add(3, "All clear.")
+            err = New Dictionary(Of Integer, String) From {
+                {0, "All clear."},
+                {1, "Syntax error. This command does not exist."},
+                {2, "The file {0} does not exist."},
+                {3, "All clear."}
+            }
         End Sub
 
         ''' <summary>

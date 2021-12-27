@@ -176,8 +176,16 @@ namespace fonder.Lilian.New
                     }
                     pbm.Tick();
                 }
+                using (var pbc = pbm.Spawn(CurrentFile.Count, "Assigning operations", opt3))
+                {
+                    foreach (SentenceFruit sent in CurrentSentences)
+                    {
+                        InterpretSentence(sent);
+                        pbc.Tick();
+                    }
+                    pbm.Tick();
+                }
 
-                
             }
             //watch.Stop();
             WriteLine("complet");

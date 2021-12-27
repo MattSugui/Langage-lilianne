@@ -39,6 +39,14 @@ namespace fonder.Lilian.New
                 def.Add(0x000C, "Implementation error. The predefined opcode '{0}' does not exist. Please reinstall Lilian, or send a bug report.");
                 //
                 def.Add(0x000D, "Implementation error. Right bracket {0} for left bracket {1} does not exist. Did you forget to add the token first before using it?");
+                //
+                def.Add(0x000E, "Implementation error. The opcode {0} does not exist. Did you forget to assign the operation to there?");
+                def.Add(0x000F, "Implementation error. Sentence {0} has more pointers than the allocated parameters for the associated opcode {1} '{2}'.");
+                def.Add(0x0010, "File operation error. {0}");
+                def.Add(0x0011, "File operation error. The archive '{0}' does not exist.");
+                def.Add(0x0012, "File operation error. Cannot export to an archive. This is not your fault; it's ours. Contact us lmao. ({0})");
+                def.Add(0x0013, "File operation error. Cannot import from an archive. Either that you're a dumbarse and imported something not in an LPS format or it's our fault. If so, contact us. lMAO. ({0})");
+                def.Add(0x0014, "Implementation error. The sentence structure {0} does not correspond with any of the available statements.");
             }
 
             /// <summary>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,9 +8,9 @@
     <Deterministic>False</Deterministic>
 
     <AssemblyTitle>Lilian Language</AssemblyTitle>
-    <AssemblyVersion>0.9.31.0</AssemblyVersion>
-    <FileVersion>0.9.31.0</FileVersion>
-	<InformationalVersion>Milestone 9 211227-1910</InformationalVersion>
+    <AssemblyVersion>0.9.32.0</AssemblyVersion>
+    <FileVersion>0.9.32.0</FileVersion>
+	<InformationalVersion>Milestone 9 211227-1914</InformationalVersion>
     <Authors>Matt Sugui</Authors>
     <Copyright>Created 2021</Copyright>
     <ProductName>Lilian language interpreter</ProductName>
@@ -29,11 +29,11 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -command &quot;&amp; '$(ProjectDir)script\post.ps1' -pre -GoDeeper&quot;" />
+    <Exec Command="powershell -command &quot;&amp; '$(ProjectDir)script\post.ps1' -pre -GoDeeper -NewVerName 'Milestone 10' &quot;" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell -command &quot;&amp; '$(ProjectDir)script\post.ps1' -IncrementBuild -GoDeeper&quot;" />
+    <Exec Command="powershell -command &quot;&amp; '$(ProjectDir)script\post.ps1' -IncrementBuild -GoDeeper -SmallUpgrade&quot;" />
   </Target>
 
 </Project>
