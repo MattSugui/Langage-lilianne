@@ -84,7 +84,7 @@ namespace fonder.Lilian.New
                     returningvalue = new byte[stream.ToArray().Length]; // hold?
 
                     //GZipStream comp = new(stream, CompressionLevel.SmallestSize);
-                    comp.Write(returningvalue, 0, stream.ToArray().Length);
+                    //comp.Write(returningvalue, 0, stream.ToArray().Length);
 
                     //stream.Close(); comp.Close();
 
