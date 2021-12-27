@@ -12,9 +12,11 @@ using System.Reflection;
 using System.IO;
 using System.Diagnostics;
 
-using System.Management.Automation;
+//using System.Management.Automation;
+//using Microsoft.PowerShell;
 
 using static fonder.Lilian.New.Interpreter.Spellbook;
+using static fonder.Lilian.New.Interpreter.IntegratedThirdPartyContent;
 using static System.Console;
 
 // Guide to comments
@@ -89,7 +91,9 @@ namespace fonder.Lilian.New
             //foreach (string line in CurrentFile) ScanTokens(line);
             Stopwatch watch = new();
             //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
-            PowerShell ps = PowerShell.Create();
+            //PowerShell ps = PowerShell.Create();
+
+            ProgressBar pb = new();
 
             watch.Start();
             for (int i = 1; i < CurrentFile.Count + 1; i++)
@@ -102,14 +106,9 @@ namespace fonder.Lilian.New
                 timerem.CurrentOperation = "Scanning lines";
                 */
                 ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
-                ulong p = ulong.Parse(((i / CurrentFile.Count) * 100).ToString("0"));
-                WriteLine($"{o} {p} '{i} lines scanned'");
-                string script = $"write-progress -secondsremaining {o} " +
-                    $"-percentcomplete {p} " +
-                    $"-status '{i} lines scanned' " +
-                    $"-currentoperation 'Scanning lines'";
-                ps.AddCommand(script);
-                ps.Invoke();
+                var p = (double)i / CurrentFile.Count;
+                pb.Report(p);
+                WriteLine($"{o} seconds left");
             }
 
             /*
@@ -121,6 +120,7 @@ namespace fonder.Lilian.New
 
             WriteLine("\n\n");
         }
+         
     }
 }
 
