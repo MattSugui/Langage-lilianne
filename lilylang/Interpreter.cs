@@ -98,7 +98,7 @@ namespace fonder.Lilian.New
             ProgressBarOptions opt = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2590',
                 BackgroundCharacter = '\u2588',
