@@ -71,7 +71,7 @@ try
 
         #write-host $vernums
 
-        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]\.[0-9]\.[0-9]\.[0-9]", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2],$vernums[3]))
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2],$vernums[3]))
         [System.IO.File]::WriteAllText($fpath, $filecont)
         
 
