@@ -93,9 +93,9 @@ namespace fonder.Lilian.New
 
                 try
                 {
-                    byte[] things = new byte[length];
+                    //byte[] things = new byte[length];
 
-                    MemoryStream mem = new();
+                    MemoryStream mem = new(data);
                     //GZipStream decmp = new(mem, CompressionMode.Decompress);
 
 
