@@ -167,12 +167,12 @@ namespace fonder.Lilian.New
                     }
                     pbm.Tick();
                 }
-                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt2))
+                using (var pbb = pbm.Spawn(CurrentFile.Count, "Parsing tokens", opt2))
                 {
                     foreach (List<TokenFruit> fruits in CurrentWordPacks)
                     {
                         ArrangeTokens(fruits);
-                        pba.Tick();
+                        pbb.Tick();
                     }
                     pbm.Tick();
                 }
