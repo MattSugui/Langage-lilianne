@@ -106,9 +106,10 @@ namespace fonder.Lilian.New
                 DisplayTimeInRealTime = true,
             };
 
-            //watch.Start();
+            watch.Start();
             using (var pbm = new ProgressBar(CurrentFile.Count, "Scanning tokens", opt))
             {
+                
                 for (int i = 1; i < CurrentFile.Count + 1; i++)
                 {
                     ScanTokens(CurrentFile[i - 1]);
@@ -118,14 +119,16 @@ namespace fonder.Lilian.New
                     timerem.StatusDescription = $"{i} lines scanned";
                     timerem.CurrentOperation = "Scanning lines";
                     */
-                    //ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
+                    ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
                     var p = (double)i / CurrentFile.Count;
                     //string stat = $"Scanning tokens. {o} seconds remaining ";
                     //pb.Report(p, stat);
                     /*WriteLine($"\n{o} seconds left*/
+                    pbm.EstimatedDuration = TimeSpan.FromSeconds(o);
                     pbm.Tick();
                 }
             }
+            watch.Stop();
             WriteLine("complet");
 
             /*
