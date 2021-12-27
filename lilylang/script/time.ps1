@@ -33,6 +33,7 @@ function MillionLines
     {
         $i++
         $l = ($i / $j) * 100
+        # (elap / got) * (total - got)
         $o = [uint64]::Parse((($etaget.Elapsed.Seconds / $i) * ($j - $i)).ToString("0"))
         $p = [uint64]::Parse((($i / $j) * 100).ToString("0"))
         Write-Progress -Activity "Counting to $j" -Status $i.ToString() -SecondsRemaining $o -PercentComplete $p

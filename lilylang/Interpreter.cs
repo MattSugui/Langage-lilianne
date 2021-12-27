@@ -91,7 +91,7 @@ namespace fonder.Lilian.New
         public static void Interpret()
         {
             //foreach (string line in CurrentFile) ScanTokens(line);
-            Stopwatch watch = new();
+            //Stopwatch watch = new();
             //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
             //PowerShell ps = PowerShell.Create();
 
@@ -106,7 +106,7 @@ namespace fonder.Lilian.New
                 DisplayTimeInRealTime = true,
             };
 
-            watch.Start();
+            //watch.Start();
             using (var pbm = new ProgressBar(CurrentFile.Count, "Scanning tokens", opt))
             {
                 
@@ -119,16 +119,16 @@ namespace fonder.Lilian.New
                     timerem.StatusDescription = $"{i} lines scanned";
                     timerem.CurrentOperation = "Scanning lines";
                     */
-                    ulong o = (ulong)(((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i));
+                    //ulong o = (ulong)((watch.Elapsed.Seconds / i) * (CurrentFile.Count - i));
                     //var p = (double)i / CurrentFile.Count;
                     //string stat = $"Scanning tokens. {o} seconds remaining ";
                     //pb.Report(p, stat);
                     /*WriteLine($"\n{o} seconds left*/
                     //pbm.EstimatedDuration = TimeSpan.FromSeconds(o);
-                    pbm.Tick($"Scanning tokens. {o} seconds remaining");
+                    pbm.Tick("Scanning tokens");
                 }
             }
-            watch.Stop();
+            //watch.Stop();
             WriteLine("complet");
 
             /*
