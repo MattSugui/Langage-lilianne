@@ -100,7 +100,6 @@ namespace fonder.Lilian.New
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
-                ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -112,7 +111,6 @@ namespace fonder.Lilian.New
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
-                ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -124,7 +122,6 @@ namespace fonder.Lilian.New
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
-                ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -136,7 +133,6 @@ namespace fonder.Lilian.New
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
-                ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -148,7 +144,6 @@ namespace fonder.Lilian.New
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
-                ShowEstimatedDuration = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
