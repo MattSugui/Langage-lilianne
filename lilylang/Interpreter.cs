@@ -126,6 +126,7 @@ namespace fonder.Lilian.New
                     /*WriteLine($"\n{o} seconds left*/
                     //pbm.EstimatedDuration = TimeSpan.FromSeconds(o);
                     pbm.Tick("Scanning tokens");
+                    pbm.EstimatedDuration = TimeSpan.FromSeconds(((pbm.CurrentTick / 20) / i) * (CurrentFile.Count - i));
                 }
             }
             //watch.Stop();
