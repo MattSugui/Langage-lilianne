@@ -101,8 +101,8 @@ namespace fonder.Lilian.New
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
-                ProgressCharacter = '\u2590',
-                BackgroundCharacter = '\u2588',
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
                 ForegroundColor = ForegroundColor // what
                 //DisplayTimeInRealTime = true,
@@ -113,9 +113,9 @@ namespace fonder.Lilian.New
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
-                ProgressCharacter = '\u2590',
-                BackgroundCharacter = '\u2588',
-                CollapseWhenFinished = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
                 ForegroundColor = ConsoleColor.Red
                 //DisplayTimeInRealTime = true,
             };
@@ -125,9 +125,9 @@ namespace fonder.Lilian.New
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
-                ProgressCharacter = '\u2590',
-                BackgroundCharacter = '\u2588',
-                CollapseWhenFinished = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
                 ForegroundColor = ConsoleColor.Yellow
                 //DisplayTimeInRealTime = true,
             };
@@ -137,9 +137,9 @@ namespace fonder.Lilian.New
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
-                ProgressCharacter = '\u2590',
-                BackgroundCharacter = '\u2588',
-                CollapseWhenFinished = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
                 ForegroundColor = ConsoleColor.Green
                 //DisplayTimeInRealTime = true,
             };
@@ -149,9 +149,9 @@ namespace fonder.Lilian.New
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ShowEstimatedDuration = true,
-                ProgressCharacter = '\u2590',
-                BackgroundCharacter = '\u2588',
-                CollapseWhenFinished = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
                 ForegroundColor = ConsoleColor.Blue
                 //DisplayTimeInRealTime = true,
             };
@@ -195,7 +195,7 @@ namespace fonder.Lilian.New
 
             }
             //watch.Stop();
-            WriteLine("complet");
+            //WriteLine("complet");
 
             /*
             foreach (List<TokenFruit> toklist in CurrentWordPacks)
@@ -204,7 +204,7 @@ namespace fonder.Lilian.New
             }
             */
 
-            WriteLine("\n\n");
+            //WriteLine("\n\n");
         }
          
     }
