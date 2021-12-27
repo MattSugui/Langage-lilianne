@@ -110,7 +110,7 @@ namespace fonder.Lilian.New
                 string stat = $"Scanning tokens. {o} seconds remaining ";
                 Write(stat + new string(':', 50 - stat.Length));
                 pb.Report(p);
-                //WriteLine($"\n{o} seconds left"); SetCursorPosition(0, CursorTop - 1);
+                /*WriteLine($"\n{o} seconds left");*/ SetCursorPosition(0, CursorTop);
             }
             WriteLine("complet");
 
