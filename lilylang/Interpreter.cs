@@ -107,9 +107,12 @@ namespace fonder.Lilian.New
                 */
                 ulong o = ulong.Parse((((watch.ElapsedMilliseconds / 1000) / i) * (CurrentFile.Count - i)).ToString("0"));
                 var p = (double)i / CurrentFile.Count;
+                string stat = $"Scanning tokens. {o} seconds remaining ";
+                Write(stat + new string(':', 50 - stat.Length));
                 pb.Report(p);
                 //WriteLine($"\n{o} seconds left"); SetCursorPosition(0, CursorTop - 1);
             }
+            WriteLine("complet");
 
             /*
             foreach (List<TokenFruit> toklist in CurrentWordPacks)
