@@ -1,3 +1,4 @@
-begin main procedure:
-	print "hello, world!";
-end.
+// Hello, world!
+// Copyright none
+
+Print "Hello, world!";

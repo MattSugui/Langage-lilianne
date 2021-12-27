@@ -103,34 +103,81 @@ namespace fonder.Lilian.New
                 ProgressCharacter = '\u2590',
                 BackgroundCharacter = '\u2588',
                 CollapseWhenFinished = false,
+                ForegroundColor = ForegroundColor // what
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt1 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ShowEstimatedDuration = true,
+                ProgressCharacter = '\u2590',
+                BackgroundCharacter = '\u2588',
+                CollapseWhenFinished = true,
+                ForegroundColor = ConsoleColor.Red
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt2 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ShowEstimatedDuration = true,
+                ProgressCharacter = '\u2590',
+                BackgroundCharacter = '\u2588',
+                CollapseWhenFinished = true,
+                ForegroundColor = ConsoleColor.Yellow
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt3 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ShowEstimatedDuration = true,
+                ProgressCharacter = '\u2590',
+                BackgroundCharacter = '\u2588',
+                CollapseWhenFinished = true,
+                ForegroundColor = ConsoleColor.Green
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt4 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ShowEstimatedDuration = true,
+                ProgressCharacter = '\u2590',
+                BackgroundCharacter = '\u2588',
+                CollapseWhenFinished = true,
+                ForegroundColor = ConsoleColor.Blue
                 //DisplayTimeInRealTime = true,
             };
 
             //watch.Start();
             using (var pbm = new ProgressBar(4, "Interpretation process", opt))
             {
-                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt))
+                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
                         ScanTokens(CurrentFile[i - 1]);
-                        /*
-                        timerem.SecondsRemaining = (watch.Elapsed.Seconds / i) * (i - CurrentFile.Count);
-                        timerem.PercentComplete = int.Parse($"{i / CurrentFile.Count:0}");
-                        timerem.StatusDescription = $"{i} lines scanned";
-                        timerem.CurrentOperation = "Scanning lines";
-                        */
-                        //ulong o = (ulong)((watch.Elapsed.Seconds / i) * (CurrentFile.Count - i));
-                        //var p = (double)i / CurrentFile.Count;
-                        //string stat = $"Scanning tokens. {o} seconds remaining ";
-                        //pb.Report(p, stat);
-                        /*WriteLine($"\n{o} seconds left*/
-                        //pbm.EstimatedDuration = TimeSpan.FromSeconds(o);
                         pba.Tick();
-
                     }
+                    pbm.Tick();
                 }
-                pbm.Tick();
+                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt2))
+                {
+                    foreach (List<TokenFruit> fruits in CurrentWordPacks)
+                    {
+                        ArrangeTokens(fruits);
+                        pba.Tick();
+                    }
+                    pbm.Tick();
+                }
+
+                
             }
             //watch.Stop();
             WriteLine("complet");

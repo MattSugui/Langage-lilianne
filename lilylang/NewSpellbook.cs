@@ -71,6 +71,19 @@ namespace fonder.Lilian.New
                 public virtual string Name { get; }
                 public virtual string[] TokenStruct { get; }
             }
+
+            public class SentenceFruit
+            {
+                public SentenceFruit(SentenceStructure structure, string[] tokens)
+                {
+                    AssociatedSentence = structure;
+                    Value = tokens;
+                }
+
+                public SentenceStructure AssociatedSentence { get; }
+                public string[] Value { get; }
+            }
+
             public sealed class SentenceCollectionStructure: SentenceStructure
             {
                 public SentenceCollectionStructure(string name, params string[] tokenstruct): base(name, tokenstruct) { }
@@ -79,6 +92,7 @@ namespace fonder.Lilian.New
 
         public static List<TokenFruit> CurrentWords = new();
         public static List<List<TokenFruit>> CurrentWordPacks = new();
+        public static List<SentenceFruit> CurrentSentences = new();
     
         internal static void ScanTokens(string line)
         {
@@ -95,6 +109,8 @@ namespace fonder.Lilian.New
 #endif
 
                 if (currentWord.ToString() == "//") break; // comment!
+                
+                /*
                 foreach (Token tok in CurrentTokens)
                 {
                     if (Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase))
@@ -108,6 +124,18 @@ namespace fonder.Lilian.New
                         if ((CurrentTokens.IndexOf(tok) != CurrentTokens.Count - 1) || (CurrentLine.Length < line.Length)) continue;
                         else throw new Lamentation(2, currentWord.ToString());
                     }
+                
+                }*/
+
+                if (CurrentTokens.Exists(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)))
+                {
+                    CurrentWords.Add(new(CurrentTokens.Find(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)), currentWord.ToString()));
+                    currentWord.Clear();
+                    break;
+                }
+                else
+                {
+                    if (CurrentLine.Length < line.Length) continue; else throw new Lamentation(2, currentWord.ToString());
                 }
             }
 
@@ -119,9 +147,28 @@ namespace fonder.Lilian.New
             CurrentWords.Clear();
         }
 
-        internal static void ArrangeTokens()
+        internal static void ArrangeTokens(List<TokenFruit> bunch)
         {
+            List<string> @struct = new();
+            List<TokenFruit> other = new();
+            int removed = 0;
 
+            foreach (TokenFruit fruit in bunch)
+            {
+                if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
+                @struct.Add(fruit.AssociatedToken.Name);
+                other.Add(fruit);
+                if (CurrentSentenceStructures.Exists(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())))
+                {
+                    List<string> values = new();
+                    foreach (TokenFruit fruit1 in other) values.Add(fruit1.Value);
+                    CurrentSentences.Add(new(CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), values.ToArray()));
+                }
+                else
+                {
+                    if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
+                }
+            }
         }
     }
 }
