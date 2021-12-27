@@ -42,7 +42,7 @@ namespace fonder.Lilian.New
 
                 public void Invoke()
                 {
-                    if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction)) CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[0]);
+                    if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction)) CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[AssociatedFruit.AssociatedSentence.PointersToValues[0]);
                     else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
                 }
             }
