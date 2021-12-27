@@ -59,15 +59,10 @@ namespace fonder.Lilian.New
         {
             public class MalleableInst
             {
-                public MalleableInst(int ind, Instruction ins)
-                {
-                    Index = ind;
-                    Inst = ins;
-                }
                 [XmlAttribute]
-                public int Index { get; }
+                public int Index;
                 [XmlAttribute]
-                public Instruction Inst { get; }
+                public Instruction Inst;
             }
             internal static (byte[], int) Package()
             {
@@ -76,7 +71,7 @@ namespace fonder.Lilian.New
                 try
                 {
                     List<MalleableInst> things = new();
-                    foreach (KeyValuePair<int, Instruction> state in CurrentInstructions) things.Add(new(state.Key, state.Value));
+                    foreach (KeyValuePair<int, Instruction> state in CurrentInstructions) things.Add(new() { Index = state.Key, Inst = state.Value });
 
                     byte[] returningvalue;
 
