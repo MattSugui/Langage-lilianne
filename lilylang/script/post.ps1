@@ -86,11 +86,7 @@ try
         $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5}", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"])
         
         [System.IO.Directory]::CreateDirectory($newdest)
-        copy-item -path ($outpath + "lilylang.exe") -destination ($newdest + "\lilylang.exe")
-        copy-item -path ($outpath + "lilylang.dll") -destination ($newdest + "\lilylang.dll")
-        copy-item -path ($outpath + "lilylang.runtimeconfig.json") -destination ($newdest + "\lilylang.runtimeconfig.json")
-        copy-item -path ($outpath + "system.codedom.dll") -destination ($newdest + "\system.codedom.dll")
-        copy-item -path ($outpath + "Microsoft.PowerShell.SDK.dll") -destination ($newdest + "\Microsoft.PowerShell.SDK.dll")
+        copy-item -path ($outpath + "*") -destination $newdest
     }    
     else
     {

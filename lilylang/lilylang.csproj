@@ -10,7 +10,7 @@
     <AssemblyTitle>Lilian Language</AssemblyTitle>
     <AssemblyVersion>0.9.10.0</AssemblyVersion>
     <FileVersion>0.9.10.0</FileVersion>
-	<InformationalVersion>Milestone 9 211227-0147</InformationalVersion>
+	<InformationalVersion>Milestone 9 211227-1533</InformationalVersion>
     <Authors>Matt Sugui</Authors>
     <Copyright>Created 2021</Copyright>
     <ProductName>Lilian language interpreter</ProductName>

@@ -92,9 +92,9 @@ namespace fonder.Lilian.New
             PowerShell ps = PowerShell.Create();
 
             watch.Start();
-            for (int i = 0; i < CurrentFile.Count; i++)
+            for (int i = 1; i < CurrentFile.Count + 1; i++)
             {
-                ScanTokens(CurrentFile[i]);
+                ScanTokens(CurrentFile[i - 1]);
                 /*
                 timerem.SecondsRemaining = (watch.Elapsed.Seconds / i) * (i - CurrentFile.Count);
                 timerem.PercentComplete = int.Parse($"{i / CurrentFile.Count:0}");
