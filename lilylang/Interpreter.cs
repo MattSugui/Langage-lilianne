@@ -108,7 +108,7 @@ namespace fonder.Lilian.New
                     $"-percentcomplete {p} " +
                     $"-status '{i} lines scanned' " +
                     $"-currentoperation 'Scanning lines'";
-                ps.AddScript(script);
+                ps.AddCommand(script);
                 ps.Invoke();
             }
 
