@@ -71,10 +71,10 @@ namespace fonder.Lilian.New
                     MemoryStream stream = new();
                     formatter.Serialize(stream, things.ToArray());
                     returningvalue = new byte[stream.ToArray().Length]; // hold?
-                    //returningvalue = stream.ToArray();
+                    returningvalue = stream.ToArray();
 
-                    GZipStream comp = new(stream, CompressionLevel.Optimal);
-                    comp.Write(returningvalue, 0, stream.ToArray().Length);
+                    //GZipStream comp = new(stream, CompressionLevel.Optimal);
+                    //comp.Write(returningvalue, 0, stream.ToArray().Length);
 
                     //stream.Close(); comp.Close();
 
@@ -96,10 +96,10 @@ namespace fonder.Lilian.New
                     byte[] things = new byte[length];
 
                     MemoryStream mem = new();
-                    GZipStream decmp = new(mem, CompressionMode.Decompress);
+                    //GZipStream decmp = new(mem, CompressionMode.Decompress);
 
 
-                    decmp.Read(things, 0, length);
+                    //decmp.Read(things, 0, length);
 
                     XmlSerializer formatter = new(typeof(MalleableInst[]));
                     MalleableInst[] othings = formatter.Deserialize(mem) as MalleableInst[];

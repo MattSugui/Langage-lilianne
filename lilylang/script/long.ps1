@@ -5,10 +5,10 @@
 [System.Collections.Generic.List[string]] $things = [System.Collections.Generic.List[string]]::new()
 $etaget = [System.Diagnostics.Stopwatch]::new()
 
-$j = 1000000
+$j = 875
 $k = 0; $l = 0
 $etaget.Start()
-for ($i = 0; $i -le $j; $i++)
+for ($i = 1; $i -le $j + 1; $i++)
 {
     $things.Add("Print `"Hello, world!`";")
     #[System.Console]::WriteLine(+ " (" + (($i / [uint16]::MaxValue) * 100).ToString() + "%)")
