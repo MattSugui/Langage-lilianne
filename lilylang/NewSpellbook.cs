@@ -143,7 +143,7 @@ namespace fonder.Lilian.New
 #if TemporaryTokenTestingTime
             foreach (TokenFruit token in CurrentWords) WriteLine(token.ToString());
 #endif
-            if (CurrentWords.Count > 0) CurrentWordPacks.Add(CurrentWords);
+            if (CurrentWords.Count > 0) CurrentWordPacks.Add(new(CurrentWords));
             CurrentWords.Clear();
         }
 
