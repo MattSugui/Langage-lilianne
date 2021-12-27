@@ -82,6 +82,7 @@ namespace fonder.Lilian.New
                     MemoryStream stream = new();
                     formatter.Serialize(stream, things.ToArray());
                     returningvalue = new byte[stream.ToArray().Length]; // hold?
+                    returningvalue = stream.ToArray();
 
                     //GZipStream comp = new(stream, CompressionLevel.SmallestSize);
                     //comp.Write(returningvalue, 0, stream.ToArray().Length);
