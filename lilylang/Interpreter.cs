@@ -106,7 +106,7 @@ namespace fonder.Lilian.New
                 WriteLine($"{o} {p} '{i} lines scanned'");
                 string script = $"write-progress -secondsremaining {o} " +
                     $"-percentcomplete {p} " +
-                    $"-statusdescription '{i} lines scanned' " +
+                    $"-status '{i} lines scanned' " +
                     $"-currentoperation 'Scanning lines'";
                 ps.AddScript(script);
                 ps.Invoke();
