@@ -47,7 +47,8 @@ try
     }
     elseif ($IncrementBuild.IsPresent)
     {
-        $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]\.[0-9]\.([0-9]\.[0-9]|\*)")
+        
+        $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)")
         $futureinfo = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
 
         $asmver = [System.Collections.Generic.List[string]]::new($filematches[0].Value.Split('.'))
@@ -56,7 +57,7 @@ try
         if ($asmver[2] -eq "*")
         {
             $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]\.[0-9]\.\*", [string]::Format("{0}.{1}.{2}.{3}", $filever[0], $filever[1], $filever[2],$filever[3]))
-            $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]\.[0-9]\.([0-9]\.[0-9]|\*)")
+            $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)")
 
             $asmver = $filematches[0].Value.Split('.')
         }
@@ -101,5 +102,5 @@ catch [System.IO.FileNotFoundException]
 #>
 catch [System.Exception]
 {
-    Write-host $PSItem.Exception.Message
+    Write-host $PSItem.Exception.ToString()
 }
