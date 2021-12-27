@@ -86,7 +86,7 @@ namespace fonder.Lilian.New
                     GZipStream comp = new(stream, CompressionLevel.SmallestSize);
                     comp.Write(returningvalue, 0, stream.ToArray().Length);
 
-                    stream.Close(); comp.Close();
+                    //stream.Close(); comp.Close();
 
 
                     return (returningvalue, returningvalue.Length);
