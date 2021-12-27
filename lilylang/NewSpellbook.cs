@@ -131,7 +131,7 @@ namespace fonder.Lilian.New
                 {
                     CurrentWords.Add(new(CurrentTokens.Find(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)), currentWord.ToString()));
                     currentWord.Clear();
-                    break;
+                    continue;
                 }
                 else
                 {
