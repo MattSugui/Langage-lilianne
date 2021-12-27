@@ -102,9 +102,9 @@ namespace fonder.Lilian.New
                 timerem.CurrentOperation = "Scanning lines";
                 */
                 WriteLine($"{(watch.Elapsed.Seconds / i) * (i - CurrentFile.Count)} {i / CurrentFile.Count} '{i} lines scanned'");
-                string script = $"write-progress -secondsremaining {(watch.Elapsed.Seconds / i) * (i - CurrentFile.Count)}" +
-                    $"-percentcomplete {i / CurrentFile.Count}" +
-                    $"-statusdescription '{i} lines scanned'" +
+                string script = $"write-progress -secondsremaining {(watch.Elapsed.Seconds / i) * (i - CurrentFile.Count)} " +
+                    $"-percentcomplete {i / CurrentFile.Count} " +
+                    $"-statusdescription '{i} lines scanned' " +
                     $"-currentoperation 'Scanning lines'";
                 ps.AddScript(script);
                 ps.Invoke();
