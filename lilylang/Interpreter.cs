@@ -18,6 +18,7 @@ using System.Diagnostics;
 using ShellProgressBar;
 
 using static fonder.Lilian.New.Interpreter.Spellbook;
+using static fonder.Lilian.New.Interpreter.Bureau;
 using static fonder.Lilian.New.Interpreter.IntegratedThirdPartyContent;
 using static System.Console;
 
@@ -167,7 +168,7 @@ namespace fonder.Lilian.New
                     }
                     pbm.Tick();
                 }
-                using (var pbb = pbm.Spawn(CurrentFile.Count, "Parsing tokens", opt2))
+                using (var pbb = pbm.Spawn(CurrentWordPacks.Count, "Parsing tokens", opt2))
                 {
                     foreach (List<TokenFruit> fruits in CurrentWordPacks)
                     {
@@ -176,13 +177,19 @@ namespace fonder.Lilian.New
                     }
                     pbm.Tick();
                 }
-                using (var pbc = pbm.Spawn(CurrentFile.Count, "Assigning operations", opt3))
+                using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
                 {
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
                         InterpretSentence(sent);
                         pbc.Tick();
                     }
+                    pbm.Tick();
+                }
+                using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
+                {
+                    Publish(Package(), "test.lprg", "hoi");
+                    pbd.Tick();
                     pbm.Tick();
                 }
 

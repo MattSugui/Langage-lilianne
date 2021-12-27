@@ -67,7 +67,7 @@ namespace fonder.Lilian.New
 				WriteLine(cry.ToString());
             }
 #endif
-			Write("Execution finished. Press any key to continue.");
+			Write("Compilation finished. Press any key to continue.");
 			ReadKey();
 		}
 	}
