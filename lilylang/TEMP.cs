@@ -32,7 +32,7 @@ namespace fonder.Lilian.New
 
             CurrentActions.Add(1, (string val) => WriteLine(val));
 
-            CurrentStatements.Add(new("PrintString", 1));
+            CurrentStatements.Add(new() { AssociatedStructure = "PrintString", AssociatedAction = 1 });
             //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
         }
 
