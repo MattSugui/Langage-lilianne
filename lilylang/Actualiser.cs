@@ -27,6 +27,7 @@ namespace fonder.Lilian.New
     {
         public static class Actualiser
         {
+            [Serializable]
             public class Statement
             {
                 public Statement(string assc, int opcode)
@@ -39,6 +40,7 @@ namespace fonder.Lilian.New
                 public virtual int AssociatedAction { get; }
             }
 
+            [Serializable]
             public class Instruction
             {
                 public Instruction(SentenceFruit assc, Statement ascst)

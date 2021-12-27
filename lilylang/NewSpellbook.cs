@@ -33,7 +33,8 @@ namespace fonder.Lilian.New
             public static List<Token> CurrentTokens = new();
             public static List<SentenceStructure> CurrentSentenceStructures = new();
 
-            public struct Token
+            [Serializable]
+            public class Token
             {
                 public Token(string name, string value, bool lookahead = false, bool ignore = false)
                 {
@@ -42,25 +43,27 @@ namespace fonder.Lilian.New
                     Look = lookahead;
                     IgnoreOnRefinement = ignore;
                 }
-                public string Name { get; }
-                public string Value { get; }
-                public bool Look { get; }
-                public bool IgnoreOnRefinement { get; }
+                public string Name;
+                public string Value;
+                public bool Look;
+                public bool IgnoreOnRefinement;
             }
 
-            public struct TokenFruit
+            [Serializable]
+            public class TokenFruit
             {
                 public TokenFruit(Token assc, string value)
                 {
                     AssociatedToken = assc;
                     Value = value;
                 }
-                public Token AssociatedToken { get; }
-                public string Value { get; }
+                public Token AssociatedToken;
+                public string Value;
 
                 public override string ToString() => $"{AssociatedToken.Name}: '{Value}'";
             }
 
+            [Serializable]
             public class SentenceStructure
             {
                 public SentenceStructure(string name, int code, int[] points, string[] tokenstruct)
@@ -71,12 +74,13 @@ namespace fonder.Lilian.New
                     PointersToValues = points;
                 }
 
-                public virtual string Name { get; }
-                public virtual string[] TokenStruct { get; }
-                public virtual int[] PointersToValues { get; }
-                public int Code { get; }
+                public string Name;
+                public string[] TokenStruct;
+                public int[] PointersToValues;
+                public int Code;
             }
 
+            [Serializable]
             public class SentenceFruit
             {
                 public SentenceFruit(SentenceStructure structure, string[] tokens)
@@ -85,8 +89,8 @@ namespace fonder.Lilian.New
                     Value = tokens;
                 }
 
-                public SentenceStructure AssociatedSentence { get; }
-                public string[] Value { get; }
+                public SentenceStructure AssociatedSentence;
+                public string[] Value;
             }
         }
 
