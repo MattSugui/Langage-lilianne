@@ -90,7 +90,7 @@ try
         [System.IO.Directory]::CreateDirectory($newdest)
         copy-item -path ($outpath + "*") -destination $newdest
 
-        compress-path -path $newdest ($newdest + ".zip") -compressionlevel smallestfile
+        compress-archive -path $newdest ($newdest + ".zip") -compressionlevel smallestfile
         remove-item $newdest
     }    
     else

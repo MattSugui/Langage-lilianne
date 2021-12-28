@@ -135,7 +135,7 @@ namespace fonder.Lilian.New
                     using (FileStream brain = File.Open(path, FileMode.Open))
                     {
                         using FileStream brainjuice = File.Create(Temp);
-                        using DeflateStream @out = new(brainjuice, CompressionLevel.SmallestSize);
+                        using DeflateStream @out = new(brainjuice, CompressionMode.Compress);
                         brain.CopyTo(@out);
                     }
 
@@ -157,7 +157,6 @@ namespace fonder.Lilian.New
                         using DeflateStream decomp = new(breh, CompressionMode.Decompress);
                         decomp.CopyTo(breh);
                     }
-
 
                     using BinaryReader lectern = new(breh);
                     progname = lectern.ReadString();
