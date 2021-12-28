@@ -119,11 +119,27 @@ namespace fonder.Lilian.New
             {
                 try
                 {
-                    using BinaryWriter pen = new(new FileStream(path, FileMode.Create));
-                    pen.Write(name); // the name of the programme
-                    pen.Write(contents.Item2); // full size
-                    pen.Write(contents.Item1.Length); // the compressed size
-                    pen.Write(contents.Item1); // the thing itself
+                    using (FileStream thing = new(path, FileMode.Create))
+                    {
+                        using (BinaryWriter pen = new(thing))
+                        {
+                            pen.Write(name); // the name of the programme
+                            pen.Write(contents.Item2); // full size
+                            pen.Write(contents.Item1.Length); // the compressed size
+                            pen.Write(contents.Item1); // the thing itself
+                        }
+                    }
+
+                    string Temp = Path.GetTempFileName();
+
+                    using (FileStream brain = File.Open(path, FileMode.Open))
+                    {
+                        using FileStream brainjuice = File.Create(Temp);
+                        using DeflateStream @out = new(brainjuice, CompressionLevel.SmallestSize);
+                        brain.CopyTo(@out);
+                    }
+
+                    File.Copy(Temp, path, true);
                 }
                 catch (Exception e)
                 {
@@ -135,7 +151,15 @@ namespace fonder.Lilian.New
             {
                 try
                 {
-                    using BinaryReader lectern = new(new FileStream(path, FileMode.Open));
+                    MemoryStream breh = new();
+                    using (FileStream brain = File.Open(path, FileMode.Open))
+                    {
+                        using DeflateStream decomp = new(breh, CompressionMode.Decompress);
+                        decomp.CopyTo(breh);
+                    }
+
+
+                    using BinaryReader lectern = new(breh);
                     progname = lectern.ReadString();
                     int length = lectern.ReadInt32();
                     int thingsize = lectern.ReadInt32();

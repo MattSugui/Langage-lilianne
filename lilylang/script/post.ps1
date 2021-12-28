@@ -84,10 +84,14 @@ try
         $dossier = $archivepath + [string]::Format("{0}.{1}", $vernums[0], $vernums[1])
         if ([System.IO.File]::Exists($dossier) -ne $true) { [System.IO.Directory]::CreateDirectory($dossier) }
 
+        # lilylang\archive\0.1\0.1.2.3, 4, 5(.zip)
         $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5}", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"])
         
         [System.IO.Directory]::CreateDirectory($newdest)
         copy-item -path ($outpath + "*") -destination $newdest
+
+        compress-path -path $newdest ($newdest + ".zip") -compressionlevel smallestfile
+        remove-item $newdest
     }    
     else
     {
