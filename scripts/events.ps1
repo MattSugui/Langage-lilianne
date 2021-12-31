@@ -122,7 +122,7 @@ try
             
         }
 
-        [System.Windows.Forms.MessageBox]::Show($newdest)
+        #[System.Windows.Forms.MessageBox]::Show($newdest)
         remove-item $newdest -recurse -force
     }    
     else
