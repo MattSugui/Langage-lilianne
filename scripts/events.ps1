@@ -114,7 +114,8 @@ try
         copy-item -path ($outpath + "*") -destination $newdest
 
         compress-archive -path ($newdest + "\*") -destinationpath $yo
-        remove-item -path $newdest
+        [System.Windows.Forms.MessageBox]::Show($newdest)
+        remove-item $newdest -recurse -force
     }    
     else
     {

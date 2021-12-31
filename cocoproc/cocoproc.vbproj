@@ -8,8 +8,8 @@
 		<Deterministic>False</Deterministic>
 
 		<AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
-		<AssemblyVersion>0.12.61.0</AssemblyVersion>
-		<FileVersion>0.12.61.0</FileVersion>
+		<AssemblyVersion>0.8.0.0</AssemblyVersion>
+		<FileVersion>0.8.0.0</FileVersion>
 		<InformationalVersion>Milestone 11 211228-2104</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created 2021</Copyright>
@@ -34,11 +34,11 @@
   </ItemGroup>-->
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoproc' -IsRelease $false&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'cocoproc' -IsRelease $false&quot;" />
 	</Target>
 
 
