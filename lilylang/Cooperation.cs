@@ -57,5 +57,37 @@ namespace fonder.Lilian.New
                 CommonsMutex.ReleaseMutex();
             }
         }
+    
+        public static void Deal()
+        {
+            using (FileStream stream = File.Create("lilycoco.tmp"))
+            {
+                using BinaryWriter pen = new(stream);
+                pen.Write("Hey, Coco! Are you there?");
+                Console.WriteLine("LILIAN: Hey, Coco! Are you there?");
+            }
+
+            using FileSystemWatcher watcher = new(Directory.GetCurrentDirectory());
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+            watcher.Filter = "lilycoco.tmp";
+            watcher.Changed += NotifyChanges; // literally set up the trap
+
+            Process.Start("cocoproc.exe", "-p");
+        }
+
+        internal static void NotifyChanges(object sender, FileSystemEventArgs e)
+        {
+            using (FileStream stream = File.Open("lilycoco.tmp", FileMode.Open))
+            {
+                using (BinaryReader glass = new(stream))
+                {
+                    string vibecheck = glass.ReadString();
+                    if (vibecheck == "Yes! I'm here, bitch!")
+                    {
+                        Console.WriteLine("tested, it works");
+                    }
+                }
+            }
+        }
     }
 }

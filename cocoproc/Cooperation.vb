@@ -28,4 +28,22 @@ Public Module Cooperation
             Throw New Lamentation(3, ex.Message)
         End Try
     End Sub
+
+    Public Sub Deal()
+        Try
+            Using stream As FileStream = File.OpenWrite("lilycoco.tmp")
+                Using glass As New BinaryReader(stream)
+                    Dim VibeCheck As String = glass.ReadString()
+                    If VibeCheck = "Hey, Coco! Are you there?" Then
+                        Using pen As New BinaryWriter(stream)
+                            pen.Write("Yes! I'm here, bitch!")
+                            Console.WriteLine("COCO: Yes! I'm here, bitch!")
+                        End Using
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            Throw New Lamentation(3, ex.Message)
+        End Try
+    End Sub
 End Module
