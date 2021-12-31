@@ -10,7 +10,7 @@ Public Module Program
 
         If args.Length > 0 Then
             If args(0) = "-p" Then
-
+                Cooperation.Handshake()
             Else
                 'Try
                 LoadFile(args(0))
