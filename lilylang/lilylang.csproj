@@ -29,11 +29,11 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)script\events.ps1' -pre -projectname 'lilylang'&quot;" />
+    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false&quot;" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)script\events.ps1' -IncrementBuild -projectname 'lilylang'&quot;" />
+    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -IsRelease $false&quot;" />
   </Target>
 
 </Project>
