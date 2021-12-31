@@ -29,9 +29,19 @@ namespace fonder.Lilian.New
         public static void Handshake()
         {
             Console.WriteLine("Initialising the preprocessor");
-            Process.Start("cocoproc.exe", "-p");
 
-            Commons = MemoryMappedFile.CreateFromFile(@"C:\lilycoco.tmp");
+            // bool = 1 B
+            // sbyte = 127 B
+            // byte = 255 B
+            // short = 32 kB
+            // ushort = 66 kB
+            // int = 2 GB
+            // uint = 4 GB
+            // long = 8 EB
+            // ulong = 16 EB
+            // bruh how tf does a mapped file reach 8 exabytes???
+            Commons = MemoryMappedFile.CreateFromFile(@"C:\lilycoco.tmp"); // 2 GB??
+            Process.Start("cocoproc.exe", "-p");
             Mutex CommonsMutex = new(true, "liliancommune", out _);
             using (MemoryMappedViewStream stream = Commons.CreateViewStream())
             {
