@@ -42,7 +42,7 @@ namespace fonder.Lilian.New
             // bruh how tf does a mapped file reach 8 exabytes???
             File.Create("lilycoco.tmp");
             Commons = MemoryMappedFile.CreateFromFile("lilycoco.tmp"); // 2 GB??
-            Process.Start("cocoproc.exe", "-p");
+           
             Mutex CommonsMutex = new(true, "liliancommune", out _);
             using (MemoryMappedViewStream stream = Commons.CreateViewStream())
             {
@@ -50,6 +50,7 @@ namespace fonder.Lilian.New
                 pen.Write(true);
             }
             CommonsMutex.ReleaseMutex();
+            Process.Start("cocoproc.exe", "-p");
             CommonsMutex.WaitOne();
             
             using (MemoryMappedViewStream stream = Commons.CreateViewStream())
