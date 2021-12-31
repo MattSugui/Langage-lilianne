@@ -1,6 +1,5 @@
 ﻿//#define Level0TestingMode
 #define VERBOSE
-#define ABSOLUTECOCOPATH
 
 using System;
 using System.Collections.Generic;
@@ -37,11 +36,6 @@ namespace fonder.Lilian.New
         static Interpreter()
         {
             TEMP.LOADPATTERNS();
-#if ABSOLUTECOCOPATH
-            Cooperation.CocoPath = Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\.."), @"cocoproc\bin\Debug\net6.0\cocoproc.exe");
-#else
-            Cooperation.CocoPath = "cocoproc.exe";
-#endif
             Cooperation.Handshake();
         }
 
