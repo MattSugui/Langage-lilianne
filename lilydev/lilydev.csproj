@@ -18,7 +18,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="PrimaryCodeEditor.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="styles.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="PrimaryCodeEditor.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,34 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-        <!--<AssemblyName>lilylang</AssemblyName>-->
-    <RootNamespace>fonder.Lilian.Coco.New</RootNamespace>
-    <Deterministic>False</Deterministic>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<!--<AssemblyName>lilylang</AssemblyName>-->
+		<RootNamespace>fonder.Lilian.Coco.New</RootNamespace>
+		<Deterministic>False</Deterministic>
 
-    <AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
-    <AssemblyVersion>0.7.*</AssemblyVersion>
-    <FileVersion>0.7.0.0</FileVersion>
-    <Authors>Matt Sugui</Authors>
-    <Copyright>Created 2021</Copyright>
-    <ProductName>Lilian language interpreter</ProductName>
-  </PropertyGroup>
+		<AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
+		<AssemblyVersion>0.12.61.0</AssemblyVersion>
+		<FileVersion>0.12.61.0</FileVersion>
+		<InformationalVersion>Milestone 11 211228-2104</InformationalVersion>
+		<Authors>Matt Sugui</Authors>
+		<Copyright>Created 2021</Copyright>
+		<ProductName>Lilian language interpreter</ProductName>
+		<RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+	</PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 
-    <Compile Remove="archive\**" />
-    <EmbeddedResource Remove="archive\**" />
-    <None Remove="archive\**" />
-  </ItemGroup>
+		<Compile Remove="archive\**" />
+		<EmbeddedResource Remove="archive\**" />
+		<None Remove="archive\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="StufferModule.vb" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="StufferModule.vb" />
+	</ItemGroup>
 
-    <!--
+	<!--
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>-->
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -IsRelease $false&quot;" />
+	</Target>
+
 
 </Project>

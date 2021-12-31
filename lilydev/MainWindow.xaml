@@ -34,19 +34,19 @@
                 </Fluent:StartScreen>
             </Fluent:Ribbon.StartScreen>
             <Fluent:Ribbon.Menu>
-                <Fluent:Backstage x:Name="backstageBoys" HideContextTabsOnOpen="False" IsOpenChanged="backstageBoys_IsOpenChanged">
+                <Fluent:Backstage x:Name="backstageBoys" HideContextTabsOnOpen="False">
                     <Fluent:BackstageTabControl>
                         <Fluent:BackstageTabItem Header="Nouveau" />
                         <Fluent:BackstageTabItem Header="Ouvrir">
                             <ScrollViewer Margin="24 0 0 0">
                                 <StackPanel>
                                     <Label HorizontalAlignment="Left" FontFamily="Segoe UI Light" FontSize="40" Foreground="Black">Ouvrir</Label>
-                                    <Fluent:Button HorizontalAlignment="Left" x:Name="fromfile" Header="D'un fichier" Click="fromfile_Click"/>
+                                    <Fluent:Button HorizontalAlignment="Left" x:Name="fromfile" Header="D'un fichier"/>
                                 </StackPanel>
                             </ScrollViewer>
                         </Fluent:BackstageTabItem>
                         <Fluent:SeparatorTabItem/>
-                        <Fluent:Button x:Name="ens" Header="Enregistrer" Click="Button_Click_1"/>
+                        <Fluent:Button x:Name="ens" Header="Enregistrer"/>
                         <Fluent:BackstageTabItem Header="Enregistrer sous" x:Name="ensous">
                             <ScrollViewer Margin="24 0 0 0">
                                 <StackPanel>
@@ -84,21 +84,16 @@
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="Teste" Group="{Binding Source={x:Reference TestGroup}}">
                 <Fluent:RibbonGroupBox Header="Interface des documents multiples tabulés">
-                    <Fluent:Button Header="Ajouter un page standard" Click="Button_Click" />
+                    <Fluent:Button Header="Ajouter un page standard"/>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup x:Name="TestGroup" Header="Teste" Background="Red" Visibility="Visible" BorderBrush="Red"/>
             </Fluent:Ribbon.ContextualGroups>
         </Fluent:Ribbon>
-        <!--
-        <WindowsFormsHost Grid.Row="1" x:Name="host">
+        
+        <WindowsFormsHost Grid.Row="1" x:Name="textboxhost"/>
 
-        </WindowsFormsHost>
-        -->
-        <TabControl Grid.Row="1" x:Name="mother" TabStripPlacement="Bottom" Background="#78001D">
-            
-        </TabControl>
         <Fluent:StatusBar Grid.Row="2" Panel.ZIndex="1">
             <Fluent:StatusBarItem Title="Left placed item"
                           Value="150"
