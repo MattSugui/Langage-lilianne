@@ -48,10 +48,10 @@ try
     
     [string] $fpath = $pathpart2 + "\" + $ProjectName + $(if ($VisualBasicProj.IsPresent) {".vbproj"} else {".csproj"})
 
-    [System.Windows.Forms.MessageBox]::Show($fpath, "Check if avail!")
+    #[System.Windows.Forms.MessageBox]::Show($fpath, "Check if avail!")
 
     $filematches = $null
-    if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("how the fuck, why woudlnt the project file exist bruh") }
+    if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("The project file doesn't exist.") }
     
     $filecont = [System.IO.File]::ReadAllText($fpath)
 
@@ -114,7 +114,7 @@ try
         copy-item -path ($outpath + "*") -destination $newdest
 
         compress-archive -path ($newdest + "\*") -destinationpath $yo
-        remove-item $newdest
+        remove-item -path $newdest
     }    
     else
     {
