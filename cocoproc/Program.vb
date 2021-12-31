@@ -9,10 +9,14 @@ Public Module Program
 
 
         If args.Length > 0 Then
-            'Try
-            LoadFile(args(0))
-            'Else Throw New Lamentation("bruh!", 21)
-            If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
+            If args(0) = "-p" Then
+
+            Else
+                'Try
+                LoadFile(args(0))
+                'Else Throw New Lamentation("bruh!", 21)
+                If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
+            End If
         Else
             GoTo REPLMode
         End If

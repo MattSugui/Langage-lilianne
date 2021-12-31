@@ -28,7 +28,8 @@ namespace fonder.Lilian.New
         internal static string CocoPath;
         public static void Handshake()
         {
-            Process.Start(CocoPath);
+            Console.WriteLine("Initialising the preprocessor");
+            Process.Start(CocoPath, "-p");
 
             Commons = MemoryMappedFile.CreateFromFile(@"C:\lilycoco.tmp");
             Mutex CommonsMutex = new(true, "liliancommune", out _);
