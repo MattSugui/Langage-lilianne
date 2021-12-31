@@ -25,11 +25,11 @@ namespace fonder.Lilian.New
         /// </remarks>
         public static MemoryMappedFile Commons; // initialise on handshake
         public static bool CooperationStarted;
-        internal static string CocoPath;
+        
         public static void Handshake()
         {
             Console.WriteLine("Initialising the preprocessor");
-            Process.Start("cocopath.exe", "-p");
+            Process.Start("cocoproc.exe", "-p");
 
             Commons = MemoryMappedFile.CreateFromFile(@"C:\lilycoco.tmp");
             Mutex CommonsMutex = new(true, "liliancommune", out _);
@@ -40,12 +40,15 @@ namespace fonder.Lilian.New
             }
             CommonsMutex.ReleaseMutex();
             CommonsMutex.WaitOne();
+            
             using (MemoryMappedViewStream stream = Commons.CreateViewStream())
             {
                 BinaryReader glass = new(stream);
                 glass.ReadBoolean(); // discard
                 if (glass.ReadBoolean()) CooperationStarted = true;
             }
+
+            Console.WriteLine("Hello there, Coco, teehee! Now, let's start!");
         }
     }
 }

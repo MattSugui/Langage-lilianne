@@ -20,6 +20,7 @@ Public Module Cooperation
             mutex1.WaitOne()
 
             Using stream As MemoryMappedViewStream = Commons.CreateViewStream()
+                Console.WriteLine("Oh, hello, Lilian! I'm Coco!")
                 Dim pen As New BinaryWriter(stream)
                 pen.Write(True)
             End Using
