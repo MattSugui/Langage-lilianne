@@ -47,6 +47,8 @@ namespace fonder.Lilian.New
                 def.Add(0x0012, "File operation error. Cannot export to an archive. This is not your fault; it's ours. Contact us lmao. ({0})");
                 def.Add(0x0013, "File operation error. Cannot import from an archive. Either that you're a dumbarse and imported something not in an LPS format or it's our fault. If so, contact us. lMAO. ({0})");
                 def.Add(0x0014, "Implementation error. The sentence structure {0} does not correspond with any of the available statements.");
+                //
+                def.Add(0x0015, "Handshake with Coco failed. {0}");
             }
 
             /// <summary>

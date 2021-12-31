@@ -34,11 +34,11 @@
   </ItemGroup>-->
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoproc' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoproc' -VisualBasicProj -IsRelease $false&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'cocoproc' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'cocoproc' -VisualBasicProj -IsRelease $false&quot;" />
 	</Target>
 
 

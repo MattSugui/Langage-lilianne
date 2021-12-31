@@ -28,7 +28,9 @@ param
     [Parameter(Mandatory = $false)]
     [switch] $VisualBasicProj,
     [Parameter(Mandatory = $true)]
-    [bool] $IsRelease
+    [bool] $IsRelease,
+    [Parameter(Mandatory = $false)]
+    [string] $CopyExecToThisProject
 )
 
 add-type -AssemblyName System.Runtime
@@ -114,6 +116,12 @@ try
         copy-item -path ($outpath + "*") -destination $newdest
 
         compress-archive -path ($newdest + "\*") -destinationpath $yo
+
+        if ($CopyExecToThisProject.IsPresent)
+        {
+            
+        }
+
         [System.Windows.Forms.MessageBox]::Show($newdest)
         remove-item $newdest -recurse -force
     }    

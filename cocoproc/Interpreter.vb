@@ -627,7 +627,7 @@ Public Module GrammarFeatureConstants
         "^\s*If\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
         "^\s*ElseIf\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
         "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<RightOperand>[0-9A-Za-z]+|"".+""|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
-        "^\s*Option\s*$",
+        "^\s*Option\s(?<Setting>)\s*$",
         "^\s*End(?<CurrentMode>(?:\s)[A-Za-z]+)?\s*$",
         "^\s*Exit\s*$",
         "^\s*Print\s(?<Value>[0-9A-Za-z]+|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
@@ -635,6 +635,7 @@ Public Module GrammarFeatureConstants
         "^\s*'.*\s*$",
         "^\s*Run\s*$",
         "^\s*Destroy\s(?<LeftOperand>[0-9A-Za-z]+)\s*$",
-        "^\s*Statement\s(?<Name>[0-9A-Za-z]*)\s*$"
+        "^\s*Statement\s(?<Name>[0-9A-Za-z]*)\s*$",
+        ""
     }
 End Module

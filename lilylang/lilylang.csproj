@@ -28,6 +28,10 @@
 		<PackageReference Include="System.CodeDom" Version="6.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\cocoproc\cocoproc.vbproj" />
+	</ItemGroup>
+
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false&quot;" />
 	</Target>

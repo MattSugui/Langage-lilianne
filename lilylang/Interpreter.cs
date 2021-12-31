@@ -1,5 +1,6 @@
 ﻿//#define Level0TestingMode
 #define VERBOSE
+#define ABSOLUTECOCOPATH
 
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,12 @@ namespace fonder.Lilian.New
         static Interpreter()
         {
             TEMP.LOADPATTERNS();
+#if ABSOLUTECOCOPATH
+            Cooperation.CocoPath = Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\.."), @"cocoproc\bin\Debug\net6.0\cocoproc.exe");
+#else
+            Cooperation.CocoPath = "cocoproc.exe";
+#endif
+            Cooperation.Handshake();
         }
 
         /// <summary>
@@ -43,7 +50,7 @@ namespace fonder.Lilian.New
         /// </summary>
         public static List<string> CurrentFile = new();
 
-        #region File operations
+#region File operations
         /// <summary>
         /// Reads from a path.
         /// </summary>
@@ -62,9 +69,9 @@ namespace fonder.Lilian.New
         {
             foreach (string line in lines) CurrentFile.Add(line);
         }
-        #endregion
+#endregion
 
-        #region End-user debug services
+#region End-user debug services
         /// <summary>
         /// The current line number.
         /// </summary>
@@ -84,7 +91,7 @@ namespace fonder.Lilian.New
         /// The current line column. Uses <c>CurrentLine</c> for the column.
         /// </summary>
         public static int CurrentColumn => CurrentLine.Length;
-        #endregion
+#endregion
 
         /// <summary>
         /// Do the whole thing.
