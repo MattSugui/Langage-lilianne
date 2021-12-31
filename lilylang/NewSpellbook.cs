@@ -30,22 +30,57 @@ namespace fonder.Lilian.New
         /// </summary>
         public static partial class Spellbook
         {
+            /// <summary>
+            /// The currently-registered tokens.
+            /// </summary>
             public static List<Token> CurrentTokens = new();
+
+            /// <summary>
+            /// The currently-registered sentence structures.
+            /// </summary>
             public static List<SentenceStructure> CurrentSentenceStructures = new();
 
+            /// <summary>
+            /// A token.
+            /// </summary>
             [Serializable]
             public class Token
             {
+                /// <summary>
+                /// The name of the token.
+                /// </summary>
                 public string Name;
+
+                /// <summary>
+                /// The token itself.
+                /// </summary>
                 public string Value;
+
+                /// <summary>
+                /// Looks for similar characters or instances that share the same pattern for solidification.
+                /// </summary>
                 public bool Look;
+
+                /// <summary>
+                /// If true, this token will be removed from the parse tree.
+                /// </summary>
                 public bool IgnoreOnRefinement;
             }
 
+            /// <summary>
+            /// A tokenised instance.
+            /// </summary>
             [Serializable]
             public class TokenFruit
             {
+                /// <summary>
+                /// The token it is associated with.
+                /// </summary>
                 public Token AssociatedToken;
+
+                /// <summary>
+                /// The token itself.
+                /// </summary>
                 public string Value;
 
                 public override string ToString() => $"{AssociatedToken.Name}: '{Value}'";

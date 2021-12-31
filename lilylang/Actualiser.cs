@@ -16,6 +16,8 @@ using static fonder.Lilian.New.Interpreter.Actualiser;
 using static System.Console;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
+using System.Xml.Schema;
+using System.Xml;
 
 // Guide to comments
 // if the comments look like this line, they're omitted code.
@@ -44,6 +46,52 @@ namespace fonder.Lilian.New
                 {
                     if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction)) CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[AssociatedFruit.AssociatedSentence.PointersToValues[0]].Trim('"'));
                     else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
+                }
+            }
+
+            /// <summary>
+            /// A version of the above <see cref="Instruction"/> type for XML serialisation.
+            /// </summary>
+            /// <remarks>
+            /// However, since there is no way to guess the source <see cref="Token"/> or <see cref="SentenceStructure"/>
+            /// with simply only an array of 32-bit integers and two strings,
+            /// this is pretty much the end result of XML-based programme compilation and there is no turning back. If not
+            /// using this serialisation method, the resulting XML file will be significantly bigger but
+            /// will be reverse-engineerable.
+            /// <br/>
+            /// When the Coco preprocessor statement <c>Option Publish Strict</c> is present, this type will be used.
+            /// </remarks>
+            public class SerialisableInstruction: IXmlSerializable
+            {
+                /// <summary>
+                /// The indices in the statement where the operation should get the parameters from.
+                /// </summary>
+                public int[] ParameterIndices;
+
+                /// <summary>
+                /// The statement itself.
+                /// </summary>
+                public string[] Statement;
+
+                /// <summary>
+                /// The name of the operation.
+                /// </summary>
+                public string Operation;
+
+                public XmlSchema GetSchema() => null;
+
+                public void ReadXml(XmlReader reader)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public void WriteXml(XmlWriter writer)
+                {
+                    writer.WriteStartElement("inst");
+                    string csv = "";
+                    foreach (int index in ParameterIndices) csv += index.ToString() + ",";
+                    csv.TrimEnd(',');
+                    writer.WriteAttributeString("indices", "");
                 }
             }
         }
@@ -114,7 +162,7 @@ namespace fonder.Lilian.New
                     throw new Lamentation(0x13, e.Message);
                 }
             }
-
+            
             internal static void Publish((byte[], int) contents, string path, string name)
             {
                 try

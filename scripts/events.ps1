@@ -1,4 +1,11 @@
-﻿param
+﻿<#
+    Evènements pour la compilation - increments de numéro de vérsion,
+    l'archivage des apps et la contrôle du source
+
+    Créé en 2021 par Matt Sugui
+#>
+
+param
 (
     [Parameter(Mandatory = $false)]
     [switch] $Pre,
@@ -12,38 +19,45 @@
     [string] $NewVerName,
     [Parameter(Mandatory = $false)]
     [switch] $Copy,
+    <#
     [Parameter(Mandatory = $false)]
     [switch] $GoDeeper,
+    #>
+    [Parameter(Mandatory = $true)]
+    [string] $ProjectName,
     [Parameter(Mandatory = $false)]
-    [string] $ProjectName
+    [switch] $VisualBasicProj,
+    [Parameter(Mandatory = $true)]
+    [bool] $IsRelease
 )
 
 add-type -AssemblyName System.Runtime
 add-type -AssemblyName System.Windows.Forms
 
-write-host "Evènements pour la compilation du langage Lilian" 
-#write-host $PSScriptRoot.ToString()
+write-host "Evènements pour la compilation" 
+write-host "Créé en 2021 par Matt Sugui. CC-BY-SA-NC"
+
 try
 {   
     $filecont = ""
     $pathpart = get-location -Verbose
     $miscpath = ""
-    if ($GoDeeper.IsPresent)
-    {
-        if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName }
-        else { $miscpath = "\lilylang" }
-    }
-    
+    if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName }
+
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
     
-    [string] $fpath = $pathpart2 + "\lilylang.csproj"
-    #[System.Windows.Forms.MessageBox]::Show($fpath, "Check to see if this is the correct path!")
+    [string] $fpath = $pathpart2 + "\" + $ProjectName + $(if ($VisualBasicProj.IsPresent) {".vbproj"} else {".csproj"})
+
+    [System.Windows.Forms.MessageBox]::Show($fpath, "Check if avail!")
+
     $filematches = $null
     if ([System.IO.File]::Exists($fpath) -ne $true) { throw [System.IO.FileNotFoundException]::new("how the fuck, why woudlnt the project file exist bruh") }
+    
     $filecont = [System.IO.File]::ReadAllText($fpath)
 
     if ($Pre.IsPresent)
     {
+        write-host "Evènements avant construction - mise à jour des dates"
         $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
         $currdate = [DateTime]::Now.ToString("yyMMdd-HHmm")
         $stage = ""
@@ -53,7 +67,7 @@ try
     }
     elseif ($IncrementBuild.IsPresent)
     {
-        
+        write-host "Evènements après construction - mise à jour des numéros de version pour la compilation suivante et l'archivage de l'application"
         $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)")
         $futureinfo = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
 
@@ -77,14 +91,16 @@ try
 
         #write-host $vernums
 
-        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2],$vernums[3]))
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2], $vernums[3]))
         [System.IO.File]::WriteAllText($fpath, $filecont)
         
 
         # copying files to place in archive
 
         $archivepath = $pathpart2 + "\archive\"
-        $outpath = $pathpart2 + "\bin\Debug\net6.0\"
+        if ([System.IO.File]::Exists($archivepath) -ne $true) { [System.IO.Directory]::CreateDirectory($archivepath) }
+
+        $outpath = $pathpart2 + "\bin\"+ $(if ($IsRelease) {"Release"} else {"Debug"}) +"\net6.0\"
         #cd $archivepath; dir $archivepath
         
         $dossier = $archivepath + [string]::Format("{0}.{1}", $vernums[0], $vernums[1])
