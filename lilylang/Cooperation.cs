@@ -32,18 +32,20 @@ namespace fonder.Lilian.New
             // ulong = 16 EB
             // bruh how tf does a mapped file reach 8 exabytes???
             
-            using (MemoryMappedFile Commons = MemoryMappedFile.CreateNew("lilycoco", ushort.MaxValue)) // 66 kB??
+            using (MemoryMappedFile Commons = MemoryMappedFile.CreateNew("lilycoco", 1024)) // 66 kB??
             {
-                Mutex CommonsMutex = new(true, "liliancommune", out _);
+                bool cree;
+                Mutex CommonsMutex = new(true, "lilmutex", out cree);
                 using (MemoryMappedViewStream stream = Commons.CreateViewStream())
                 {
                     BinaryWriter pen = new(stream);
                     pen.Write(true);
                 }
                 CommonsMutex.ReleaseMutex();
+                
                 Process.Start("cocoproc.exe", "-p");
+                
                 CommonsMutex.WaitOne();
-
                 using (MemoryMappedViewStream stream = Commons.CreateViewStream())
                 {
                     BinaryReader glass = new(stream);
@@ -52,6 +54,7 @@ namespace fonder.Lilian.New
                 }
 
                 Console.WriteLine("Hello there, Coco, teehee! Now, let's start!");
+                CommonsMutex.ReleaseMutex();
             }
         }
     }

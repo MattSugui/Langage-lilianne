@@ -14,10 +14,10 @@ Public Module Cooperation
     Public Sub Handshake()
         Try
             Using Commons As MemoryMappedFile = MemoryMappedFile.OpenExisting("lilycoco")
-                Dim mutex1 As Mutex = Mutex.OpenExisting("liliancommune")
+                Dim mutex1 As Mutex = Mutex.OpenExisting("lilmutex")
                 mutex1.WaitOne()
 
-                Using stream As MemoryMappedViewStream = Commons.CreateViewStream()
+                Using stream As MemoryMappedViewStream = Commons.CreateViewStream(1, 0)
                     Console.WriteLine("Oh, hello, Lilian! I'm Coco!")
                     Dim pen As New BinaryWriter(stream)
                     pen.Write(True)
