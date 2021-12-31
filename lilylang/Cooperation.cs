@@ -17,15 +17,6 @@ namespace fonder.Lilian.New
     /// </summary>
     public static class Cooperation
     {
-        /// <summary>
-        /// The communications table.
-        /// </summary>
-        /// <remarks>
-        /// This mapped file is intentionally out here since it will be utilised until Lilian finishes processing the code with Coco in it.
-        /// </remarks>
-        public static MemoryMappedFile Commons; // initialise on handshake
-        public static bool CooperationStarted;
-        
         public static void Handshake()
         {
             Console.WriteLine("Initialising the preprocessor");
@@ -40,27 +31,28 @@ namespace fonder.Lilian.New
             // long = 8 EB
             // ulong = 16 EB
             // bruh how tf does a mapped file reach 8 exabytes???
-            File.Create("lilycoco.tmp");
-            Commons = MemoryMappedFile.CreateFromFile("lilycoco.tmp"); // 2 GB??
-           
-            Mutex CommonsMutex = new(true, "liliancommune", out _);
-            using (MemoryMappedViewStream stream = Commons.CreateViewStream())
-            {
-                BinaryWriter pen = new(stream);
-                pen.Write(true);
-            }
-            CommonsMutex.ReleaseMutex();
-            Process.Start("cocoproc.exe", "-p");
-            CommonsMutex.WaitOne();
             
-            using (MemoryMappedViewStream stream = Commons.CreateViewStream())
+            using (MemoryMappedFile Commons = MemoryMappedFile.CreateNew("lilycoco", ushort.MaxValue)) // 66 kB??
             {
-                BinaryReader glass = new(stream);
-                glass.ReadBoolean(); // discard
-                if (glass.ReadBoolean()) CooperationStarted = true;
-            }
+                Mutex CommonsMutex = new(true, "liliancommune", out _);
+                using (MemoryMappedViewStream stream = Commons.CreateViewStream())
+                {
+                    BinaryWriter pen = new(stream);
+                    pen.Write(true);
+                }
+                CommonsMutex.ReleaseMutex();
+                Process.Start("cocoproc.exe", "-p");
+                CommonsMutex.WaitOne();
 
-            Console.WriteLine("Hello there, Coco, teehee! Now, let's start!");
+                using (MemoryMappedViewStream stream = Commons.CreateViewStream())
+                {
+                    BinaryReader glass = new(stream);
+                    glass.ReadBoolean(); // discard
+                    if (!glass.ReadBoolean()) return; // fail!
+                }
+
+                Console.WriteLine("Hello there, Coco, teehee! Now, let's start!");
+            }
         }
     }
 }
