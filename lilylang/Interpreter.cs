@@ -168,19 +168,15 @@ namespace fonder.Lilian.New
                             cocotext = false;
                             continue;
                         }
-                        else continue; // skip
 
                         goto Otherwise;
 
                     RemoveDeclarationIfCocoStartsImmediatelyAfter:
-                        {
                             FirstLine = CurrentFile[i - 1].Replace("preprocess:", string.Empty);
-                            continue;
-                        }
 
                     Otherwise:
                         {
-                            if (cocotext) CodePositionsWhereCoco.Add(i);
+                            if (cocotext) CodePositionsWhereCoco.Add(i); else continue;
                         }
                         pbz.Tick();
                     }
