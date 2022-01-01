@@ -152,6 +152,7 @@ namespace fonder.Lilian.New
                     bool cocotext = false;
                     List<int> CodePositionsWhereCoco = new();
                     string FirstLine = string.Empty;
+                    string LastLine = string.Empty;
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
                         if (CurrentFile[i - 1].StartsWith("preprocess:"))
@@ -163,37 +164,49 @@ namespace fonder.Lilian.New
                         {
                             cocotext = true;
                         }
-                        else if (CurrentFile[i - 1].EndsWith("start;") || CurrentFile[i - 1] == "start;")
+                        else if (CurrentFile[i - 1].EndsWith("start;"))
                         {
                             cocotext = false;
-                            continue;
+                            goto SaveCodeBeforeEndDeclaration;
+                        }
+                        else if (CurrentFile[i - 1] == "start;")
+                        {
+                            cocotext = false;
                         }
 
                         goto Otherwise;
 
                     RemoveDeclarationIfCocoStartsImmediatelyAfter:
-                            FirstLine = CurrentFile[i - 1].Replace("preprocess:", string.Empty);
+                        CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
+                        CodePositionsWhereCoco.Add(i - 1);
+                        continue;
+
+                    SaveCodeBeforeEndDeclaration:
+                        CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
+                        CodePositionsWhereCoco.Add(i - 1);
+                        break;
 
                     Otherwise:
                         {
-                            if (cocotext) CodePositionsWhereCoco.Add(i); else continue;
+                            if (cocotext) CodePositionsWhereCoco.Add(i - 1); else continue;
                         }
                         pbz.Tick();
                     }
                     List<string> CocoCode = new();
-                    pbz.MaxTicks += CodePositionsWhereCoco.Count * 2; // you can do this?
+                    pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?
                     foreach (int i in CodePositionsWhereCoco)
                     {
                         CocoCode.Add(CurrentFile[i]);
                         CurrentFile.RemoveAt(i);
                         pbz.Tick();
                     }
+
                 }
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
-                        pba.WriteLine(CurrentFile[i]);
+                        pba.WriteLine(CurrentFile[i - 1]);
                         ScanTokens(CurrentFile[i - 1]);
                         pba.Tick();
                     }
