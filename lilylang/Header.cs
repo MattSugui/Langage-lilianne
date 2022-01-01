@@ -14,6 +14,7 @@ global using System.Reflection;
 global using System.IO;
 global using System.Diagnostics;
 
+global using static fonder.Lilian.New.Interpreter;
 global using static fonder.Lilian.New.Interpreter.Spellbook;
 global using static fonder.Lilian.New.Interpreter.Bureau;
 global using static fonder.Lilian.New.Interpreter.Actualiser;

@@ -1,40 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.IO;
+﻿namespace fonder.Lilian.New;
 
-using static System.Console;
-
-using static fonder.Lilian.New.Interpreter;
-using static fonder.Lilian.New.Interpreter.Spellbook;
-
-namespace fonder.Lilian.New
+public static class TEMP
 {
-    public static class TEMP
+    public static void LOADPATTERNS()
     {
-        public static void LOADPATTERNS()
-        {
-            CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
-            CurrentTokens.Add(new() { Name = "QUOT", Value = @"^"".*""$" });
-            CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]$", Look = true });
-            CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$" });
-            //CurrentTokens.Add(ne) { Name = w("ANY" Value =, @".", true));
-            CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
-            //CurrentTokens.Add(new("TOSL", @"\/\/"));
+        CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
+        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^"".*""$" });
+        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]$", Look = true });
+        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$" });
+        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$" });
+        //CurrentTokens.Add(ne) { Name = w("ANY" Value =, @".", true));
+        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
+        CurrentTokens.Add(new() { Name = "PRPR", Value = @"^preprocess$" });
+        CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
+        //CurrentTokens.Add(new("TOSL", @"\/\/"));
 
-            CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
-            //CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
+        CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
+        //CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
+        CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "PRPR", "COLN" } });
+        CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "STRT", "SMCL" } });
 
-            CurrentActions.Add(1, (string val) => WriteLine(val));
+        CurrentActions.Add(1, (string val) => WriteLine(val));
 
-            CurrentStatements.Add(new() { AssociatedStructure = "PrintString", AssociatedAction = 1 });
-            //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
-        }
-
+        CurrentStatements.Add(new() { AssociatedStructure = "PrintString", AssociatedAction = 1 });
+        //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
     }
+
 }
+

@@ -175,6 +175,7 @@ public static partial class Interpreter
         {
             CurrentInstructions.Add(CurrentInstructions.Count - 1, new() { AssociatedFruit = sent, AssociatedStatement = CurrentStatements.Find(state => state.AssociatedStructure == sent.AssociatedSentence.Name) });
         }
+        else if (sent.AssociatedSentence.Code == -1) return; //skip
         else throw new Lamentation(14, sent.AssociatedSentence.Name);
     }
 }
