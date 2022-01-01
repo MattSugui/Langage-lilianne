@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.IO;
+====================================================================================================
 using System.IO.MemoryMappedFiles;
-using System.Diagnostics;
 
 namespace fonder.Lilian.New
 {
     /// <summary>
-    /// Interprocess communication between Lilian and Coco.
+    /// Interprocess communication between Lilian and Coco. Unused
     /// </summary>
     public static class Cooperation
     {
@@ -91,3 +82,4 @@ namespace fonder.Lilian.New
         }
     }
 }
+====================================================================================================

@@ -120,6 +120,12 @@ Partial Public Module Interpreter
         End If
     End Sub
 
+    Public Sub ReadDirect(thing As String())
+        For Each line As String In thing
+            CurrentSource.Add(line)
+        Next
+    End Sub
+
     ''' <summary>
     ''' The primary interpretation session.
     ''' </summary>

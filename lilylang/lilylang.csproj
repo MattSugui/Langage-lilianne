@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -6,11 +6,12 @@
 		<!--<AssemblyName>lilylang</AssemblyName>-->
 		<RootNamespace>fonder.Lilian.New</RootNamespace>
 		<Deterministic>False</Deterministic>
+		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>0.12.73.0</AssemblyVersion>
-		<FileVersion>0.12.73.0</FileVersion>
-		<InformationalVersion>Milestone 11 211231-2231</InformationalVersion>
+		<AssemblyVersion>0.12.74.0</AssemblyVersion>
+		<FileVersion>0.12.74.0</FileVersion>
+		<InformationalVersion>Milestone 11 220101-0301</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created 2021</Copyright>
 		<ProductName>Lilian language interpreter</ProductName>
@@ -33,11 +34,11 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -IsRelease $false -NewVerName 'Milestone 12'&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -IsRelease $false -SmallUpdate&quot;" />
 	</Target>
 
 </Project>

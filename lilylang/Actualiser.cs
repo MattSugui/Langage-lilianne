@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.IO;
-using System.IO.Compression;
+﻿using static fonder.Lilian.New.Interpreter.Spellbook;
 
-using static fonder.Lilian.New.Interpreter.Spellbook;
-using static fonder.Lilian.New.Interpreter.Actualiser;
 
-using static System.Console;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using System.Xml.Schema;
@@ -90,7 +77,7 @@ namespace fonder.Lilian.New
                     writer.WriteStartElement("inst");
                     string csv = "";
                     foreach (int index in ParameterIndices) csv += index.ToString() + ",";
-                    csv.TrimEnd(',');
+                    csv = csv.TrimEnd(',');
                     writer.WriteAttributeString("indices", "");
                 }
             }

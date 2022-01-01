@@ -3,14 +3,22 @@ Imports System.Reflection
 
 Public Module Program
     Public Sub Main(args As String())
-        Console.WriteLine(
+        If Not args.Contains("-nobanner") Then
+            Console.WriteLine(
                 "Fonder Lilian Language Coco Environment" & vbCrLf &
                 "Version " & Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", 2021" & vbCrLf)
-
+        End If
 
         If args.Length > 0 Then
             If args(0) = "-p" Then
                 Deal()
+            ElseIf args(0) = "-d" Then
+                If args.Length >= 2 AndAlso args(1).Length <> 0 Then
+
+                Else
+                    Console.WriteLine("You must supply a fragment or file!")
+                    End
+                End If
             Else
                 'Try
                 LoadFile(args(0))

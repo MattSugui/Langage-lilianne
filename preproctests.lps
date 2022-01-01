@@ -1,0 +1,5 @@
+preprocess:
+	Print "Hello, world!"
+start;
+
+print "hello, world!";

@@ -1,26 +1,7 @@
 ﻿//#define Level0TestingMode
 #define VERBOSE
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.IO;
-using System.Diagnostics;
-
-//using System.Management.Automation;
-//using Microsoft.PowerShell;
-
 using ShellProgressBar;
-
-using static fonder.Lilian.New.Interpreter.Spellbook;
-using static fonder.Lilian.New.Interpreter.Bureau;
-using static fonder.Lilian.New.Interpreter.IntegratedThirdPartyContent;
-using static System.Console;
 
 // Guide to comments
 // if the comments look like this line, they're omitted code.
@@ -36,7 +17,7 @@ namespace fonder.Lilian.New
         static Interpreter()
         {
             TEMP.LOADPATTERNS();
-            Cooperation.Handshake();
+            //Cooperation.Handshake();
         }
 
         /// <summary>
@@ -152,13 +133,71 @@ namespace fonder.Lilian.New
                 //DisplayTimeInRealTime = true,
             };
 
+            ProgressBarOptions opt5 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Magenta
+                //DisplayTimeInRealTime = true,
+            };
+
             //watch.Start();
             using (var pbm = new ProgressBar(4, "Interpretation process", opt))
             {
+                using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
+                {
+                    bool cocotext = false;
+                    List<int> CodePositionsWhereCoco = new();
+                    string FirstLine = string.Empty;
+                    for (int i = 1; i < CurrentFile.Count + 1; i++)
+                    {
+                        if (CurrentFile[i - 1].StartsWith("preprocess:"))
+                        {
+                            cocotext = true;
+                            goto RemoveDeclarationIfCocoStartsImmediatelyAfter;
+                        }
+                        else if (CurrentFile[i - 1] == "preprocess:")
+                        {
+                            cocotext = true;
+                        }
+                        else if (CurrentFile[i - 1].EndsWith("start;") || CurrentFile[i - 1] == "start;")
+                        {
+                            cocotext = false;
+                            continue;
+                        }
+                        else continue; // skip
+
+                        goto Otherwise;
+
+                    RemoveDeclarationIfCocoStartsImmediatelyAfter:
+                        {
+                            FirstLine = CurrentFile[i - 1].Replace("preprocess:", string.Empty);
+                            continue;
+                        }
+
+                    Otherwise:
+                        {
+                            if (cocotext) CodePositionsWhereCoco.Add(i);
+                        }
+                        pbz.Tick();
+                    }
+                    List<string> CocoCode = new();
+                    pbz.MaxTicks += CodePositionsWhereCoco.Count * 2; // you can do this?
+                    foreach (int i in CodePositionsWhereCoco)
+                    {
+                        CocoCode.Add(CurrentFile[i]);
+                        CurrentFile.RemoveAt(i);
+                        pbz.Tick();
+                    }
+                }
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
+                        pba.WriteLine(CurrentFile[i]);
                         ScanTokens(CurrentFile[i - 1]);
                         pba.Tick();
                     }
@@ -168,6 +207,7 @@ namespace fonder.Lilian.New
                 {
                     foreach (List<TokenFruit> fruits in CurrentWordPacks)
                     {
+                        pbb.WriteLine(string.Join('¬', from fruit in fruits select fruit.AssociatedToken.Name)); // bruh
                         ArrangeTokens(fruits);
                         pbb.Tick();
                     }
@@ -177,6 +217,7 @@ namespace fonder.Lilian.New
                 {
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
+                        pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
                         InterpretSentence(sent);
                         pbc.Tick();
                     }

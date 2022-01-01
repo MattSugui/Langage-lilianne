@@ -94,8 +94,14 @@ try
         #write-host $vernums
 
         $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2], $vernums[3]))
-        [System.IO.File]::WriteAllText($fpath, $filecont)
         
+        # if present, clear any evidence of a name update for future builds for ease of use so i dont have to fucking do it myself
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\s*-NewVerName\s*'.*'\s*", [string]::Empty)
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\s*-SmallUpgrade\s*", [string]::Empty)
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\s*-BigUpgrade\s*", [string]::Empty)
+
+        # save
+        [System.IO.File]::WriteAllText($fpath, $filecont)
 
         # copying files to place in archive
 
