@@ -178,12 +178,14 @@ namespace fonder.Lilian.New
 
                     RemoveDeclarationIfCocoStartsImmediatelyAfter:
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
-                        CodePositionsWhereCoco.Add(i - 1);
+                        if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
+                        else CurrentFile.RemoveAt(i - 1);
                         continue;
 
                     SaveCodeBeforeEndDeclaration:
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
-                        CodePositionsWhereCoco.Add(i - 1);
+                        if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
+                        else CurrentFile.RemoveAt(i - 1);
                         break;
 
                     Otherwise:
