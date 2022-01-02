@@ -2,6 +2,7 @@ Imports System
 Imports System.Reflection
 
 Public Module Program
+    Public Zoom As Boolean
     Public Sub Main(args As String())
         If Not args.Contains("-nobanner") Then
             Console.WriteLine(
@@ -20,9 +21,9 @@ Public Module Program
                     End
                 End If
             Else
-                Dim zoom As Boolean = args.Length > 1 AndAlso Boolean.TryParse(args(1), False)
+                Zoom = args.Length > 1 AndAlso Boolean.TryParse(args(1), False)
                 'Try
-                LoadFile(args(0), zoom)
+                LoadFile(args(0), Zoom)
                 'Else Throw New Lamentation("bruh!", 21)
                 If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
             End If
@@ -61,23 +62,32 @@ REPLMode:
         End While
 
 CompilationErrorMessages:
-        Console.WriteLine($"{CompilerErrors.Count} compiler {If(CompilerErrors.Count > 1, "errors were", "error was")} found. Press Y to view {If(CompilerErrors.Count > 1, "these errors", "this error")}, or press N to exit.")
-        While True
-            Dim key = Console.ReadKey
-            If key.Key = ConsoleKey.Y Then
-                Console.WriteLine()
-                For Each lament As Lamentation In CompilerErrors
-                    Console.WriteLine($"{lament.ErrorCode}: {lament.Message}")
-                Next
-                Exit While
-            ElseIf key.Key = ConsoleKey.N Then
-                End
-            Else
-                Console.SetCursorPosition(0, Console.CursorTop)
-                Continue While
-            End If
-        End While
-        Console.WriteLine("####################")
-        Console.WriteLine("Execution failed. Press any key to exit.")
+        If Not Zoom Then
+            Console.WriteLine($"{CompilerErrors.Count} compiler {If(CompilerErrors.Count > 1, "errors were", "error was")} found. Press Y to view {If(CompilerErrors.Count > 1, "these errors", "this error")}, or press N to exit.")
+            While True
+                Dim key = Console.ReadKey
+                If key.Key = ConsoleKey.Y Then
+                    Console.WriteLine()
+                    For Each lament As Lamentation In CompilerErrors
+                        Console.WriteLine($"{lament.ErrorCode}: {lament.Message}")
+                    Next
+                    Exit While
+                ElseIf key.Key = ConsoleKey.N Then
+                    End
+                Else
+                    Console.SetCursorPosition(0, Console.CursorTop)
+                    Continue While
+                End If
+            End While
+            Console.WriteLine("####################")
+            Console.WriteLine("Execution failed. Press any key to exit.")
+        Else
+            Console.WriteLine($"{CompilerErrors.Count} compiler {If(CompilerErrors.Count > 1, "errors were", "error was")} found.")
+            Console.WriteLine()
+            For Each lament As Lamentation In CompilerErrors
+                Console.WriteLine($"{lament.ErrorCode}: {lament.Message}")
+            Next
+            Console.WriteLine("Preprocessing failed; no changes are to be made to your Lilian code. Over to you, Lilian.")
+        End If
     End Sub
 End Module
