@@ -145,6 +145,7 @@ namespace fonder.Lilian.New
             };
 
             //watch.Start();
+            Clear();
             using (var pbm = new ProgressBar(4, "Interpretation process", opt))
             {
                 using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
