@@ -101,8 +101,8 @@ Partial Public Module Interpreter
             If Not zoom Then
                 Console.WriteLine("####################" & vbCrLf & "End of execution. Press any key to exit.")
                 Console.ReadKey()
-                End
             End If
+            End
         Else
             Console.WriteLine("This file does not exist.")
             End
