@@ -21,9 +21,9 @@ Public Module Program
                     End
                 End If
             Else
-                Zoom = args.Length > 1 AndAlso Boolean.TryParse(args(1), False)
+                Zoom = args.Length > 1 AndAlso args(1) = "-l"
                 'Try
-                LoadFile(args(0), Zoom)
+                LoadFile(args(0))
                 'Else Throw New Lamentation("bruh!", 21)
                 If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
             End If

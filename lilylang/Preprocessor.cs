@@ -12,7 +12,9 @@ public static partial class Interpreter
             try
             {
                 Clear();
-                Process coco = Process.Start("cocoproc.exe", $"\"{data}\"");
+                Process coco = Process.Start(new ProcessStartInfo() { FileName = "cocoproc.exe", Arguments = $"\"{data}\" -l", RedirectStandardOutput = true, });
+                coco.EnableRaisingEvents = true;
+                coco.OutputDataReceived += ReceiveOut;
                 coco.BeginOutputReadLine();
 
                 coco.WaitForExit();
@@ -25,5 +27,7 @@ public static partial class Interpreter
                 throw new Lamentation(0x15, e.Message);
             }
         }
+
+        private static void ReceiveOut(object sender, DataReceivedEventArgs e) => WriteLine(e.Data);
     }
 }

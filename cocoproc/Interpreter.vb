@@ -77,15 +77,17 @@ Partial Public Module Interpreter
     ''' </summary>
     ''' <param name="path">The path to the source file.</param>
     ''' <param name="zoom">If true, don't display the "Press any key to continue" notice. Used for when Lilian calls this program.</param>
-    Public Sub LoadFile(path As String, Optional zoom As Boolean = False)
+    Public Sub LoadFile(path As String)
         If File.Exists(path) Then
             EnableIncrementalContextualisation = True
             Dim doccy = File.ReadAllLines(path)
             For document As Integer = 0 To doccy.Length - 1
                 Try
                     Interpret(doccy(document))
-                    Console.WriteLine($"Parsing {document + 1} out of {doccy.Length}.")
-                    Console.SetCursorPosition(0, Console.CursorTop - 1) ' comment after debug
+                    If Not Zoom Then
+                        Console.WriteLine($"Parsing {document + 1} out of {doccy.Length}.")
+                        Console.SetCursorPosition(0, Console.CursorTop - 1) ' comment after debug
+                    Else Continue For : End If
                 Catch cry As Lamentation
                     'Console.WriteLine($"{cry.ErrorCode}: {cry.Message}")
                     CompilerErrors.Add(cry)
@@ -96,12 +98,15 @@ Partial Public Module Interpreter
                 End Try
             Next
             If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then Exit Sub ' gtfo
-            Console.WriteLine("Interpretation complete" & vbCrLf & "####################")
+            If Not Zoom Then Console.WriteLine("Interpretation complete" & vbCrLf & "####################")
             Curse(MotherContext)
-            If Not zoom Then
+            If Not Zoom Then
                 Console.WriteLine("####################" & vbCrLf & "End of execution. Press any key to exit.")
                 Console.ReadKey()
+            Else
+                Console.WriteLine("End of preprocessing. Over to you, Lilian!")
             End If
+
             End
         Else
             Console.WriteLine("This file does not exist.")
