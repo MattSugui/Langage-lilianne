@@ -155,6 +155,7 @@ namespace fonder.Lilian.New
                     string LastLine = string.Empty;
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
+                        int offset = 0;
                         if (CurrentFile[i - 1].StartsWith("preprocess:"))
                         {
                             cocotext = true;
@@ -173,13 +174,13 @@ namespace fonder.Lilian.New
                         {
                             cocotext = false;
                         }
-
-                        goto Otherwise;
+                        else goto Otherwise;
 
                     RemoveDeclarationIfCocoStartsImmediatelyAfter:
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
                         if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
                         else CurrentFile.RemoveAt(i - 1);
+                        i--;
                         continue;
 
                     SaveCodeBeforeEndDeclaration:
