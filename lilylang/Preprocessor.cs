@@ -7,11 +7,12 @@ public static partial class Interpreter
     /// </summary>
     public static class Preprocessor
     {
-        public static void FeedingTime()
+        public static void FeedingTime(string data)
         {
             try
             {
-                Process.Start("cocoproc.exe", "");
+                Process coco = Process.Start("cocoproc.exe", $"\"{data}\"");
+                coco.WaitForExit();
             }
             catch (Exception e)
             {

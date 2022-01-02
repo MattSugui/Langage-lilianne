@@ -76,7 +76,8 @@ Partial Public Module Interpreter
     ''' Loads a file and adds it to the consummate file.
     ''' </summary>
     ''' <param name="path">The path to the source file.</param>
-    Public Sub LoadFile(path As String)
+    ''' <param name="zoom">If true, don't display the "Press any key to continue" notice. Used for when Lilian calls this program.</param>
+    Public Sub LoadFile(path As String, Optional zoom As Boolean = False)
         If File.Exists(path) Then
             EnableIncrementalContextualisation = True
             Dim doccy = File.ReadAllLines(path)
@@ -97,11 +98,13 @@ Partial Public Module Interpreter
             If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then Exit Sub ' gtfo
             Console.WriteLine("Interpretation complete" & vbCrLf & "####################")
             Curse(MotherContext)
-            Console.WriteLine("####################" & vbCrLf & "End of execution. Press any key to exit.")
-            Console.ReadKey()
-            End
+            If Not zoom Then
+                Console.WriteLine("####################" & vbCrLf & "End of execution. Press any key to exit.")
+                Console.ReadKey()
+                End
+            End If
         Else
-            Console.WriteLine("tHIS FILE DOESN ONOT EXISTe")
+            Console.WriteLine("This file does not exist.")
             End
         End If
     End Sub
@@ -111,12 +114,12 @@ Partial Public Module Interpreter
     ''' </summary>
     ''' <param name="path">The path to the file.</param>
     Public Sub ReadFile(path As String)
-        If File.Exists(path) Then
-            For Each line As String In File.ReadAllLines(path)
+        If File.Exists(path.Trim("""")) Then
+            For Each line As String In File.ReadAllLines(path.Trim(""""))
                 CurrentSource.Add(line)
             Next
         Else
-            Throw New Lamentation("nri")
+            Throw New Lamentation(2, path.Trim(""""))
         End If
     End Sub
 

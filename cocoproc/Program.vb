@@ -20,8 +20,9 @@ Public Module Program
                     End
                 End If
             Else
+                Dim zoom As Boolean = args.Length > 1 AndAlso Boolean.TryParse(args(1), False)
                 'Try
-                LoadFile(args(0))
+                LoadFile(args(0), zoom)
                 'Else Throw New Lamentation("bruh!", 21)
                 If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
             End If

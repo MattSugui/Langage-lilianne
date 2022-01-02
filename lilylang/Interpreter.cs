@@ -180,6 +180,7 @@ namespace fonder.Lilian.New
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
                         if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
                         else CurrentFile.RemoveAt(i - 1);
+                        pbz.Tick();
                         i--;
                         continue;
 
@@ -187,6 +188,7 @@ namespace fonder.Lilian.New
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
                         if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
                         else CurrentFile.RemoveAt(i - 1);
+                        pbz.Tick();
                         break;
 
                     Otherwise:
@@ -196,14 +198,25 @@ namespace fonder.Lilian.New
                         pbz.Tick();
                     }
                     List<string> CocoCode = new();
-                    pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?
+                    pbz.MaxTicks += CodePositionsWhereCoco.Count * 2; // you can do this?
                     foreach (int i in CodePositionsWhereCoco)
                     {
                         CocoCode.Add(CurrentFile[i]);
                         CurrentFile.RemoveAt(i);
                         pbz.Tick();
                     }
-
+                    if (CocoCode.Count != 0)
+                    {
+                        using (TextWriter pen = File.CreateText("cocotmp.ccn"))
+                        {
+                            foreach (string line in CocoCode)
+                            {
+                                pen.WriteLine(line);
+                                pbz.Tick();
+                            }
+                        }
+                        FeedingTime("cocotmp.ccn");
+                    }
                 }
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
