@@ -281,7 +281,9 @@ Finished:
             Curse(act)
             Exit Sub
         End If
-        Exit Sub
+        If EmittedStatements.Count > 0 Then
+            ProposeMods()
+        End If
     End Sub
 
     ''' <summary>
