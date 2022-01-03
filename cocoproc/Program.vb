@@ -32,7 +32,7 @@ Public Module Program
                 Console.ReadLine()
 #End If
 
-                If File.Exists("\cocotmp.ccn") Then
+                If File.Exists("cocotmp.ccn") Then
                     Zoom = True
                     LoadFile("cocotmp.ccn")
                     If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
