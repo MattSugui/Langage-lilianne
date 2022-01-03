@@ -1,4 +1,6 @@
-﻿namespace fonder.Lilian.New;
+﻿using System.Xml.Serialization;
+
+namespace fonder.Lilian.New;
 
 public static partial class Interpreter
 {
@@ -20,7 +22,24 @@ public static partial class Interpreter
                 coco.WaitForExit();
                 Thread.Sleep(5000); // display output for a while
                 Clear(); // exit
-                
+
+                using BinaryReader lectern = new(new FileStream("cocoadd.tmp", FileMode.Open));
+                int length = lectern.ReadInt32();
+                byte[] content = lectern.ReadBytes(length);
+
+                using MemoryStream mem = new(content);
+                XmlSerializer formatter = new(typeof(ProposedMod[]));
+                ProposedMod[] othings = formatter.Deserialize(mem) as ProposedMod[];
+                foreach (ProposedMod o in othings)
+                {
+                    switch (o.WhatToDo)
+                    {
+                        case 1:
+                            CurrentFile.Insert(0, o.ProposedStatement); break;
+                        default:
+                            throw new InvalidDataException("Invalid action.");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -29,5 +48,12 @@ public static partial class Interpreter
         }
 
         private static void ReceiveOut(object sender, DataReceivedEventArgs e) => WriteLine(e.Data);
+
+        [Serializable]
+        public class ProposedMod
+        {
+            public string ProposedStatement;
+            public int WhatToDo;
+        }
     }
 }

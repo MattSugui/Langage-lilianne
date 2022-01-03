@@ -25,8 +25,12 @@ param
     #>
     [Parameter(Mandatory = $true)]
     [string] $ProjectName,
+    <#
     [Parameter(Mandatory = $false)]
     [switch] $VisualBasicProj,
+    [Parameter(Mandatory = $true)]
+    #>
+    [int] $ProjectType,
     [Parameter(Mandatory = $true)]
     [bool] $IsRelease,
     [Parameter(Mandatory = $false)]
@@ -48,7 +52,18 @@ try
 
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
     
-    [string] $fpath = $pathpart2 + "\" + $ProjectName + $(if ($VisualBasicProj.IsPresent) {".vbproj"} else {".csproj"})
+    $projtype = -1
+    if ([int]::TryParse($ProjectType, [ref] $projtype) -ne $true) { throw [System.InvalidCastException]::new("Invalid character.") }
+    $projext = ""
+    switch ($projtype)
+    {
+        0 {$projext = ".csproj"; break}
+        1 {$projext = ".vbproj"; break}
+        2 {$projext = ".vcxproj"; break}
+        default {throw [System.InvalidCastException]::new("Invalid project type.")}
+    }
+
+    $fpath = $pathpart2 + "\" + $ProjectName + $()
 
     #[System.Windows.Forms.MessageBox]::Show($fpath, "Check if avail!")
 
@@ -60,18 +75,18 @@ try
     if ($Pre.IsPresent)
     {
         write-host "Evènements avant construction - mise à jour des dates"
-        $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
+        $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[^\/\?\<\>\\\:\*\|`"]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
         $currdate = [DateTime]::Now.ToString("yyMMdd-HHmm")
         $stage = ""
         if (![string]::IsNullOrWhiteSpace($NewVerName)) { $stage = $NewVerName } else { $stage = $filematch.Groups["stage"].Value }
-        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>", [string]::Format("<InformationalVersion>{0} {1}</InformationalVersion>", $stage, $currdate))
+        $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "\<InformationalVersion\>(?<stage>[^\/\?\<\>\\\:\*\|`"]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>", [string]::Format("<InformationalVersion>{0} {1}</InformationalVersion>", $stage, $currdate))
         [System.IO.File]::WriteAllText($fpath, $filecont)
     }
     elseif ($IncrementBuild.IsPresent)
     {
         write-host "Evènements après construction - mise à jour des numéros de version pour la compilation suivante et l'archivage de l'application"
         $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)")
-        $futureinfo = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[0-9A-Za-z\s]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
+        $futureinfo = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[^\/\?\<\>\\\:\*\|`"]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
 
         $asmver = [System.Collections.Generic.List[string]]::new($filematches[0].Value.Split('.'))
         $filever = $filematches[1].Value.Split('.')

@@ -258,7 +258,8 @@ Partial Public Module Interpreter
                             Curse(MotherContext)
                             Exit Sub
                         Case 13
-
+                        Case 14
+                            Manipulation(Regex.Match(Line, Feature).Groups("Value").Value)
                         Case Else
                             Console.WriteLine("hey!")
                     End Select
@@ -650,6 +651,6 @@ Public Module GrammarFeatureConstants
         "^\s*Run\s*$",
         "^\s*Destroy\s(?<LeftOperand>[0-9A-Za-z]+)\s*$",
         "^\s*Statement\s(?<Name>[0-9A-Za-z]*)\s*$",
-        ""
+        "^\s*Write\s(?<Value>"".*"")"
     }
 End Module

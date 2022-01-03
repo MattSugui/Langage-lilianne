@@ -13,7 +13,8 @@
                 {0, "All clear."},
                 {1, "Syntax error. This command does not exist."},
                 {2, "The file {0} does not exist."},
-                {3, "Handshake with Lilian failed. {0}"}
+                {3, "Handshake with Lilian failed. {0}"},
+                {4, "Invalid operation in handshake. {0}"}
             }
         End Sub
 
