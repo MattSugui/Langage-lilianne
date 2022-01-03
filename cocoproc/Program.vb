@@ -33,7 +33,7 @@ Public Module Program
 #End If
 
                 If File.Exists("cocotmp.ccn") Then
-                    Zoom = True
+                    Zoom = True : EnableIncrementalContextualisation = False
                     LoadFile("cocotmp.ccn")
                     If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
                 Else
