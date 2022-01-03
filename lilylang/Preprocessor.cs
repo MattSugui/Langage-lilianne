@@ -14,7 +14,7 @@ public static partial class Interpreter
             try
             {
                 Clear();
-                Process coco = Process.Start(new ProcessStartInfo() { FileName = "cocoproc.exe", Arguments = $"\"{data}\" -l", RedirectStandardOutput = true, });
+                Process coco = Process.Start(new ProcessStartInfo() { FileName = "cocoproc.exe", Arguments = $"-l", RedirectStandardOutput = true, });
                 coco.EnableRaisingEvents = true;
                 coco.OutputDataReceived += ReceiveOut;
                 coco.BeginOutputReadLine();

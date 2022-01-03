@@ -1,8 +1,9 @@
 Imports System
 Imports System.Reflection
+Imports System.IO
 
 Public Module Program
-    Public Zoom As Boolean
+    Public Zoom As Boolean = False
     Public Sub Main(args As String())
         If Not args.Contains("-nobanner") Then
             Console.WriteLine(
@@ -19,6 +20,15 @@ Public Module Program
                 Else
                     Console.WriteLine("You must supply a fragment or file!")
                     End
+                End If
+            ElseIf args(0) = "-l" Then
+                If File.Exists("cocotmp.ccn") Then
+                    Zoom = True
+                    LoadFile("cocotmp.ccn")
+                    If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
+                Else
+                    Console.WriteLine("Temp file does not exist. Belayed and backing off.")
+                    Exit Sub
                 End If
             Else
                 Zoom = args.Length > 1 AndAlso args(1) = "-l"
