@@ -1,3 +1,5 @@
+
+
 Imports System
 Imports System.Reflection
 Imports System.IO
@@ -22,7 +24,15 @@ Public Module Program
                     End
                 End If
             ElseIf args(0) = "-l" Then
-                If File.Exists("\\cocotmp.ccn") Then
+#If DEBUG Then
+                Debug.WriteLine("With slash: " & File.Exists("\cocotmp.ccn"))
+                Debug.WriteLine("Local: " & File.Exists("cocotmp.ccn"))
+                Debug.WriteLine("With dot-slash: " & File.Exists("..\cocotmp.ccn"))
+                Debug.WriteLine("Environment: " & File.Exists(Environment.CurrentDirectory & "\cocotmp.ccn"))
+                Console.ReadLine()
+#End If
+
+                If File.Exists("\cocotmp.ccn") Then
                     Zoom = True
                     LoadFile("cocotmp.ccn")
                     If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
