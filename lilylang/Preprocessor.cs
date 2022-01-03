@@ -23,21 +23,24 @@ public static partial class Interpreter
                 Thread.Sleep(5000); // display output for a while
                 Clear(); // exit
 
-                using BinaryReader lectern = new(new FileStream("cocoadd.tmp", FileMode.Open));
-                int length = lectern.ReadInt32();
-                byte[] content = lectern.ReadBytes(length);
-
-                using MemoryStream mem = new(content);
-                XmlSerializer formatter = new(typeof(ProposedMod[]));
-                ProposedMod[] othings = formatter.Deserialize(mem) as ProposedMod[];
-                foreach (ProposedMod o in othings)
+                if (File.Exists("cocoadd.tmp"))
                 {
-                    switch (o.WhatToDo)
+                    using BinaryReader lectern = new(new FileStream("cocoadd.tmp", FileMode.Open));
+                    int length = lectern.ReadInt32();
+                    byte[] content = lectern.ReadBytes(length);
+
+                    using MemoryStream mem = new(content);
+                    XmlSerializer formatter = new(typeof(ProposedMod[]));
+                    ProposedMod[] othings = formatter.Deserialize(mem) as ProposedMod[];
+                    foreach (ProposedMod o in othings)
                     {
-                        case 1:
-                            CurrentFile.Insert(0, o.ProposedStatement); break;
-                        default:
-                            throw new InvalidDataException("Invalid action.");
+                        switch (o.WhatToDo)
+                        {
+                            case 1:
+                                CurrentFile.Insert(0, o.ProposedStatement); break;
+                            default:
+                                throw new InvalidDataException("Invalid action.");
+                        }
                     }
                 }
             }

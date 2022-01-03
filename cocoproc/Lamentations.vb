@@ -11,7 +11,7 @@
         Shared Sub New()
             err = New Dictionary(Of Integer, String) From {
                 {0, "All clear."},
-                {1, "Syntax error. This command does not exist."},
+                {1, "Syntax error. This command does not exist. You typed in: {0}, and I don't know shit about it"},
                 {2, "The file {0} does not exist."},
                 {3, "Handshake with Lilian failed. {0}"},
                 {4, "Invalid operation in handshake. {0}"}

@@ -265,7 +265,7 @@ Partial Public Module Interpreter
                     End Select
                     Exit For
                 Else
-                    If Array.IndexOf(FeatureConstants, Feature) <> FeatureConstants.Length - 1 Then Continue For Else Throw New Lamentation("invalid hbruh", 420)
+                    If Array.IndexOf(FeatureConstants, Feature) <> FeatureConstants.Length - 1 Then Continue For Else Throw New Lamentation(1, Line)
                 End If
             Next
         Else GoTo Finished

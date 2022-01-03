@@ -1,5 +1,5 @@
 preprocess:
-	Print "Hello, world!"
+	Write "Hello, world!"
 start;
 
 print "hello, world!";

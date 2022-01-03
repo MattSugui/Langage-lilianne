@@ -63,7 +63,7 @@ try
         default {throw [System.InvalidCastException]::new("Invalid project type.")}
     }
 
-    $fpath = $pathpart2 + "\" + $ProjectName + $()
+    $fpath = $pathpart2 + "\" + $ProjectName + $projext
 
     #[System.Windows.Forms.MessageBox]::Show($fpath, "Check if avail!")
 
