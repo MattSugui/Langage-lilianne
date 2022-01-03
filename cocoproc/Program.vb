@@ -28,7 +28,7 @@ Public Module Program
                 Debug.WriteLine("With slash: " & File.Exists("\cocotmp.ccn"))
                 Debug.WriteLine("Local: " & File.Exists("cocotmp.ccn"))
                 Debug.WriteLine("With dot-slash: " & File.Exists("..\cocotmp.ccn"))
-                Debug.WriteLine("Environment: " & File.Exists(Environment.CurrentDirectory & "\cocotmp.ccn"))
+                Debug.WriteLine("Environment: " & File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) & "\cocotmp.ccn"))
                 Console.ReadLine()
 #End If
 
