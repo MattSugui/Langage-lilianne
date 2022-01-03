@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "cocoproc": {
+      "commandName": "Project",
+      "commandLineArgs": "-l"
+    }
+  }
+}

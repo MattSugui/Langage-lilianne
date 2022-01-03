@@ -22,7 +22,7 @@ Public Module Program
                     End
                 End If
             ElseIf args(0) = "-l" Then
-                If File.Exists("cocotmp.ccn") Then
+                If File.Exists("\\cocotmp.ccn") Then
                     Zoom = True
                     LoadFile("cocotmp.ccn")
                     If CompilerErrors.Count > 0 OrElse CompilerErrors.Count <> 0 Then GoTo CompilationErrorMessages
