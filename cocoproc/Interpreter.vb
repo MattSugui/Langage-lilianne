@@ -276,13 +276,10 @@ Partial Public Module Interpreter
 Finished:
         If EnableIncrementalContextualisation Then
             MotherContext.Append(act)
-            Exit Sub
+        ElseIf EmittedStatements.Count > 0 Then
+            ProposeMods()
         Else
             Curse(act)
-            Exit Sub
-        End If
-        If EmittedStatements.Count > 0 Then
-            ProposeMods()
         End If
     End Sub
 

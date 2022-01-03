@@ -24,7 +24,7 @@ Public Module Program
                     End
                 End If
             ElseIf args(0) = "-l" Then
-#If DEBUG Then
+#If Not DEBUG Then
                 Debug.WriteLine("With slash: " & File.Exists("\cocotmp.ccn"))
                 Debug.WriteLine("Local: " & File.Exists("cocotmp.ccn"))
                 Debug.WriteLine("With dot-slash: " & File.Exists("..\cocotmp.ccn"))
