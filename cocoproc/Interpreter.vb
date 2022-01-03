@@ -79,7 +79,7 @@ Partial Public Module Interpreter
     ''' <param name="zoom">If true, don't display the "Press any key to continue" notice. Used for when Lilian calls this program.</param>
     Public Sub LoadFile(path As String)
         If File.Exists(path) Then
-            EnableIncrementalContextualisation = True
+            If Not Zoom Then EnableIncrementalContextualisation = True
             Dim doccy = File.ReadAllLines(path)
             For document As Integer = 0 To doccy.Length - 1
                 Try
