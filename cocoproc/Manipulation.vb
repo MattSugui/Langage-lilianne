@@ -10,7 +10,7 @@ Partial Public Module Interpreter
     ''' </summary>
     ''' <param name="text"></param>
     Public Sub Manipulation(text As String)
-        EmittedStatements.Add($"print ""{text}"";")
+        EmittedStatements.Add($"print ""{text.Trim(""""c)}"";")
     End Sub
 
     Public EmittedStatements As New List(Of String)
