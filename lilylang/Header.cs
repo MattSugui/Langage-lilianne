@@ -13,11 +13,13 @@ global using System.Threading.Tasks;
 global using System.Reflection;
 global using System.IO;
 global using System.Diagnostics;
+global using System.Xml.Serialization;
 
 global using static fonder.Lilian.New.Interpreter;
 global using static fonder.Lilian.New.Interpreter.Spellbook;
 global using static fonder.Lilian.New.Interpreter.Bureau;
 global using static fonder.Lilian.New.Interpreter.Actualiser;
 global using static fonder.Lilian.New.Interpreter.Preprocessor;
+global using static fonder.Lilian.New.ObjectModel;
 
 global using static System.Console;

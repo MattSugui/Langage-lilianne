@@ -34,11 +34,11 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -NewVerName 'Pre-alpha 2'&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false -SmallUpgrade&quot;" />
 	</Target>
 
 </Project>

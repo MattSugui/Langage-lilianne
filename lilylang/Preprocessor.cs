@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace fonder.Lilian.New;
+﻿namespace fonder.Lilian.New;
 
 public static partial class Interpreter
 {
