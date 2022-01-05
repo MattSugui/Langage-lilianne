@@ -132,13 +132,14 @@ public static partial class Interpreter
                 if (token.Look)
                 {
                     int j = i + 1;
+                    string future = currentWord.ToString() + line[j];
                     bool confirm = 
-                        CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[j], tok.Value, RegexOptions.IgnoreCase), out Token temp)
+                        CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
                         && temp.Name == token.Name;
 #if DEBUG
-                    Debug.Write(currentWord.ToString() + line[j]);
-                    Debug.Write(temp?.Name ?? "The current token doesn't match anything (yet)");
-                    Debug.Write(CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[j], tok.Value, RegexOptions.IgnoreCase), out _));
+                    Debug.Write(future + "\n");
+                    Debug.Write(temp?.Name ?? "The current token doesn't match anything (yet)\n");
+                    Debug.Write(confirm);
 #endif
 
                     if (confirm)
