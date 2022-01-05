@@ -98,10 +98,12 @@ public static partial class Interpreter
 
         StringBuilder currentWord = new();
 
-        foreach (char character in line)
+
+
+        for (int i = 0; i < line.Length; i++)
         {
-            CurrentLine.Append(character);
-            currentWord.Append(character);
+            CurrentLine.Append(line[i]);
+            currentWord.Append(line[i]);
 #if TemporaryTokenTestingTime
                 WriteLine(currentWord.ToString());
 #endif
@@ -125,9 +127,17 @@ public static partial class Interpreter
 
             }*/
 
-            if (CurrentTokens.Exists(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)))
+            if (CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase), out Token token))
             {
-                CurrentWords.Add(new() { AssociatedToken = CurrentTokens.Find(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase)), Value = currentWord.ToString() });
+                if (token.Look)
+                {
+                    if (
+                        CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[i++], tok.Value, RegexOptions.IgnoreCase), out Token temp)
+                        && temp.Name == token.Name)
+                        continue;
+                }
+
+                CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
                 currentWord.Clear();
                 continue;
             }
@@ -178,4 +188,27 @@ public static partial class Interpreter
         else if (sent.AssociatedSentence.Code == -1) return; //skip
         else throw new Lamentation(14, sent.AssociatedSentence.Name);
     }
+}
+
+public static partial class Extensions
+{
+    /// <summary>
+    /// Does the <see cref="List{T}.Exists(Predicate{T})"/> method on a list and also returns the object found.
+    /// This is essentially a <see cref="List{T}"/> version of the TryParse method which returns bool but also
+    /// returns the result.
+    /// </summary>
+    /// <typeparam name="T">The type of the objects that the list has.</typeparam>
+    /// <param name="list">The list itself.</param>
+    /// <param name="match">The predicate for use with the <see cref="List{T}.Exists(Predicate{T})"/> method used in this method.</param>
+    /// <param name="obj"></param>
+    /// <returns><see langword="true"/> if the object exists, otherwise, false.<br/>
+    /// Returns <paramref name="obj"/> that is found in the list if true, otherwise, the <see langword="default"/> value.</returns>
+    public static bool Locate<T>(this List<T> list, Predicate<T> match, out T obj)
+    {
+        if (list.Count == 0) { obj = default; return false; }
+
+        if (list.Exists(match)) { obj = list.Find(match); return true; } else { obj = default; return false; }
+    }
+
+    public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
 }

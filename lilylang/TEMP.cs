@@ -14,9 +14,10 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "PRPR", Value = @"^preprocess$" });
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         //CurrentTokens.Add(new("TOSL", @"\/\/"));
+        CurrentTokens.Add(new() { Name = "LET",  Value = @"^let$" });
 
         CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
-        //CurrentSentenceStructures.Add(new("PrintInteger", 1, new int[] {1}, new string[] { "PRNT", "INTL", "SMCL" }));
+        CurrentSentenceStructures.Add(new() { Name = "PrintInteger", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "PRPR", "COLN" } });
         CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "STRT", "SMCL" } });
 
