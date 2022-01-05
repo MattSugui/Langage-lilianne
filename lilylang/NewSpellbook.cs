@@ -131,13 +131,14 @@ public static partial class Interpreter
             {
                 if (token.Look)
                 {
+                    int j = i + 1;
                     if (
-                        CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[i++], tok.Value, RegexOptions.IgnoreCase), out Token temp)
+                        CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[j], tok.Value, RegexOptions.IgnoreCase), out Token temp)
                         && temp.Name == token.Name)
                     {
 #if DEBUG
                         Debug.Write(temp.Name);
-                        Debug.Write(CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[i++], tok.Value, RegexOptions.IgnoreCase), out _));
+                        Debug.Write(CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[j], tok.Value, RegexOptions.IgnoreCase), out _));
 #endif
                         continue;
                     }
