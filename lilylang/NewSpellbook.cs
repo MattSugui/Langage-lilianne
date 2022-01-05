@@ -132,14 +132,22 @@ public static partial class Interpreter
                 if (token.Look)
                 {
                     if (
-                        CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[i++], tok.Value, RegexOptions.IgnoreCase), out Token temp)
+                        CurrentTokens.Locate(tok => Regex.IsMatch(line[i++].ToString(), tok.Value, RegexOptions.IgnoreCase), out Token temp)
                         && temp.Name == token.Name)
                         continue;
+                    else
+                    {
+                        CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
+                        currentWord.Clear();
+                        continue;
+                    }
                 }
-
-                CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
-                currentWord.Clear();
-                continue;
+                else
+                {
+                    CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
+                    currentWord.Clear();
+                    continue;
+                }
             }
             else
             {
