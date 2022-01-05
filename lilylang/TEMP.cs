@@ -6,7 +6,7 @@ public static class TEMP
     {
         CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
         CurrentTokens.Add(new() { Name = "QUOT", Value = @"^"".*""$" });
-        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]$", Look = true });
+        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$" });
         CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$" });
         //CurrentTokens.Add(ne) { Name = w("ANY" Value =, @".", true));
