@@ -137,7 +137,7 @@ public static partial class Interpreter
                         && temp.Name == token.Name;
 #if DEBUG
                     Debug.Write(currentWord.ToString() + line[j]);
-                    Debug.Write(temp.Name);
+                    Debug.Write(temp?.Name ?? "The current token doesn't match anything (yet)");
                     Debug.Write(CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString() + line[j], tok.Value, RegexOptions.IgnoreCase), out _));
 #endif
 
