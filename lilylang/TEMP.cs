@@ -24,6 +24,7 @@ public static class TEMP
         CurrentActions.Add(1, (string val) => WriteLine(val));
 
         CurrentStatements.Add(new() { AssociatedStructure = "PrintString", AssociatedAction = 1 });
+        CurrentStatements.Add(new() { AssociatedStructure = "PrintInteger", AssociatedAction = 1 });
         //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
     }
 
