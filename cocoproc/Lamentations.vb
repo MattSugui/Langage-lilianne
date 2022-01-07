@@ -14,7 +14,8 @@
                 {1, "Syntax error. This command does not exist. You typed in: {0}, and I don't know shit about it"},
                 {2, "The file {0} does not exist."},
                 {3, "Handshake with Lilian failed. {0}"},
-                {4, "Invalid operation in handshake. {0}"}
+                {4, "Invalid operation in handshake. {0}"},
+                {5, "Implementation error. This command does not exist. You typed in: {0}, and I don't know shit about it"}
             }
         End Sub
 

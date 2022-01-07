@@ -260,6 +260,8 @@ Partial Public Module Interpreter
                         Case 13
                         Case 14
                             Manipulation(Regex.Match(Line, Feature).Groups("Value").Value)
+                        Case 15 To 20
+
                         Case Else
                             Console.WriteLine("hey!")
                     End Select
@@ -624,32 +626,4 @@ Finished:
     ''' <returns></returns>
     Public Property EnableIncrementalContextualisation As Boolean = False
 
-End Module
-
-''' <summary>
-''' The grammatical feature constants.
-''' </summary>
-Public Module GrammarFeatureConstants
-    'Public Const Condition As String = "(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|Or|Or)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")"
-    ''' <summary>
-    ''' The grammatical feature constants.
-    ''' </summary>
-    Public ReadOnly FeatureConstants As String() =
-    {
-        "^\s*Define\s(?<SymbolLiteral>.+)\s*$",
-        "^\s*Create\s(?<SymbolLiteral>.+)\s*$",
-        "^\s*If\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
-        "^\s*ElseIf\s(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|\<\>|\<|\>|\<=|\>=|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<RightOperand>[0-9A-Za-z]+|"".+"")\s*$",
-        "^\s*(?<LeftOperand>[0-9A-Za-z]+|"".+"")\s(?<Operator>=|(?:\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>)=)\s(?<RightOperand>[0-9A-Za-z]+|"".+""|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
-        "^\s*Option\s(?<Setting>)\s*$",
-        "^\s*End(?<CurrentMode>(?:\s)[A-Za-z]+)?\s*$",
-        "^\s*Exit\s*$",
-        "^\s*Print\s(?<Value>[0-9A-Za-z]+|(?<InnerLeft>[0-9A-Za-z]+|"".+"")\s(?<InnerOperator>\+|-|\*|\/|%|&|`|^|!|~|\\|\$|<<|>>|And|Or|Xor|Is|IsNot|AndAlso|OrElse|SoundsLike)\s(?<InnerRight>[0-9A-Za-z]+|"".+""))\s*$",
-        "^\s*Version\s(?<MajorVersion>[0-9]+).(?<MinorVersion>[0-9]+)\s*$",
-        "^\s*'.*\s*$",
-        "^\s*Run\s*$",
-        "^\s*Destroy\s(?<LeftOperand>[0-9A-Za-z]+)\s*$",
-        "^\s*Statement\s(?<Name>[0-9A-Za-z]*)\s*$",
-        "^\s*Write\s(?<Value>"".*"")"
-    }
 End Module

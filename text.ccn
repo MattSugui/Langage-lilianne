@@ -1,0 +1,36 @@
+Token Print
+	Pattern SameAsName
+End Token
+
+Token String
+	ValueHolder
+
+	Pattern
+		Quotation
+		ZeroOrMore Any
+		Quotation
+	End Pattern
+End Token
+
+Token Integer
+	ValueHolder
+
+	Pattern
+		OneOrMore [0123456789]
+	End Pattern
+End Token
+
+Token Semicolon
+	Terminator
+	
+	Pattern [;]
+End Token
+
+' structs
+
+Structure PrintString
+	Pattern
+		Print,
+		String,
+		Semicolon
+

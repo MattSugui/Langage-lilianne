@@ -156,7 +156,8 @@ public static partial class Interpreter
                 string LastLine = string.Empty;
                 for (int i = 1; i < CurrentFile.Count + 1; i++)
                 {
-                    int offset = 0;
+                    //int offset = 0;
+                    pbz.Tick();
                     if (CurrentFile[i - 1].StartsWith("preprocess:"))
                     {
                         cocotext = true;
@@ -182,8 +183,7 @@ public static partial class Interpreter
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
                         if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
                         else CurrentFile.RemoveAt(i - 1);
-                        pbz.Tick();
-                        i--;
+                        i--; 
                         continue;
                     }
 
@@ -192,16 +192,14 @@ public static partial class Interpreter
                         CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
                         if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
                         else CurrentFile.RemoveAt(i - 1);
-                        pbz.Tick();
                         break;
                     }
 
+                    
                 Otherwise:
                     {
                         if (cocotext) CodePositionsWhereCoco.Add(i - 1); else continue;
                     }
-
-                    pbz.Tick();
                 }
                 List<string> CocoCode = new();
                 pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?

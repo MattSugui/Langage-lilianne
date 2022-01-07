@@ -10,17 +10,17 @@ public static partial class Interpreter
     /// <summary>
     /// The current X register.
     /// </summary>
-    public static uint CurrentObjectX;
+    public static int CurrentObjectX;
 
     /// <summary>
     /// The current Y register.
     /// </summary>
-    public static uint CurrentObjectY;
+    public static int CurrentObjectY;
 
     /// <summary>
     /// The current accumulator.
     /// </summary>
-    public static uint CurrentObjectA;
+    public static int CurrentObjectA;
 
     public static partial class Actualiser
     {
@@ -38,7 +38,7 @@ public static class ObjectModel
     /// <summary>
     /// A classic. This provides an ID on an object and allows manipulation to it.
     /// </summary>
-    public record FELObject(uint Address, string Name, object Value);
+    public record FELObject(int Address, string Name, object Value);
 
     /// <summary>
     /// later.
