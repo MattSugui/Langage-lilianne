@@ -52,7 +52,12 @@ public static partial class Interpreter
             {
                 switch (ActionType)
                 {
-                    case FELActionType.nop: break;
+                    case FELActionType.nop:
+                    case FELActionType.str:
+                    case FELActionType.ste:
+                    case FELActionType.nus:
+                    case FELActionType.nue:
+                        break;
                     case FELActionType.push:
                         if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
                         break;
@@ -122,9 +127,9 @@ public static partial class Interpreter
                         thing = reader.ReadString();
                         reader.ReadByte(); // byte 12
                     }
-                    else 
+                    else if (reader.ReadByte() == 13)
                     {
-                        if (reader.ReadByte() == 13) thing = reader.ReadInt32();
+                        thing = reader.ReadInt32();
                         reader.ReadByte(); // byte 14
                     }
                 }
@@ -147,7 +152,7 @@ public static partial class Interpreter
             rst,
             str,
             ste,
-            @int,
+            nus,
             nue,
         }
 

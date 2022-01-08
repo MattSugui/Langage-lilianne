@@ -87,7 +87,7 @@ namespace fonder.Lilian.New
             }
 #endif
 			CurrentEffects.Clear();
-			Write("Compilation finished. Press any key to continue.");
+			Write($"Compilation finished.\nFun fact: You've saved up {(double)(File.ReadAllBytes("test.lsa").Length / File.ReadAllBytes(filepath.Trim('"')).Length)*100}%! Press any key to continue.");
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))
             {
