@@ -25,7 +25,13 @@ public static partial class Interpreter
 
             public void Invoke()
             {
-                if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction)) CurrentActions[AssociatedStatement.AssociatedAction].Invoke(AssociatedFruit.Value[AssociatedFruit.AssociatedSentence.PointersToValues[0]].Trim('"'));
+                if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction))
+                {
+                    List<object> things = new();
+                    foreach (int pointer in AssociatedFruit.AssociatedSentence.PointersToValues)
+                        things.Add(AssociatedFruit.Value[pointer].Trim('"'));
+                    CurrentActions[AssociatedStatement.AssociatedAction].GetMethodInfo().Invoke(this, things.ToArray());
+                }
                 else if (AssociatedFruit.AssociatedSentence.Code == -1) return; // do nothing
                 else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
             }
@@ -189,7 +195,7 @@ public static partial class Interpreter
         }
     }
 
-    public static Dictionary<int, Action<string>> CurrentActions = new();
+    public static Dictionary<int, Delegate> CurrentActions = new();
     public static Dictionary<int, Instruction> CurrentInstructions = new();
     public static List<Statement> CurrentStatements = new();
 
