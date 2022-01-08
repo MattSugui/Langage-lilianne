@@ -5,7 +5,7 @@ public static partial class Interpreter
     /// <summary>
     /// The current collection of objects.
     /// </summary>
-    public static Stack<FELObject> CurrentObjects;
+    public static Stack<FELObject> CurrentObjects = new();
 
     /// <summary>
     /// The current X register.
