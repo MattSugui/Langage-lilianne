@@ -45,7 +45,7 @@ public static partial class Interpreter
                     List<object> things = new();
                     foreach (int pointer in AssociatedFruit.AssociatedSentence.PointersToValues)
                         things.Add(AssociatedFruit.Value[pointer].Trim('"'));
-                    CurrentActions[AssociatedStatement.AssociatedAction].GetMethodInfo().Invoke(this, things.ToArray());
+                    CurrentActions[AssociatedStatement.AssociatedAction].Invoke(things[0], things[1] ?? null);
                 }
                 else if (AssociatedFruit.AssociatedSentence.Code == -1) return; // do nothing
                 else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
