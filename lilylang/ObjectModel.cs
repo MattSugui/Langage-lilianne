@@ -90,8 +90,9 @@ public static partial class Interpreter
                     writer.Write((byte)act.ActionType);
                     if (act.Value is string @string)
                     {
-                        writer.Write(@string.Length);
+                        writer.Write((byte)11);
                         writer.Write(@string);
+                        writer.Write((byte)12);
                     }
                     else
                     {
@@ -99,6 +100,31 @@ public static partial class Interpreter
                     }
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
+            }
+        }
+
+        public static void LoadBinary()
+        {
+            using FileStream stream = File.OpenRead("test.lsa");
+            using BinaryReader reader = new(stream);
+
+            while (reader.PeekChar() != -1)
+            {
+                byte opcode = reader.ReadByte();
+                dynamic thing = null;
+                if (opcode == (byte)FELActionType.push)
+                {
+                    if (reader.ReadByte() == 11)
+                    {
+                        thing = reader.ReadString();
+                        reader.ReadByte(); // byte 12
+                    }
+                    else
+                    {
+                        thing = reader.ReadInt32();
+                    }
+                }
+                CurrentEffects.Enqueue(new((FELActionType)opcode, thing)); 
             }
         }
 
@@ -115,6 +141,8 @@ public static partial class Interpreter
             mod,
             lst,
             rst,
+            str,
+            ste,
         }
 
 

@@ -86,15 +86,12 @@ namespace fonder.Lilian.New
 				WriteLine(cry.ToString());
             }
 #endif
+			CurrentEffects.Clear();
 			Write("Compilation finished. Press any key to continue.");
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))
             {
-				(byte[], int) things;
-				string yes;
-				Read("test.lprg", out yes, out things);
-				Title += " - " + yes;
-				Experience(things.Item1, things.Item2);
+				LoadBinary();
 				Execute();
 			}
 		}

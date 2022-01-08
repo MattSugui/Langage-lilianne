@@ -217,6 +217,6 @@ public static partial class Interpreter
 
     public static void Execute()
     {
-        foreach (Delegate del in Actualiser.CurrentActions) del.Method.Invoke(null, null);
+        foreach (FELAction action in CurrentEffects) action.Invoke();
     }
 }
