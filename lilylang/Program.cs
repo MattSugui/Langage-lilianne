@@ -61,12 +61,12 @@ namespace fonder.Lilian.New
 			string filepath = ReadLine();
 			try
             {
-				if (filepath.Contains(".lps"))
+				if (filepath.EndsWith(".lps"))
 				{
 					ReadFile(path: filepath);
 					Interpret();
 				}
-				else if (filepath.Contains(".lprg"))
+				else if (filepath.EndsWith(".lprg"))
                 {
 					(byte[], int) things;
 					string yes;
@@ -84,6 +84,15 @@ namespace fonder.Lilian.New
 #endif
 			Write("Compilation finished. Press any key to continue.");
 			ReadKey();
+			if (filepath.EndsWith(".lps") && args.Contains("-d"))
+            {
+				(byte[], int) things;
+				string yes;
+				Read("test.lprg", out yes, out things);
+				Title += " - " + yes;
+				Experience(things.Item1, things.Item2);
+				Execute();
+			}
 		}
 	}
 
