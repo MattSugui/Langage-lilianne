@@ -58,7 +58,7 @@ namespace fonder.Lilian.New
 			}
 #else
 			WriteLine("Type in the full name of the file to be evaluated.");
-			string filepath = ReadLine();
+			string filepath = ReadLine().Trim('"');
 			try
             {
 				if (filepath.EndsWith(".lps"))

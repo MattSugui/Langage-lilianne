@@ -33,8 +33,7 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     public static void ReadFile(string path)
     {
-        string temp = path.Trim('"');
-        if (File.Exists(temp)) foreach (string line in File.ReadAllLines(temp)) CurrentFile.Add(line); else throw new Lamentation(3, temp);
+        if (File.Exists(path)) foreach (string line in File.ReadAllLines(path)) CurrentFile.Add(line); else throw new Lamentation(3, path);
     }
     /// <summary>
     /// Adds any amount of lines to the current file.
