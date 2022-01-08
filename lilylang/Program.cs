@@ -77,6 +77,7 @@ namespace fonder.Lilian.New
 					Title += " - " + yes;
 					Experience(things.Item1, things.Item2);
 					Execute();
+					ReadKey();
 				}
 
 			}
