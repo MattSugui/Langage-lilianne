@@ -207,6 +207,35 @@ public static partial class Interpreter
         else if (sent.AssociatedSentence.Code == -1) return; //skip
         else throw new Lamentation(14, sent.AssociatedSentence.Name);
     }
+
+    /// <summary>
+    /// Interprets a statement. (New stack-based method)
+    /// </summary>
+    /// <param name="sent">The sentence.</param>
+    /// <exception cref="Lamentation"></exception>
+    internal static void InterpretSentenceNew(SentenceFruit sent)
+    {
+        switch (sent.Value[0])
+        {
+            case "push":
+                CurrentEffects.Enqueue(new(
+                    FELActionType.push,
+                    sent.Value[1].Contains('"') ? sent.Value[1].Trim('"') :
+                        (int.TryParse(sent.Value[1], out int val) ? val : throw new Lamentation(0x16, "types other than int and string"))
+                        ) // hehe, this will soon be a switch expression
+                    );
+                break;
+            case "print":
+                CurrentEffects.Enqueue(new(FELActionType.print));
+                break;
+            case "pop":
+                CurrentEffects.Enqueue(new(FELActionType.pop));
+                break;
+            case "add":
+                CurrentEffects.Enqueue(new(FELActionType.add));
+                break;
+        }
+    }
 }
 
 public static partial class Extensions

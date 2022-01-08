@@ -43,6 +43,9 @@ public static partial class Interpreter
             def.Add(0x0014, "Implementation error. The sentence structure {0} does not correspond with any of the available statements.");
             //
             def.Add(0x0015, "Handshake with Coco failed. {0}");
+            //
+            def.Add(0x0016, "{0} is an undefined feature in this version. Use a newer version of Lilian.");
+            def.Add(0x0017, "Stack error. {0}");
         }
 
         /// <summary>

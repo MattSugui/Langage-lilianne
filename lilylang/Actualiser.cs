@@ -37,7 +37,7 @@ public static partial class Interpreter
         {
             public SentenceFruit AssociatedFruit;
             public Statement AssociatedStatement;
-
+            /*
             public void Invoke()
             {
                 if (CurrentActions.ContainsKey(AssociatedStatement.AssociatedAction))
@@ -50,6 +50,7 @@ public static partial class Interpreter
                 else if (AssociatedFruit.AssociatedSentence.Code == -1) return; // do nothing
                 else throw new Lamentation(0xe, AssociatedStatement.AssociatedAction.ToString());
             }
+            */
         }
 
         /// <summary>
@@ -216,6 +217,6 @@ public static partial class Interpreter
 
     public static void Execute()
     {
-        foreach (KeyValuePair<int, Instruction> state in CurrentInstructions) state.Value.Invoke();
+        foreach (Delegate del in Actualiser.CurrentActions) del.Method.Invoke(null, null);
     }
 }

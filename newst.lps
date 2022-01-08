@@ -1,0 +1,3 @@
+push "j";
+print;
+pop;

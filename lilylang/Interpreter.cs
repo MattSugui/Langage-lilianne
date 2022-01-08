@@ -225,7 +225,7 @@ public static partial class Interpreter
             {
                 for (int i = 1; i < CurrentFile.Count + 1; i++)
                 {
-                    pba.WriteLine(CurrentFile[i - 1]);
+                    //pba.WriteLine(CurrentFile[i - 1]);
                     ScanTokens(CurrentFile[i - 1]);
                     pba.Tick();
                 }
@@ -235,7 +235,7 @@ public static partial class Interpreter
             {
                 foreach (List<TokenFruit> fruits in CurrentWordPacks)
                 {
-                    pbb.WriteLine(string.Join('¬', from fruit in fruits select fruit.AssociatedToken.Name)); // bruh
+                    //pbb.WriteLine(string.Join('¬', from fruit in fruits select fruit.AssociatedToken.Name)); // bruh
                     ArrangeTokens(fruits);
                     pbb.Tick();
                 }
@@ -245,15 +245,15 @@ public static partial class Interpreter
             {
                 foreach (SentenceFruit sent in CurrentSentences)
                 {
-                    pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
-                    InterpretSentence(sent);
+                    //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
+                    InterpretSentenceNew(sent);
                     pbc.Tick();
                 }
                 pbm.Tick();
             }
             using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
             {
-                Publish(Package(), "test.lprg", "hoi");
+                CreateBinary();
                 pbd.Tick();
                 pbm.Tick();
             }
