@@ -65,6 +65,9 @@ namespace fonder.Lilian.New
 				{
 					ReadFile(path: filepath);
 					Interpret();
+					CurrentInstructions.Clear();
+					CurrentSentences.Clear();
+					CurrentWordPacks.Clear();
 				}
 				else if (filepath.EndsWith(".lprg"))
                 {
