@@ -257,8 +257,8 @@ public static partial class Interpreter
                 pbd.Tick();
                 pbm.Tick();
             }
-
         }
+        Clear();
         //watch.Stop();
         //WriteLine("complet");
 
