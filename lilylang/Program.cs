@@ -91,6 +91,7 @@ namespace fonder.Lilian.New
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))
             {
+				Clear();
 				LoadBinary();
 				Execute();
 			}
