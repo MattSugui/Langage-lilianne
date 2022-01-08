@@ -96,6 +96,7 @@ public static partial class Interpreter
                     }
                     else
                     {
+                        writer.Write((byte)13);
                         writer.Write((int)act.Value!);
                     }
                 }
@@ -119,7 +120,7 @@ public static partial class Interpreter
                         thing = reader.ReadString();
                         reader.ReadByte(); // byte 12
                     }
-                    else
+                    else if (reader.ReadByte() == 13)
                     {
                         thing = reader.ReadInt32();
                     }
@@ -143,6 +144,8 @@ public static partial class Interpreter
             rst,
             str,
             ste,
+            @int,
+            nue,
         }
 
 
