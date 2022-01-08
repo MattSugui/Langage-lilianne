@@ -1,4 +1,12 @@
-﻿using System.Xml.Schema;
+﻿#nullable enable
+#pragma warning disable CS8600 // conversion of a potentially-null type to a nonnullable
+#pragma warning disable CS8602 // dereference of a potentially-null type
+#pragma warning disable CS8603 // possibility of a potentially-null type
+#pragma warning disable CS8604 // buffer possibly null
+#pragma warning disable CS8618 // a nullable type must not be null before leaving the constructor
+#pragma warning disable CS8619 // this type's nullability does not match the assignment
+
+using System.Xml.Schema;
 using System.Xml;
 
 // Guide to comments
@@ -10,6 +18,13 @@ public static partial class Interpreter
 {
     public static partial class Actualiser
     {
+        /// <summary>
+        /// An instruction.
+        /// </summary>
+        /// <param name="op1">The first operand. This can never be <see langword="null"/>.</param>
+        /// <param name="op2">The second operand. This can be <see langword="null"/>, and it is by default.</param>
+        public delegate void InstructionDelegate(object op1, object? op2 = null);
+
         [Serializable]
         public class Statement
         {
@@ -195,7 +210,7 @@ public static partial class Interpreter
         }
     }
 
-    public static Dictionary<int, Delegate> CurrentActions = new();
+    public static Dictionary<int, InstructionDelegate> CurrentActions = new();
     public static Dictionary<int, Instruction> CurrentInstructions = new();
     public static List<Statement> CurrentStatements = new();
 
