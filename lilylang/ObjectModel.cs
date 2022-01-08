@@ -98,13 +98,13 @@ public static partial class Interpreter
                     {
                         writer.Write((byte)11);
                         writer.Write(@string);
-                        writer.Write((byte)12);
+                        //writer.Write((byte)12);
                     }
                     else
                     {
                         writer.Write((byte)13);
                         writer.Write((int)act.Value!);
-                        writer.Write((byte)14);
+                        //writer.Write((byte)14);
                     }
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
@@ -122,15 +122,15 @@ public static partial class Interpreter
                 dynamic thing = null;
                 if (opcode == (byte)FELActionType.push)
                 {
-                    if (reader.ReadByte() == 11)
+                    byte marker = reader.ReadByte();
+                    switch (marker)
                     {
-                        thing = reader.ReadString();
-                        reader.ReadByte(); // byte 12
-                    }
-                    else if (reader.ReadByte() == 13)
-                    {
-                        thing = reader.ReadInt32();
-                        reader.ReadByte(); // byte 14
+                        case 11:
+                            thing = reader.ReadString();
+                            break;
+                        case 13:
+                            thing = reader.ReadInt32();
+                            break;
                     }
                 }
                 CurrentEffects.Enqueue(new((FELActionType)opcode, thing)); 
