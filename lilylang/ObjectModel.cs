@@ -52,6 +52,7 @@ public static partial class Interpreter
             {
                 switch (ActionType)
                 {
+                    case FELActionType.nop: break;
                     case FELActionType.push:
                         if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
                         break;
@@ -98,6 +99,7 @@ public static partial class Interpreter
                     {
                         writer.Write((byte)13);
                         writer.Write((int)act.Value!);
+                        writer.Write((byte)14);
                     }
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
@@ -120,9 +122,10 @@ public static partial class Interpreter
                         thing = reader.ReadString();
                         reader.ReadByte(); // byte 12
                     }
-                    else if (reader.ReadByte() == 13)
+                    else 
                     {
-                        thing = reader.ReadInt32();
+                        if (reader.ReadByte() == 13) thing = reader.ReadInt32();
+                        reader.ReadByte(); // byte 14
                     }
                 }
                 CurrentEffects.Enqueue(new((FELActionType)opcode, thing)); 
