@@ -22,7 +22,7 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "PrintInteger", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "PRPR", "COLN" } });
         CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", Code = -1, PointersToValues = null, TokenStruct = new string[] { "STRT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LetString", Code = 2, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "LET", "IDNT", "EQUL", "QUOT" } });
+        CurrentSentenceStructures.Add(new() { Name = "LetString", Code = 2, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "LET", "IDNT", "EQUL", "QUOT", "SMCL" } });
 
         CurrentActions.Add(1, (string val) => WriteLine(val));
         CurrentActions.Add(2, (string name, string val) => CurrentObjects.Push(new(CurrentObjects.Count - 1, name, val)));
