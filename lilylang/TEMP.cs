@@ -15,7 +15,7 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         //CurrentTokens.Add(new("TOSL", @"\/\/"));
         CurrentTokens.Add(new() { Name = "LET",  Value = @"^let$" });
-        CurrentTokens.Add(new() { Name = "IDNT", Value = @"^[A-Za-z][0-9A-Za-z]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][0-9A-Za-z]*$", Look = true });
         CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
 
         CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
