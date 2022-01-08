@@ -29,6 +29,7 @@ public static class TEMP
         
         CurrentStatements.Add(new() { AssociatedStructure = "PrintString", AssociatedAction = 1 });
         CurrentStatements.Add(new() { AssociatedStructure = "PrintInteger", AssociatedAction = 1 });
+        CurrentStatements.Add(new() { AssociatedStructure = "LetString", AssociatedAction = 2 });
         //CurrentSentenceStructures.Add(new("SingleLineComm", "TOSL", "ANY?"));
     }
 
