@@ -1,18 +1,4 @@
 ﻿#define UseREPLAsFileLoader
-
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Collections.Generic;
-using System.IO;
-
-using static fonder.Lilian.New.Interpreter;
-using static fonder.Lilian.New.Interpreter.Actualiser;
-using static fonder.Lilian.New.Interpreter.Bureau;
-
-using static System.Console;
-
 namespace fonder.Lilian.New
 {
 	/// <summary>
@@ -65,28 +51,23 @@ namespace fonder.Lilian.New
 				{
 					ReadFile(path: filepath);
 					Interpret();
-					CurrentInstructions.Clear();
 					CurrentSentences.Clear();
 					CurrentWordPacks.Clear();
+					CurrentEffects.Clear();
 				}
-				else if (filepath.EndsWith(".lprg"))
+				else if (filepath.EndsWith(".lsa"))
                 {
-					(byte[], int) things;
-					string yes;
-					Read(filepath.Trim('"'), out yes, out things);
-					Title += " - " + yes;
-					Experience(things.Item1, things.Item2);
+					Clear();
+					LoadBinary();
 					Execute();
-					ReadKey();
 				}
-
 			}
 			catch (Lamentation cry)
             {
 				WriteLine(cry.ToString());
             }
 #endif
-			CurrentEffects.Clear();
+			
 			Write($"Compilation finished.\nFun fact: You've saved up {(double)(File.ReadAllBytes("test.lsa").Length / File.ReadAllBytes(filepath.Trim('"')).Length)*100}%! Press any key to continue.");
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))

@@ -57,7 +57,8 @@ public static partial class Interpreter
         /// </summary>
         public Lamentation()
         {
-
+            Message = def[0];
+            ErrorCode = 0;
         }
 
         /// <summary>

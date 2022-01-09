@@ -14,11 +14,10 @@ namespace fonder.Lilian.New;
 /// </summary>
 public static partial class Interpreter
 {
-    static Interpreter()
-    {
-        TEMP.LOADPATTERNS();
-        //Cooperation.Handshake();
-    }
+    /// <summary>
+    /// Static construction.
+    /// </summary>
+    static Interpreter() => TEMP.LOADPATTERNS();
 
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
@@ -35,6 +34,7 @@ public static partial class Interpreter
     {
         if (File.Exists(path)) foreach (string line in File.ReadAllLines(path)) CurrentFile.Add(line); else throw new Lamentation(3, path);
     }
+
     /// <summary>
     /// Adds any amount of lines to the current file.
     /// </summary>
@@ -300,6 +300,12 @@ public static partial class Extensions
         if (char.IsLetterOrDigit(character)) return true; else return false;
     }
 
+    /// <summary>
+    /// <see cref="Array.IndexOf(Array, object?)"/>
+    /// </summary>
+    /// <param name="enumerable">The array.</param>
+    /// <param name="thing">The item to be searched for.</param>
+    /// <returns></returns>
     public static int IndexOf(this Array enumerable, object thing) => Array.IndexOf(enumerable, thing);
 }
 

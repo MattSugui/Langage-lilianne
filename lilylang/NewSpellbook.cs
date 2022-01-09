@@ -68,15 +68,38 @@ public static partial class Interpreter
             /// </summary>
             public string Value;
 
+            /// <summary>
+            /// Returns the string representation of the token.
+            /// </summary>
+            /// <returns>The string representation.</returns>
             public override string ToString() => $"{AssociatedToken.Name}: '{Value}'";
         }
 
+        /// <summary>
+        /// A sentence structure.
+        /// </summary>
         [Serializable]
         public class SentenceStructure
         {
+            /// <summary>
+            /// The name of the feature.
+            /// </summary>
             public string Name;
+
+            /// <summary>
+            /// The arrangement of tokens in this structure.
+            /// </summary>
             public string[] TokenStruct;
+
+            /// <summary>
+            /// Where the values are taken from.
+            /// </summary>
             public int[] PointersToValues;
+
+            /// <summary>
+            /// Unused
+            /// </summary>
+            [Obsolete("Not used at the moment")]
             public int Code;
         }
 
@@ -88,45 +111,37 @@ public static partial class Interpreter
         }
     }
 
+    /// <summary>
+    /// The current line as tokens.
+    /// </summary>
     public static List<TokenFruit> CurrentWords = new();
+
+    /// <summary>
+    /// The current token bunches.
+    /// </summary>
     public static List<List<TokenFruit>> CurrentWordPacks = new();
+
+    /// <summary>
+    /// The current sentences.
+    /// </summary>
     public static List<SentenceFruit> CurrentSentences = new();
 
+    /// <summary>
+    /// Scans a line into tokens.
+    /// </summary>
+    /// <param name="line">The line.</param>
+    /// <exception cref="Lamentation"></exception>
     internal static void ScanTokens(string line)
     {
         if (string.IsNullOrWhiteSpace(line)) return;
 
         StringBuilder currentWord = new();
 
-
-
         for (int i = 0; i < line.Length; i++)
         {
             CurrentLine.Append(line[i]);
             currentWord.Append(line[i]);
-#if TemporaryTokenTestingTime
-                WriteLine(currentWord.ToString());
-#endif
-
             if (currentWord.ToString() == "//") break; // comment!
-
-            /*
-            foreach (Token tok in CurrentTokens)
-            {
-                if (Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase))
-                {
-                    CurrentWords.Add(new(tok, currentWord.ToString()));
-                    currentWord.Clear();
-                    break;
-                }
-                else
-                {
-                    if ((CurrentTokens.IndexOf(tok) != CurrentTokens.Count - 1) || (CurrentLine.Length < line.Length)) continue;
-                    else throw new Lamentation(2, currentWord.ToString());
-                }
-
-            }*/
-
             if (CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase), out Token token))
             {
                 if (token.Look)
@@ -136,12 +151,6 @@ public static partial class Interpreter
                     bool confirm = 
                         CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
                         && temp.Name == token.Name;
-#if DEBUG
-                    Debug.Write(future + "\n");
-                    Debug.Write(temp?.Name ?? "The current token doesn't match anything (yet)\n");
-                    Debug.Write(confirm);
-#endif
-
                     if (confirm)
                     {
                         continue;
@@ -167,13 +176,15 @@ public static partial class Interpreter
         }
 
         CurrentLine.Clear();
-#if TemporaryTokenTestingTime
-            foreach (TokenFruit token in CurrentWords) WriteLine(token.ToString());
-#endif
         if (CurrentWords.Count > 0) CurrentWordPacks.Add(new(CurrentWords));
         CurrentWords.Clear();
     }
 
+    /// <summary>
+    /// Arranges tokens into sentences.
+    /// </summary>
+    /// <param name="bunch">The bunch.</param>
+    /// <exception cref="Lamentation"></exception>
     internal static void ArrangeTokens(List<TokenFruit> bunch)
     {
         List<string> @struct = new();
@@ -198,14 +209,15 @@ public static partial class Interpreter
         }
     }
 
+    /// <summary>
+    /// Obsolete. Use InterpretSentenceNew.
+    /// </summary>
+    /// <param name="sent">no.</param>
+    /// <exception cref="NotImplementedException"></exception>
+    [Obsolete("Use InterpretSentenceNew.")]
     internal static void InterpretSentence(SentenceFruit sent)
     {
-        if (CurrentStatements.Exists(state => state.AssociatedStructure == sent.AssociatedSentence.Name))
-        {
-            CurrentInstructions.Add(CurrentInstructions.Count - 1, new() { AssociatedFruit = sent, AssociatedStatement = CurrentStatements.Find(state => state.AssociatedStructure == sent.AssociatedSentence.Name) });
-        }
-        else if (sent.AssociatedSentence.Code == -1) return; //skip
-        else throw new Lamentation(14, sent.AssociatedSentence.Name);
+        throw new NotImplementedException("Use InterpretSentenceNew.");
     }
 
     /// <summary>
@@ -218,12 +230,25 @@ public static partial class Interpreter
         switch (sent.Value[0])
         {
             case "push":
-                CurrentEffects.Add(new(
-                    FELActionType.push,
-                    sent.Value[1].Contains('"') ? sent.Value[1].Trim('"') :
-                        (int.TryParse(sent.Value[1], out int val) ? val : throw new Lamentation(0x16, "types other than int and string"))
-                        ) // hehe, this will soon be a switch expression
-                    );
+                dynamic val;
+                if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
+                else if (sbyte.TryParse(sent.Value[1], out sbyte val2)) val = val2;
+                else if (byte.TryParse(sent.Value[1], out byte val3)) val = val3;
+                else if (short.TryParse(sent.Value[1], out short val4)) val = val4;
+                else if (ushort.TryParse(sent.Value[1], out ushort val5)) val = val5;
+                else if (int.TryParse(sent.Value[1], out int val6)) val = val6;
+                else if (uint.TryParse(sent.Value[1], out uint val7)) val = val7;
+                else if (long.TryParse(sent.Value[1], out long val8)) val = val8;
+                else if (ulong.TryParse(sent.Value[1], out ulong val9)) val = val9;
+                else if (Half.TryParse(sent.Value[1], out Half valA)) val = valA;
+                else if (float.TryParse(sent.Value[1], out float valB)) val = valB;
+                else if (double.TryParse(sent.Value[1], out double valC)) val = valC;
+                else if (decimal.TryParse(sent.Value[1], out decimal valD)) val = valD;
+                else if (char.TryParse(sent.Value[1], out char valE)) val = valE;
+                else if (sent.Value[1].Contains('"')) val = sent.Value[1].Trim('"');
+                else val = null;
+                CurrentEffects.Add(new(FELActionType.push, val));
+                //throw new Lamentation(0x16, "types other than int and string")
                 break;
             case "print":
                 CurrentEffects.Add(new(FELActionType.print));
@@ -372,5 +397,11 @@ public static partial class Extensions
         if (list.Exists(match)) { obj = list.Find(match); return true; } else { obj = default; return false; }
     }
 
+    /// <summary>
+    /// Checks if a <see cref="List{T}"/> is empty.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list">The list.</param>
+    /// <returns>true if empty, false if it contains something.</returns>
     public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
 }
