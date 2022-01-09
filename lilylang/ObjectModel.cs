@@ -507,6 +507,8 @@ public static partial class Interpreter
             using FileStream stream = File.OpenRead("test.lsa");
             using BinaryReader reader = new(stream);
 
+            reader.BaseStream.Position = 0; // bruh stay there!!!
+
             while (reader.PeekChar() != -1)
             {
                 byte opcode = reader.ReadByte();
