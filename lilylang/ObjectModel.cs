@@ -461,17 +461,8 @@ public static partial class Interpreter
                 if (act.ActionType == FELActionType.push ||
                     act.ActionType == FELActionType.store ||
                     act.ActionType == FELActionType.load ||
-                    act.ActionType == FELActionType.beq ||
-                    act.ActionType == FELActionType.bne ||
-                    act.ActionType == FELActionType.bgt ||
-                    act.ActionType == FELActionType.bge ||
-                    act.ActionType == FELActionType.blt ||
-                    act.ActionType == FELActionType.ble ||
-                    act.ActionType == FELActionType.btr ||
-                    act.ActionType == FELActionType.bfl ||
-                    act.ActionType == FELActionType.bsa ||
-                    act.ActionType == FELActionType.bso ||
-                    act.ActionType == FELActionType.@goto)
+                    act.ActionType >= FELActionType.beq ||
+                    act.ActionType <= FELActionType.bso)
                 {
                     writer.Write((byte)act.ActionType);
                     byte marker = act.Value! switch
@@ -513,7 +504,7 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic thing = null;
-                if (opcode == 1 || opcode == 29 || opcode == 30 || opcode <= 34 || opcode >= 44)
+                if (opcode == 1 || opcode == 29 || opcode == 30 || opcode >= 34 || opcode <= 44)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
