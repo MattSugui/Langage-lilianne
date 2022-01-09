@@ -42,6 +42,7 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "XOR", Value = @"^xor$" });
         CurrentTokens.Add(new() { Name = "BTRU", Value = @"^btr$" });
         CurrentTokens.Add(new() { Name = "BFLS", Value = @"^bfl$" });
+        CurrentTokens.Add(new() { Name = "END", Value = @"^end$" });
 
         //CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
         //CurrentSentenceStructures.Add(new() { Name = "PrintInteger", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "INTL", "SMCL" } });
@@ -75,6 +76,7 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "Xor", TokenStruct = new string[] { "XOR", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "IfTrue", TokenStruct = new string[] { "BTRU", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "IfFalse", TokenStruct = new string[] { "BFLS", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "End", TokenStruct = new string[] { "END", "SMCL" } });
 
         //CurrentActions.Add(1, new((object val, object ign) => WriteLine(val)));
         //CurrentActions.Add(2, new((object name, object val) => CurrentObjects.Push(new(CurrentObjects.Count - 1, (string)name, val))));

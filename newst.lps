@@ -13,7 +13,7 @@ store #hello;
 load #hello;
 print;
 pop;
-return;
+end;
 push 21;
 print;
 pop;

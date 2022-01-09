@@ -443,6 +443,9 @@ public static partial class Interpreter
                         }
                         else throw new Lamentation(0x19, zB.ToString());
                         break;
+                    case FELActionType.end:
+                        Environment.Exit(0);
+                        break;
                 }
             GoForward: CurrentPointedEffect++;
             }
@@ -783,7 +786,12 @@ public static partial class Interpreter
             /// <summary>
             /// <see langword="if"/> <see langword="true"/> <see langword="or"/> <see langword="true"/>
             /// </summary>
-            bso
+            bso,
+
+            /// <summary>
+            /// <see cref="Environment.Exit(int)"/> (<see langword="End"/> in Visual Basic.)
+            /// </summary>
+            end
         }
 
 
