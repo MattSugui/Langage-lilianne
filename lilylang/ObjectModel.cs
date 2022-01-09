@@ -61,393 +61,400 @@ public static partial class Interpreter
         {
             public void Invoke()
             {
-                switch (ActionType)
+                try
                 {
-                    case FELActionType.nop:
-                    case FELActionType.str:
-                    case FELActionType.ste:
-                    case FELActionType.nus:
-                    case FELActionType.nue:
-                        goto GoForward;
-                    case FELActionType.push:
-                        if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
-                        goto GoForward;
-                    case FELActionType.pop:
-                        CurrentObjects.Pop();
-                        goto GoForward;
-                    case FELActionType.print:
-                        WriteLine(CurrentObjects.Peek());
-                        goto GoForward;
-                    case FELActionType.add:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a + b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.sub:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a - b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.mul:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a * b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.div:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a / b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.mod:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a % b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.lst:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a << b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.rst:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a >> b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.and:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a & b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.or:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a | b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.xor:
-                        try
-                        {
-                            dynamic a = CurrentObjects.Pop();
-                            dynamic b = CurrentObjects.Pop();
-                            CurrentObjects.Push(a ^ b); // rely on implementation...
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Lamentation(0x17, ex.Message);
-                        }
-                        goto GoForward;
-                    case FELActionType.store:
-                        dynamic x = CurrentObjects.Pop();
-                        if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
-                        else if (Value is int number) CurrentStore.Add(new(number, "", x));
-                        goto GoForward;
-                    case FELActionType.load:
-                        dynamic name = Value!;
-                        if (
-                            (name is string str && CurrentStore.Exists(obj => obj.Name == str)) ||
-                            (name is int num && CurrentStore.Exists(obj => obj.Address == num))
-                        )
-                        {
-                            FELObject selected = default;
-                            if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
-                            else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
-                            CurrentObjects.Push(selected.Value);
-                            CurrentStore.Remove(selected);
-                        }
-                        else throw new Lamentation(0x18,
-                            (
-                                name switch
-                                {
-                                    string => name,
-                                    int => name.ToString(),
-                                }
-                            ));
-                        goto GoForward;
-                    case FELActionType.beq:
-                        dynamic z = Value!;
-                        if (z is int index)
-                        {
-                            if (index < CurrentEffects.Count)
+                    switch (ActionType)
+                    {
+                        case FELActionType.nop:
+                        case FELActionType.str:
+                        case FELActionType.ste:
+                        case FELActionType.nus:
+                        case FELActionType.nue:
+                            goto GoForward;
+                        case FELActionType.push:
+                            if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
+                            goto GoForward;
+                        case FELActionType.pop:
+                            CurrentObjects.Pop();
+                            goto GoForward;
+                        case FELActionType.print:
+                            WriteLine(CurrentObjects.Peek());
+                            goto GoForward;
+                        case FELActionType.add:
+                            try
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a + b); // rely on implementation...
                             }
-                            else throw new Lamentation(0x20, index.ToString());
-                        }
-                        else throw new Lamentation(0x19, z.ToString());
-                        break;
-                    case FELActionType.bne:
-                        dynamic bne = Value!;
-                        if (bne is int index2)
-                        {
-                            if (index2 < CurrentEffects.Count)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                throw new Lamentation(0x17, ex.Message);
                             }
-                            else throw new Lamentation(0x20, index2.ToString());
-                        }
-                        else throw new Lamentation(0x19, bne.ToString());
-                        break;
-                    case FELActionType.bgt:
-                        dynamic z3 = Value!;
-                        if (z3 is int index3)
-                        {
-                            if (index3 < CurrentEffects.Count)
+                            goto GoForward;
+                        case FELActionType.sub:
+                            try
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a - b); // rely on implementation...
                             }
-                            else throw new Lamentation(0x20, index3.ToString());
-                        }
-                        else throw new Lamentation(0x19, z3.ToString());
-                        break;
-                    case FELActionType.bge:
-                        dynamic z4 = Value!;
-                        if (z4 is int index4)
-                        {
-                            if (index4 < CurrentEffects.Count)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                throw new Lamentation(0x17, ex.Message);
                             }
-                            else throw new Lamentation(0x20, index4.ToString());
-                        }
-                        else throw new Lamentation(0x19, z4.ToString());
-                        break;
-                    case FELActionType.blt:
-                        dynamic z5 = Value!;
-                        if (z5 is int index5)
-                        {
-                            if (index5 < CurrentEffects.Count)
+                            goto GoForward;
+                        case FELActionType.mul:
+                            try
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a * b); // rely on implementation...
                             }
-                            else throw new Lamentation(0x20, index5.ToString());
-                        }
-                        else throw new Lamentation(0x19, z5.ToString());
-                        break;
-                    case FELActionType.ble:
-                        dynamic z6 = Value!;
-                        if (z6 is int index6)
-                        {
-                            if (index6 < CurrentEffects.Count)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                throw new Lamentation(0x17, ex.Message);
                             }
-                            else throw new Lamentation(0x20, index6.ToString());
-                        }
-                        else throw new Lamentation(0x19, z6.ToString());
-                        break;
-                    case FELActionType.btr:
-                        dynamic z7 = Value!;
-                        if (z7 is int index7)
-                        {
-                            if (index7 < CurrentEffects.Count)
+                            goto GoForward;
+                        case FELActionType.div:
+                            try
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    if (var1) CurrentPointedEffect = index7; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a / b); // rely on implementation...
                             }
-                            else throw new Lamentation(0x20, index7.ToString());
-                        }
-                        else throw new Lamentation(0x19, z7.ToString());
-                        break;
-                    case FELActionType.bfl:
-                        dynamic z8 = Value!;
-                        if (z8 is int index8)
-                        {
-                            if (index8 < CurrentEffects.Count)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    if (!var1) CurrentPointedEffect = index8; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                throw new Lamentation(0x17, ex.Message);
                             }
-                            else throw new Lamentation(0x20, index8.ToString());
-                        }
-                        else throw new Lamentation(0x19, z8.ToString());
-                        break;
-                    case FELActionType.@goto:
-                        dynamic z9 = Value!;
-                        if (z9 is int index9)
-                        {
-                            if (index9 < CurrentEffects.Count) CurrentPointedEffect = index9;
-                            else throw new Lamentation(0x20, index9.ToString());
-                        }
-                        else throw new Lamentation(0x19, z9.ToString());
-                        break;
-                    default: throw new Lamentation(0x16, ActionType.ToString());
-                    case FELActionType.bsa:
-                        dynamic zA = Value!;
-                        if (zA is int indexA)
-                        {
-                            if (indexA < CurrentEffects.Count)
+                            goto GoForward;
+                        case FELActionType.mod:
+                            try
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a % b); // rely on implementation...
                             }
-                            else throw new Lamentation(0x20, indexA.ToString());
-                        }
-                        else throw new Lamentation(0x19, zA.ToString());
-                        break;
-                    case FELActionType.bso:
-                        dynamic zB = Value!;
-                        if (zB is int indexB)
-                        {
-                            if (indexB < CurrentEffects.Count)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    dynamic var1 = CurrentObjects.Pop();
-                                    dynamic var2 = CurrentObjects.Pop();
-                                    if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Lamentation(0x17, ex.Message);
-                                }
+                                throw new Lamentation(0x17, ex.Message);
                             }
-                            else throw new Lamentation(0x20, indexB.ToString());
-                        }
-                        else throw new Lamentation(0x19, zB.ToString());
-                        break;
-                    case FELActionType.end:
-                        Environment.Exit(0);
-                        break;
+                            goto GoForward;
+                        case FELActionType.lst:
+                            try
+                            {
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a << b); // rely on implementation...
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+                            goto GoForward;
+                        case FELActionType.rst:
+                            try
+                            {
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a >> b); // rely on implementation...
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+                            goto GoForward;
+                        case FELActionType.and:
+                            try
+                            {
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a & b); // rely on implementation...
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+                            goto GoForward;
+                        case FELActionType.or:
+                            try
+                            {
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a | b); // rely on implementation...
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+                            goto GoForward;
+                        case FELActionType.xor:
+                            try
+                            {
+                                dynamic a = CurrentObjects.Pop();
+                                dynamic b = CurrentObjects.Pop();
+                                CurrentObjects.Push(a ^ b); // rely on implementation...
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+                            goto GoForward;
+                        case FELActionType.store:
+                            dynamic x = CurrentObjects.Pop();
+                            if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
+                            else if (Value is int number) CurrentStore.Add(new(number, "", x));
+                            goto GoForward;
+                        case FELActionType.load:
+                            dynamic name = Value!;
+                            if (
+                                (name is string str && CurrentStore.Exists(obj => obj.Name == str)) ||
+                                (name is int num && CurrentStore.Exists(obj => obj.Address == num))
+                            )
+                            {
+                                FELObject selected = default;
+                                if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
+                                else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
+                                CurrentObjects.Push(selected.Value);
+                                CurrentStore.Remove(selected);
+                            }
+                            else throw new Lamentation(0x18,
+                                (
+                                    name switch
+                                    {
+                                        string => name,
+                                        int => name.ToString(),
+                                    }
+                                ));
+                            goto GoForward;
+                        case FELActionType.beq:
+                            dynamic z = Value!;
+                            if (z is int index)
+                            {
+                                if (index < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index.ToString());
+                            }
+                            else throw new Lamentation(0x19, z.ToString());
+                            break;
+                        case FELActionType.bne:
+                            dynamic bne = Value!;
+                            if (bne is int index2)
+                            {
+                                if (index2 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index2.ToString());
+                            }
+                            else throw new Lamentation(0x19, bne.ToString());
+                            break;
+                        case FELActionType.bgt:
+                            dynamic z3 = Value!;
+                            if (z3 is int index3)
+                            {
+                                if (index3 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index3.ToString());
+                            }
+                            else throw new Lamentation(0x19, z3.ToString());
+                            break;
+                        case FELActionType.bge:
+                            dynamic z4 = Value!;
+                            if (z4 is int index4)
+                            {
+                                if (index4 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index4.ToString());
+                            }
+                            else throw new Lamentation(0x19, z4.ToString());
+                            break;
+                        case FELActionType.blt:
+                            dynamic z5 = Value!;
+                            if (z5 is int index5)
+                            {
+                                if (index5 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index5.ToString());
+                            }
+                            else throw new Lamentation(0x19, z5.ToString());
+                            break;
+                        case FELActionType.ble:
+                            dynamic z6 = Value!;
+                            if (z6 is int index6)
+                            {
+                                if (index6 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index6.ToString());
+                            }
+                            else throw new Lamentation(0x19, z6.ToString());
+                            break;
+                        case FELActionType.btr:
+                            dynamic z7 = Value!;
+                            if (z7 is int index7)
+                            {
+                                if (index7 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        if (var1) CurrentPointedEffect = index7; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index7.ToString());
+                            }
+                            else throw new Lamentation(0x19, z7.ToString());
+                            break;
+                        case FELActionType.bfl:
+                            dynamic z8 = Value!;
+                            if (z8 is int index8)
+                            {
+                                if (index8 < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        if (!var1) CurrentPointedEffect = index8; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, index8.ToString());
+                            }
+                            else throw new Lamentation(0x19, z8.ToString());
+                            break;
+                        case FELActionType.@goto:
+                            dynamic z9 = Value!;
+                            if (z9 is int index9)
+                            {
+                                if (index9 < CurrentEffects.Count) CurrentPointedEffect = index9;
+                                else throw new Lamentation(0x20, index9.ToString());
+                            }
+                            else throw new Lamentation(0x19, z9.ToString());
+                            break;
+                        default: throw new Lamentation(0x16, ActionType.ToString());
+                        case FELActionType.bsa:
+                            dynamic zA = Value!;
+                            if (zA is int indexA)
+                            {
+                                if (indexA < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, indexA.ToString());
+                            }
+                            else throw new Lamentation(0x19, zA.ToString());
+                            break;
+                        case FELActionType.bso:
+                            dynamic zB = Value!;
+                            if (zB is int indexB)
+                            {
+                                if (indexB < CurrentEffects.Count)
+                                {
+                                    try
+                                    {
+                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var2 = CurrentObjects.Pop();
+                                        if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Lamentation(0x17, ex.Message);
+                                    }
+                                }
+                                else throw new Lamentation(0x20, indexB.ToString());
+                            }
+                            else throw new Lamentation(0x19, zB.ToString());
+                            break;
+                        case FELActionType.end:
+                            Environment.Exit(0);
+                            break;
+                    }
                 }
-            GoForward: CurrentPointedEffect++;
+                catch (Lamentation cry)
+                {
+                    WriteLine(cry.ToString());
+                }
+                GoForward: CurrentPointedEffect++;
             }
         }
 
