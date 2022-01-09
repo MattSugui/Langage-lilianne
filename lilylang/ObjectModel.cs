@@ -458,7 +458,8 @@ public static partial class Interpreter
 
             foreach (FELAction act in CurrentEffects)
             {
-                if (act.ActionType == FELActionType.push || act.ActionType == FELActionType.store || act.ActionType == FELActionType.load)
+                if (act.ActionType == FELActionType.push || act.ActionType == FELActionType.store || act.ActionType == FELActionType.load ||
+                    act.ActionType >= FELActionType.beq || act.ActionType <= FELActionType.bso)
                 {
                     writer.Write((byte)act.ActionType);
                     byte marker = act.Value! switch
