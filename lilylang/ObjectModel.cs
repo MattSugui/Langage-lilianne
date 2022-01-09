@@ -20,6 +20,11 @@ public static partial class Interpreter
     public static int CurrentPointedObject;
 
     /// <summary>
+    /// The current instruction.
+    /// </summary>
+    public static int CurrentPointedEffect;
+
+    /// <summary>
     /// The current X register.
     /// </summary>
     public static int CurrentObjectX;
@@ -45,14 +50,14 @@ public static partial class Interpreter
         /// <remarks>
         /// <em>I did not choose the name, Intellicode/Pilot did. This will be a meme from now on.</em>
         /// </remarks>
-        public static Queue<FELAction> CurrentEffects = new();
+        public static List<FELAction> CurrentEffects = new();
 
         /// <summary>
         /// A form of delegate??? but not quite?? for use with the stack.
         /// </summary>
         /// <param name="ActionType">What to do.</param>
-        /// <param name="Value">The value. Only valid for the Push operation.</param>
-        public record struct FELAction(FELActionType ActionType, object? Value = null)
+        /// <param name="Value">The value. Only valid for the Push, Load, Store and branching operations.</param>
+        public record struct FELAction(FELActionType ActionType, dynamic Value = null)
         {
             public void Invoke()
             {
@@ -63,16 +68,16 @@ public static partial class Interpreter
                     case FELActionType.ste:
                     case FELActionType.nus:
                     case FELActionType.nue:
-                        break;
+                        goto GoForward;
                     case FELActionType.push:
                         if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
-                        break;
+                        goto GoForward;
                     case FELActionType.pop:
                         CurrentObjects.Pop();
-                        break;
+                        goto GoForward;
                     case FELActionType.print:
                         WriteLine(CurrentObjects.Peek());
-                        break;
+                        goto GoForward;
                     case FELActionType.add:
                         try
                         {
@@ -84,7 +89,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.sub:
                         try
                         {
@@ -96,7 +101,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.mul:
                         try
                         {
@@ -108,7 +113,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.div:
                         try
                         {
@@ -120,7 +125,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.mod:
                         try
                         {
@@ -132,7 +137,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.lst:
                         try
                         {
@@ -144,7 +149,7 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
                     case FELActionType.rst:
                         try
                         {
@@ -156,12 +161,48 @@ public static partial class Interpreter
                         {
                             throw new Lamentation(0x17, ex.Message);
                         }
-                        break;
+                        goto GoForward;
+                    case FELActionType.and:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a & b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        goto GoForward;
+                    case FELActionType.or:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a | b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        goto GoForward;
+                    case FELActionType.xor:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a ^ b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        goto GoForward;
                     case FELActionType.store:
                         dynamic x = CurrentObjects.Pop();
                         if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
                         else if (Value is int number) CurrentStore.Add(new(number, "", x));
-                        break;
+                        goto GoForward;
                     case FELActionType.load:
                         dynamic name = Value!;
                         if (
@@ -180,12 +221,230 @@ public static partial class Interpreter
                                 name switch
                                 {
                                     string => name,
-                                    int => name.ToString("h"),
+                                    int => name.ToString(),
                                 }
                             ));
+                        goto GoForward;
+                    case FELActionType.beq:
+                        dynamic z = Value!;
+                        if (z is int index)
+                        {
+                            if (index < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index.ToString());
+                        }
+                        else throw new Lamentation(0x19, z.ToString());
+                        break;
+                    case FELActionType.bne:
+                        dynamic bne = Value!;
+                        if (bne is int index2)
+                        {
+                            if (index2 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index2.ToString());
+                        }
+                        else throw new Lamentation(0x19, bne.ToString());
+                        break;
+                    case FELActionType.bgt:
+                        dynamic z3 = Value!;
+                        if (z3 is int index3)
+                        {
+                            if (index3 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index3.ToString());
+                        }
+                        else throw new Lamentation(0x19, z3.ToString());
+                        break;
+                    case FELActionType.bge:
+                        dynamic z4 = Value!;
+                        if (z4 is int index4)
+                        {
+                            if (index4 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index4.ToString());
+                        }
+                        else throw new Lamentation(0x19, z4.ToString());
+                        break;
+                    case FELActionType.blt:
+                        dynamic z5 = Value!;
+                        if (z5 is int index5)
+                        {
+                            if (index5 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index5.ToString());
+                        }
+                        else throw new Lamentation(0x19, z5.ToString());
+                        break;
+                    case FELActionType.ble:
+                        dynamic z6 = Value!;
+                        if (z6 is int index6)
+                        {
+                            if (index6 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index6.ToString());
+                        }
+                        else throw new Lamentation(0x19, z6.ToString());
+                        break;
+                    case FELActionType.btr:
+                        dynamic z7 = Value!;
+                        if (z7 is int index7)
+                        {
+                            if (index7 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    if (var1) CurrentPointedEffect = index7; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index7.ToString());
+                        }
+                        else throw new Lamentation(0x19, z7.ToString());
+                        break;
+                    case FELActionType.bfl:
+                        dynamic z8 = Value!;
+                        if (z8 is int index8)
+                        {
+                            if (index8 < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    if (!var1) CurrentPointedEffect = index8; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, index8.ToString());
+                        }
+                        else throw new Lamentation(0x19, z8.ToString());
+                        break;
+                    case FELActionType.@goto:
+                        dynamic z9 = Value!;
+                        if (z9 is int index9)
+                        {
+                            if (index9 < CurrentEffects.Count) CurrentPointedEffect = index9;
+                            else throw new Lamentation(0x20, index9.ToString());
+                        }
+                        else throw new Lamentation(0x19, z9.ToString());
                         break;
                     default: throw new Lamentation(0x16, ActionType.ToString());
+                    case FELActionType.bsa:
+                        dynamic zA = Value!;
+                        if (zA is int indexA)
+                        {
+                            if (indexA < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, indexA.ToString());
+                        }
+                        else throw new Lamentation(0x19, zA.ToString());
+                        break;
+                    case FELActionType.bso:
+                        dynamic zB = Value!;
+                        if (zB is int indexB)
+                        {
+                            if (indexB < CurrentEffects.Count)
+                            {
+                                try
+                                {
+                                    dynamic var1 = CurrentObjects.Pop();
+                                    dynamic var2 = CurrentObjects.Pop();
+                                    if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Lamentation(0x17, ex.Message);
+                                }
+                            }
+                            else throw new Lamentation(0x20, indexB.ToString());
+                        }
+                        else throw new Lamentation(0x19, zB.ToString());
+                        break;
                 }
+            GoForward: CurrentPointedEffect++;
             }
         }
 
@@ -199,37 +458,29 @@ public static partial class Interpreter
                 if (act.ActionType == FELActionType.push || act.ActionType == FELActionType.store || act.ActionType == FELActionType.load)
                 {
                     writer.Write((byte)act.ActionType);
-                    if (act.Value is string @string)
+                    byte marker = act.Value! switch
                     {
-                        writer.Write((byte)11);
-                        writer.Write(@string);
-                        //writer.Write((byte)12);
-                    }
-                    else
-                    {
-                        byte marker = act.Value! switch
-                        {
-                            bool => 15,
-                            sbyte => 16,
-                            byte => 17,
-                            short => 18,
-                            ushort => 19,
-                            int => 20,
-                            uint => 21,
-                            long => 22,
-                            ulong => 23,
-                            Half => 24,
-                            float => 25,
-                            double => 26,
-                            decimal => 27,
-                            char => 28,
-                            _ => throw new Lamentation()
-                        };
+                        string => 11,
+                        bool => 15,
+                        sbyte => 16,
+                        byte => 17,
+                        short => 18,
+                        ushort => 19,
+                        int => 20,
+                        uint => 21,
+                        long => 22,
+                        ulong => 23,
+                        Half => 24,
+                        float => 25,
+                        double => 26,
+                        decimal => 27,
+                        char => 28,
+                        _ => throw new Lamentation()
+                    };
 
-                        writer.Write(marker);
-                        writer.Write((int)act.Value!);
-                        //writer.Write((byte)14);
-                    }
+                    writer.Write(marker);
+                    writer.Write(act.Value!);
+                    //writer.Write((byte)14);
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
             }
@@ -296,43 +547,243 @@ public static partial class Interpreter
                             break;
                     }
                 }
-                CurrentEffects.Enqueue(new((FELActionType)opcode, thing)); 
+                CurrentEffects.Add(new((FELActionType)opcode, thing)); 
             }
         }
 
+        /// <summary>
+        /// What to do. For operation correctness some marker bytes (11 and 15-28) are also included in the table
+        /// even though they don't do anything.
+        /// </summary>
         public enum FELActionType: byte
         {
+            /// <summary>
+            /// No operation
+            /// </summary>
             nop,
+
+            /// <summary>
+            /// Push to stack
+            /// </summary>
             push,
+
+            /// <summary>
+            /// Pop from stack
+            /// </summary>
             pop,
+
+            /// <summary>
+            /// Print top item
+            /// </summary>
             print,
+
+            /// <summary>
+            /// Add two values on top
+            /// </summary>
             add,
+
+            /// <summary>
+            /// Subtract with two values on top
+            /// </summary>
             sub,
+
+            /// <summary>
+            /// Multiply with two values on top
+            /// </summary>
             mul,
+
+            /// <summary>
+            /// Divide with two values on top
+            /// </summary>
             div,
+
+            /// <summary>
+            /// Divide with two values on top, pop these then return the remainder
+            /// </summary>
             mod,
+
+            /// <summary>
+            /// Shift a value on top to the left
+            /// </summary>
             lst,
+
+            /// <summary>
+            /// Shift a value on top to the right
+            /// </summary>
             rst,
+
+            /// <summary>
+            /// String byte marker
+            /// </summary>
             str,
+
+            /// <summary>
+            /// Terminates a string
+            /// </summary>
+            [Obsolete("The language does not rely on a terminator byte anymore")]
             ste,
+
+            /// <summary>
+            /// Starts an integral value
+            /// </summary>
+            [Obsolete("This is bullshit")]
             nus,
+
+            /// <summary>
+            /// Terminates an integral value
+            /// </summary>
+            [Obsolete("This is bullshit")]
             nue,
+
+            /// <summary>
+            /// Bool byte marker
+            /// </summary>
             @bool,
+
+            /// <summary>
+            /// Signed byte byte marker
+            /// </summary>
             @sbyte,
+
+            /// <summary>
+            /// Byte byte marker
+            /// </summary>
             @byte,
+
+            /// <summary>
+            /// Short byte marker
+            /// </summary>
             @short,
+
+            /// <summary>
+            /// Unsigned short byte marker
+            /// </summary>
             @ushort,
+
+            /// <summary>
+            /// Int byte marker
+            /// </summary>
             @int,
+
+            /// <summary>
+            /// Unsigned int byte marker
+            /// </summary>
             @uint,
+
+            /// <summary>
+            /// Long byte marker
+            /// </summary>
             @long,
+
+            /// <summary>
+            /// Unsigned long byte marker
+            /// </summary>
             @ulong,
+
+            /// <summary>
+            /// Half byte marker
+            /// </summary>
             half,
+
+            /// <summary>
+            /// Single byte marker
+            /// </summary>
             @float,
+
+            /// <summary>
+            /// Double byte marker
+            /// </summary>
             @double,
+
+            /// <summary>
+            /// "Quadruple" byte marker
+            /// </summary>
             @decimal,
+
+            /// <summary>
+            /// Character byte marker
+            /// </summary>
             @char,
+
+            /// <summary>
+            /// Store the value on top to a place
+            /// </summary>
             store,
+
+            /// <summary>
+            /// Loads a value from a place on top
+            /// </summary>
             load,
+
+            /// <summary>
+            /// Bitwise AND
+            /// </summary>
+            and,
+
+            /// <summary>
+            /// Bitwise OR
+            /// </summary>
+            or,
+
+            /// <summary>
+            /// Bitwise XOR
+            /// </summary>
+            xor,
+
+            /// <summary>
+            /// <see langword="if"/> ==
+            /// </summary>
+            beq,
+
+            /// <summary>
+            /// <see langword="if"/> !=
+            /// </summary>
+            bne,
+
+            /// <summary>
+            /// <see langword="if"/> &gt;
+            /// </summary>
+            bgt,
+
+            /// <summary>
+            /// <see langword="if"/> &gt;=
+            /// </summary>
+            bge,
+
+            /// <summary>
+            /// <see langword="if"/> &lt;
+            /// </summary>
+            blt,
+
+            /// <summary>
+            /// <see langword="if"/> &lt;=
+            /// </summary>
+            ble,
+
+            /// <summary>
+            /// <see langword="goto"/>
+            /// </summary>
+            @goto,
+
+            /// <summary>
+            /// <see langword="if"/> <see langword="true"/>
+            /// </summary>
+            btr,
+
+            /// <summary>
+            /// <see langword="if"/> <see langword="false"/>
+            /// </summary>
+            bfl,
+
+            /// <summary>
+            /// <see langword="if"/> <see langword="true"/> <see langword="and"/> <see langword="true"/>
+            /// </summary>
+            bsa,
+
+            /// <summary>
+            /// <see langword="if"/> <see langword="true"/> <see langword="or"/> <see langword="true"/>
+            /// </summary>
+            bso
         }
 
 

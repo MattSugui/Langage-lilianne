@@ -30,6 +30,18 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "RSFT", Value = @"^rshift$" });
         CurrentTokens.Add(new() { Name = "STOR", Value = @"^store$" });
         CurrentTokens.Add(new() { Name = "LOAD", Value = @"^load$" });
+        CurrentTokens.Add(new() { Name = "BEQ", Value = @"^beq$" });
+        CurrentTokens.Add(new() { Name = "BNE", Value = @"^bne$" });
+        CurrentTokens.Add(new() { Name = "BGT", Value = @"^bgt$" });
+        CurrentTokens.Add(new() { Name = "BGE", Value = @"^bge$" });
+        CurrentTokens.Add(new() { Name = "BLT", Value = @"^blt$" });
+        CurrentTokens.Add(new() { Name = "BLE", Value = @"^ble$" });
+        CurrentTokens.Add(new() { Name = "GOTO", Value = @"^goto$" });
+        CurrentTokens.Add(new() { Name = "AND", Value = @"^and$" });
+        CurrentTokens.Add(new() { Name = "OR", Value = @"^or$" });
+        CurrentTokens.Add(new() { Name = "XOR", Value = @"^xor$" });
+        CurrentTokens.Add(new() { Name = "BTRU", Value = @"^btr$" });
+        CurrentTokens.Add(new() { Name = "BFLS", Value = @"^bfl$" });
 
         //CurrentSentenceStructures.Add(new() { Name = "PrintString", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "QUOT", "SMCL" } });
         //CurrentSentenceStructures.Add(new() { Name = "PrintInteger", Code = 1, PointersToValues = new int[] { 1 }, TokenStruct = new string[] { "PRNT", "INTL", "SMCL" } });
@@ -51,6 +63,18 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "StoreNamed", TokenStruct = new string[] { "STOR", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "LoadIndex", TokenStruct = new string[] { "LOAD", "ADDR", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "LoadNamed", TokenStruct = new string[] { "LOAD", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "IfThen", TokenStruct = new string[] { "BEQ", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "UnlessThen", TokenStruct = new string[] { "BNE", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GreaterThan", TokenStruct = new string[] { "BGT", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GreaterEqual", TokenStruct = new string[] { "BGE", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "LessThan", TokenStruct = new string[] { "BLT", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "LessEqual", TokenStruct = new string[] { "BLE", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "Goto", TokenStruct = new string[] { "GOTO", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "And", TokenStruct = new string[] { "AND", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "Or", TokenStruct = new string[] { "OR", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "Xor", TokenStruct = new string[] { "XOR", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "IfTrue", TokenStruct = new string[] { "BTRU", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "IfFalse", TokenStruct = new string[] { "BFLS", "INTL", "SMCL" } });
 
         //CurrentActions.Add(1, new((object val, object ign) => WriteLine(val)));
         //CurrentActions.Add(2, new((object name, object val) => CurrentObjects.Push(new(CurrentObjects.Count - 1, (string)name, val))));

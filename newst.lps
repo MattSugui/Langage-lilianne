@@ -1,17 +1,19 @@
 push "j";
 print;
 pop;
-
 push 9;
 push 10; // will print 10
 print;
 add;
+beq 17;
 print;
 pop;
-
 push "hello, world!";
 store #hello;
-
 load #hello;
+print;
+pop;
+return;
+push 21;
 print;
 pop;

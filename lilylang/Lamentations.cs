@@ -48,6 +48,8 @@ public static partial class Interpreter
             def.Add(0x0017, "Stack error. {0}");
             def.Add(0x0018, "{0} does not exist in the current context.");
             def.Add(0x0019, "{0} is not a valid Int32 value.");
+            def.Add(0x0020, "Index {0} goes beyond the current stream.");
+            def.Add(0x0021, "Index {0} is in an incorrect format.");
         }
 
         /// <summary>

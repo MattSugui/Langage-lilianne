@@ -218,7 +218,7 @@ public static partial class Interpreter
         switch (sent.Value[0])
         {
             case "push":
-                CurrentEffects.Enqueue(new(
+                CurrentEffects.Add(new(
                     FELActionType.push,
                     sent.Value[1].Contains('"') ? sent.Value[1].Trim('"') :
                         (int.TryParse(sent.Value[1], out int val) ? val : throw new Lamentation(0x16, "types other than int and string"))
@@ -226,49 +226,124 @@ public static partial class Interpreter
                     );
                 break;
             case "print":
-                CurrentEffects.Enqueue(new(FELActionType.print));
+                CurrentEffects.Add(new(FELActionType.print));
                 break;
             case "pop":
-                CurrentEffects.Enqueue(new(FELActionType.pop));
+                CurrentEffects.Add(new(FELActionType.pop));
                 break;
             case "add":
-                CurrentEffects.Enqueue(new(FELActionType.add));
+                CurrentEffects.Add(new(FELActionType.add));
                 break;
             case "subtract":
-                CurrentEffects.Enqueue(new(FELActionType.sub));
+                CurrentEffects.Add(new(FELActionType.sub));
                 break;
             case "multiply":
-                CurrentEffects.Enqueue(new(FELActionType.mul));
+                CurrentEffects.Add(new(FELActionType.mul));
                 break;
             case "divide":
-                CurrentEffects.Enqueue(new(FELActionType.div));
+                CurrentEffects.Add(new(FELActionType.div));
                 break;
             case "remainder":
-                CurrentEffects.Enqueue(new(FELActionType.mod));
+                CurrentEffects.Add(new(FELActionType.mod));
                 break;
             case "lshift":
-                CurrentEffects.Enqueue(new(FELActionType.lst));
+                CurrentEffects.Add(new(FELActionType.lst));
                 break;
             case "rshift":
-                CurrentEffects.Enqueue(new(FELActionType.rst));
+                CurrentEffects.Add(new(FELActionType.rst));
+                break;
+            case "and":
+                CurrentEffects.Add(new(FELActionType.and));
+                break;
+            case "or":
+                CurrentEffects.Add(new(FELActionType.or));
+                break;
+            case "xor":
+                CurrentEffects.Add(new(FELActionType.xor));
                 break;
             case "store":
-                CurrentEffects.Enqueue(new(
+                CurrentEffects.Add(new(
                     FELActionType.store,
                     sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
                     (sent.Value[1].StartsWith('&') ? 
-                        (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation()) :
+                        (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
                     )));
                 break;
             case "load":
-                CurrentEffects.Enqueue(new(
+                CurrentEffects.Add(new(
                     FELActionType.load,
                     sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
                     (sent.Value[1].StartsWith('&') ?
-                        (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation()) :
+                        (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
                     )));
+                break;
+            case "beq":
+                CurrentEffects.Add(new(
+                    FELActionType.beq,
+                    int.TryParse(sent.Value[1], out int z1) ? z1 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bne":
+                CurrentEffects.Add(new(
+                    FELActionType.bne,
+                    int.TryParse(sent.Value[1], out int z2) ? z2 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bgt":
+                CurrentEffects.Add(new(
+                    FELActionType.bgt,
+                    int.TryParse(sent.Value[1], out int z3) ? z3 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bge":
+                CurrentEffects.Add(new(
+                    FELActionType.bge,
+                    int.TryParse(sent.Value[1], out int z4) ? z4 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "blt":
+                CurrentEffects.Add(new(
+                    FELActionType.blt,
+                    int.TryParse(sent.Value[1], out int z5) ? z5 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "ble":
+                CurrentEffects.Add(new(
+                    FELActionType.beq,
+                    int.TryParse(sent.Value[1], out int z6) ? z6 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "btr":
+                CurrentEffects.Add(new(
+                    FELActionType.btr,
+                    int.TryParse(sent.Value[1], out int z7) ? z7 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bfl":
+                CurrentEffects.Add(new(
+                    FELActionType.bfl,
+                    int.TryParse(sent.Value[1], out int z8) ? z8 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bsa":
+                CurrentEffects.Add(new(
+                    FELActionType.bsa,
+                    int.TryParse(sent.Value[1], out int z9) ? z9 : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "bso":
+                CurrentEffects.Add(new(
+                    FELActionType.bso,
+                    int.TryParse(sent.Value[1], out int zA) ? zA : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "goto":
+                CurrentEffects.Add(new(
+                    FELActionType.@goto,
+                    int.TryParse(sent.Value[1], out int zB) ? zB : throw new Lamentation(0x21, sent.Value[1])
+                    ));
                 break;
         }
     }

@@ -217,6 +217,7 @@ public static partial class Interpreter
 
     public static void Execute()
     {
-        foreach (FELAction action in CurrentEffects) action.Invoke();
+        CurrentPointedEffect = 0;
+        while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
 }
