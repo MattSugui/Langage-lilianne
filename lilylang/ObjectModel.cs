@@ -461,8 +461,17 @@ public static partial class Interpreter
                 if (act.ActionType == FELActionType.push ||
                     act.ActionType == FELActionType.store ||
                     act.ActionType == FELActionType.load ||
-                    act.ActionType >= FELActionType.beq ||
-                    act.ActionType <= FELActionType.bso)
+                    act.ActionType == FELActionType.beq ||
+                    act.ActionType == FELActionType.bne ||
+                    act.ActionType == FELActionType.bgt ||
+                    act.ActionType == FELActionType.bge ||
+                    act.ActionType == FELActionType.blt ||
+                    act.ActionType == FELActionType.ble ||
+                    act.ActionType == FELActionType.btr ||
+                    act.ActionType == FELActionType.bfl ||
+                    act.ActionType == FELActionType.bsa ||
+                    act.ActionType == FELActionType.bso ||
+                    act.ActionType == FELActionType.@goto)
                 {
                     writer.Write((byte)act.ActionType);
                     byte marker = act.Value! switch
