@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿#nullable enable // oh boy here we go, we in sport mode now
 
 namespace fonder.Lilian.New;
 
@@ -59,6 +59,9 @@ public static partial class Interpreter
         /// <param name="Value">The value. Only valid for the Push, Load, Store and branching operations.</param>
         public record struct FELAction(FELActionType ActionType, dynamic Value = null)
         {
+            /// <summary>
+            /// Invokes the action.
+            /// </summary>
             public void Invoke()
             {
                 try
@@ -448,6 +451,32 @@ public static partial class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
+                        case FELActionType.ask:
+                            Write("The programme needs some input > ");
+                            string? asked = ReadLine();
+                            if (!string.IsNullOrEmpty(asked)) Value = asked!; else goto GoForward;
+                            // automatic conversion
+                            string prim = (string)Value;
+                            if (bool.TryParse(prim, out bool val1)) Value = val1;
+                            else if (sbyte.TryParse(prim, out sbyte val2)) Value = val2;
+                            else if (byte.TryParse(prim, out byte val3)) Value = val3;
+                            else if (short.TryParse(prim, out short val4)) Value = val4;
+                            else if (ushort.TryParse(prim, out ushort val5)) Value = val5;
+                            else if (int.TryParse(prim, out int val6)) Value = val6;
+                            else if (uint.TryParse(prim, out uint val7)) Value = val7;
+                            else if (long.TryParse(prim, out long val8)) Value = val8;
+                            else if (ulong.TryParse(prim, out ulong val9)) Value = val9;
+                            else if (Half.TryParse(prim, out Half valA)) Value = valA;
+                            else if (float.TryParse(prim, out float valB)) Value = valB;
+                            else if (double.TryParse(prim, out double valC)) Value = valC;
+                            else if (decimal.TryParse(prim, out decimal valD)) Value = valD;
+                            else if (char.TryParse(prim, out char valE)) Value = valE;
+                            goto GoForward;
+                        case FELActionType.askliteral:
+                            Write("The programme needs some input > ");
+                            string? asked2 = ReadLine();
+                            if (!string.IsNullOrEmpty(asked2)) Value = asked2!;
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -479,17 +508,8 @@ public static partial class Interpreter
                 if (act.ActionType == FELActionType.push ||
                     act.ActionType == FELActionType.store ||
                     act.ActionType == FELActionType.load ||
-                    (act.ActionType >= FELActionType.beq && //||
-                    /*act.ActionType == FELActionType.bne ||
-                    act.ActionType == FELActionType.bgt ||
-                    act.ActionType == FELActionType.bge ||
-                    act.ActionType == FELActionType.blt ||
-                    act.ActionType == FELActionType.ble ||
-                    act.ActionType == FELActionType.btr ||
-                    act.ActionType == FELActionType.bfl ||
-                    act.ActionType == FELActionType.bsa ||*/
-                    act.ActionType <= FELActionType.bso)// ||
-                    /*act.ActionType == FELActionType.@goto*/)
+                    (act.ActionType >= FELActionType.beq &&
+                    act.ActionType <= FELActionType.bso))
                 {
                     writer.Write((byte)act.ActionType);
                     byte marker = act.Value! switch
@@ -824,7 +844,17 @@ public static partial class Interpreter
             /// <summary>
             /// <see cref="Environment.Exit(int)"/> (<see langword="End"/> in Visual Basic.)
             /// </summary>
-            end
+            end,
+
+            /// <summary>
+            /// Ask for a value. If convenient, Lilian will immediately convert the value to an appropriate type.
+            /// </summary>
+            ask,
+
+            /// <summary>
+            /// Ask for a value. This will never automatically convert to other types.
+            /// </summary>
+            askliteral
         }
 
 

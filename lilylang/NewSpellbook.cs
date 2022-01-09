@@ -373,6 +373,12 @@ public static partial class Interpreter
             case "end":
                 CurrentEffects.Add(new(FELActionType.end));
                 break;
+            case "ask":
+                CurrentEffects.Add(new(FELActionType.ask));
+                break;
+            case "askliteral":
+                CurrentEffects.Add(new(FELActionType.askliteral));
+                break;
         }
     }
 }

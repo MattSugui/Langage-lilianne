@@ -1,20 +1,13 @@
-push "j";
-print;
-pop;
-push 9;
-push 10; // will print 10
-print;
-add;
-push 19;
-beq 17;
-print;
-pop;
-push "hello, world!";
-store #hello;
-load #hello;
+askliteral; // ask for a string
+push "hello!";
+bne 6;
+ask; // ask but the value has the potential to change to an integral value if it can
+push 21;
+beq 10;
+push "bruh moment";
 print;
 pop;
 end;
-push 21;
+push "yay!";
 print;
 pop;
