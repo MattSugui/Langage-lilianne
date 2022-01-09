@@ -5,6 +5,7 @@ push 9;
 push 10; // will print 10
 print;
 add;
+push 19;
 beq 17;
 print;
 pop;
