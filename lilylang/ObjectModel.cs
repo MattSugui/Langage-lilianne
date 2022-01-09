@@ -196,7 +196,7 @@ public static partial class Interpreter
 
             foreach (FELAction act in CurrentEffects)
             {
-                if (act.ActionType == FELActionType.push)
+                if (act.ActionType == FELActionType.push || act.ActionType == FELActionType.store || act.ActionType == FELActionType.load)
                 {
                     writer.Write((byte)act.ActionType);
                     if (act.Value is string @string)
@@ -244,7 +244,7 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic thing = null;
-                if (opcode == (byte)FELActionType.push)
+                if (opcode == 1 || opcode == 29 || opcode == 30)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
