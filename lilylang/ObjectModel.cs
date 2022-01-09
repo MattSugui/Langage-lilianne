@@ -451,7 +451,7 @@ public static partial class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
-                        case FELActionType.ask:
+                        case FELActionType.take:
                             Write("The programme needs some input > ");
                             string? asked = ReadLine();
                             if (!string.IsNullOrEmpty(asked)) Value = asked!; else goto GoForward;
@@ -472,7 +472,7 @@ public static partial class Interpreter
                             else if (decimal.TryParse(prim, out decimal valD)) Value = valD;
                             else if (char.TryParse(prim, out char valE)) Value = valE;
                             goto GoForward;
-                        case FELActionType.askliteral:
+                        case FELActionType.ask:
                             Write("The programme needs some input > ");
                             string? asked2 = ReadLine();
                             if (!string.IsNullOrEmpty(asked2)) Value = asked2!;
@@ -849,12 +849,12 @@ public static partial class Interpreter
             /// <summary>
             /// Ask for a value. If convenient, Lilian will immediately convert the value to an appropriate type.
             /// </summary>
-            ask,
+            take,
 
             /// <summary>
             /// Ask for a value. This will never automatically convert to other types.
             /// </summary>
-            askliteral
+            ask
         }
 
 

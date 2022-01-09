@@ -151,10 +151,7 @@ public static partial class Interpreter
                     bool confirm = 
                         CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
                         && temp.Name == token.Name;
-                    if (confirm)
-                    {
-                        continue;
-                    }
+                    if (confirm) continue;
                     else
                     {
                         CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
@@ -373,11 +370,11 @@ public static partial class Interpreter
             case "end":
                 CurrentEffects.Add(new(FELActionType.end));
                 break;
+            case "take":
+                CurrentEffects.Add(new(FELActionType.take));
+                break;
             case "ask":
                 CurrentEffects.Add(new(FELActionType.ask));
-                break;
-            case "askliteral":
-                CurrentEffects.Add(new(FELActionType.askliteral));
                 break;
         }
     }
