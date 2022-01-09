@@ -454,28 +454,32 @@ public static partial class Interpreter
                         case FELActionType.take:
                             Write("The programme needs some input > ");
                             string? asked = ReadLine();
-                            if (!string.IsNullOrEmpty(asked)) Value = asked!; else goto GoForward;
+                            dynamic content;
+                            if (!string.IsNullOrEmpty(asked)) content = asked!; else goto GoForward;
                             // automatic conversion
-                            string prim = (string)Value;
-                            if (bool.TryParse(prim, out bool val1)) Value = val1;
-                            else if (sbyte.TryParse(prim, out sbyte val2)) Value = val2;
-                            else if (byte.TryParse(prim, out byte val3)) Value = val3;
-                            else if (short.TryParse(prim, out short val4)) Value = val4;
-                            else if (ushort.TryParse(prim, out ushort val5)) Value = val5;
-                            else if (int.TryParse(prim, out int val6)) Value = val6;
-                            else if (uint.TryParse(prim, out uint val7)) Value = val7;
-                            else if (long.TryParse(prim, out long val8)) Value = val8;
-                            else if (ulong.TryParse(prim, out ulong val9)) Value = val9;
-                            else if (Half.TryParse(prim, out Half valA)) Value = valA;
-                            else if (float.TryParse(prim, out float valB)) Value = valB;
-                            else if (double.TryParse(prim, out double valC)) Value = valC;
-                            else if (decimal.TryParse(prim, out decimal valD)) Value = valD;
-                            else if (char.TryParse(prim, out char valE)) Value = valE;
+                            string prim = (string)content;
+                            if (bool.TryParse(prim, out bool val1)) content = val1;
+                            else if (sbyte.TryParse(prim, out sbyte val2)) content = val2;
+                            else if (byte.TryParse(prim, out byte val3)) content = val3;
+                            else if (short.TryParse(prim, out short val4)) content = val4;
+                            else if (ushort.TryParse(prim, out ushort val5)) content = val5;
+                            else if (int.TryParse(prim, out int val6)) content = val6;
+                            else if (uint.TryParse(prim, out uint val7)) content = val7;
+                            else if (long.TryParse(prim, out long val8)) content = val8;
+                            else if (ulong.TryParse(prim, out ulong val9)) content = val9;
+                            else if (Half.TryParse(prim, out Half valA)) content = valA;
+                            else if (float.TryParse(prim, out float valB)) content = valB;
+                            else if (double.TryParse(prim, out double valC)) content = valC;
+                            else if (decimal.TryParse(prim, out decimal valD)) content = valD;
+                            else if (char.TryParse(prim, out char valE)) content = valE;
+                            CurrentObjects.Push(content!);
                             goto GoForward;
                         case FELActionType.ask:
                             Write("The programme needs some input > ");
                             string? asked2 = ReadLine();
-                            if (!string.IsNullOrEmpty(asked2)) Value = asked2!;
+                            string content2 = string.Empty;
+                            if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
+                            CurrentObjects.Push(content2);
                             goto GoForward;
                     }
                 }

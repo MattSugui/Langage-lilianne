@@ -1,7 +1,7 @@
-askliteral; // ask for a string
+ask; // ask for a string
 push "hello!";
 bne 6;
-ask; // ask but the value has the potential to change to an integral value if it can
+take; // ask but the value has the potential to change to an integral value if it can
 push 21;
 beq 10;
 push "bruh moment";
