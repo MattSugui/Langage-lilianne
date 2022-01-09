@@ -3,7 +3,7 @@
 public static partial class Interpreter
 {
     /// <summary>
-    /// A compiler error to Lilian.
+    /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
     public class Lamentation : Exception
     {
@@ -13,7 +13,7 @@ public static partial class Interpreter
         static Lamentation()
         {
             def = new();
-            def.Add(0x0000, "All clear.");
+            def.Add(0x0000, "Invalid state for the environment. If you don't know what happened, it's my fault. Contact ininemsn@gmail.com");
             def.Add(0x0001, "Syntax error. A string was never terminated.");
             //
             def.Add(0x0002, "Syntax error. The pattern {0} does not exist in the current context.");
@@ -46,6 +46,8 @@ public static partial class Interpreter
             //
             def.Add(0x0016, "{0} is an undefined feature in this version. Use a newer version of Lilian.");
             def.Add(0x0017, "Stack error. {0}");
+            def.Add(0x0018, "{0} does not exist in the current context.");
+            def.Add(0x0019, "{0} is not a valid Int32 value.");
         }
 
         /// <summary>

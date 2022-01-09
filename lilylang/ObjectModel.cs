@@ -10,6 +10,11 @@ public static partial class Interpreter
     public static Stack<object> CurrentObjects = new();
 
     /// <summary>
+    /// The current saved collection of objects.
+    /// </summary>
+    public static List<FELObject> CurrentStore = new();
+
+    /// <summary>
     /// The stack pointer.
     /// </summary>
     public static int CurrentPointedObject;
@@ -31,6 +36,7 @@ public static partial class Interpreter
 
     public static partial class Actualiser
     {
+        [Obsolete("Use CurrentEffects")]
         public static Queue<Delegate> CurrentActions = new();
 
         /// <summary>
@@ -79,6 +85,105 @@ public static partial class Interpreter
                             throw new Lamentation(0x17, ex.Message);
                         }
                         break;
+                    case FELActionType.sub:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a - b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.mul:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a * b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.div:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a / b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.mod:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a % b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.lst:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a << b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.rst:
+                        try
+                        {
+                            dynamic a = CurrentObjects.Pop();
+                            dynamic b = CurrentObjects.Pop();
+                            CurrentObjects.Push(a >> b); // rely on implementation...
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Lamentation(0x17, ex.Message);
+                        }
+                        break;
+                    case FELActionType.store:
+                        dynamic x = CurrentObjects.Pop();
+                        if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
+                        else if (Value is int number) CurrentStore.Add(new(number, "", x));
+                        break;
+                    case FELActionType.load:
+                        dynamic name = Value!;
+                        if (
+                            (name is string str && CurrentStore.Exists(obj => obj.Name == str)) ||
+                            (name is int num && CurrentStore.Exists(obj => obj.Address == num))
+                        )
+                        {
+                            FELObject selected = default;
+                            if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
+                            else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
+                            CurrentObjects.Push(selected.Value);
+                            CurrentStore.Remove(selected);
+                        }
+                        else throw new Lamentation(0x18,
+                            (
+                                name switch
+                                {
+                                    string => name,
+                                    int => name.ToString("h"),
+                                }
+                            ));
+                        break;
                     default: throw new Lamentation(0x16, ActionType.ToString());
                 }
             }
@@ -102,7 +207,26 @@ public static partial class Interpreter
                     }
                     else
                     {
-                        writer.Write((byte)13);
+                        byte marker = act.Value! switch
+                        {
+                            bool => 15,
+                            sbyte => 16,
+                            byte => 17,
+                            short => 18,
+                            ushort => 19,
+                            int => 20,
+                            uint => 21,
+                            long => 22,
+                            ulong => 23,
+                            Half => 24,
+                            float => 25,
+                            double => 26,
+                            decimal => 27,
+                            char => 28,
+                            _ => throw new Lamentation()
+                        };
+
+                        writer.Write(marker);
                         writer.Write((int)act.Value!);
                         //writer.Write((byte)14);
                     }
@@ -128,8 +252,47 @@ public static partial class Interpreter
                         case 11:
                             thing = reader.ReadString();
                             break;
-                        case 13:
+                        case 15:
+                            thing = reader.ReadBoolean();
+                            break;
+                        case 16:
+                            thing = reader.ReadSByte();
+                            break;
+                        case 17:
+                            thing = reader.ReadByte();
+                            break;
+                        case 18:
+                            thing = reader.ReadInt16();
+                            break;
+                        case 19:
+                            thing = reader.ReadUInt16();
+                            break;
+                        case 20:
                             thing = reader.ReadInt32();
+                            break;
+                        case 21:
+                            thing = reader.ReadUInt32();
+                            break;
+                        case 22:
+                            thing = reader.ReadInt64();
+                            break;
+                        case 23:
+                            thing = reader.ReadUInt64();
+                            break;
+                        case 24:
+                            thing = reader.ReadHalf();
+                            break;
+                        case 25:
+                            thing = reader.ReadSingle();
+                            break;
+                        case 26:
+                            thing = reader.ReadDouble();
+                            break;
+                        case 27:
+                            thing = reader.ReadDecimal();
+                            break;
+                        case 28:
+                            thing = reader.ReadChar();
                             break;
                     }
                 }
@@ -154,6 +317,22 @@ public static partial class Interpreter
             ste,
             nus,
             nue,
+            @bool,
+            @sbyte,
+            @byte,
+            @short,
+            @ushort,
+            @int,
+            @uint,
+            @long,
+            @ulong,
+            half,
+            @float,
+            @double,
+            @decimal,
+            @char,
+            store,
+            load,
         }
 
 
@@ -196,7 +375,7 @@ public static class ObjectModel
     /// <summary>
     /// A classic. This provides an ID on an object and allows manipulation to it.
     /// </summary>
-    public record FELObject(int Address, string Name, object Value);
+    public record struct FELObject(int Address, string Name, object Value);
 
     /// <summary>
     /// later.

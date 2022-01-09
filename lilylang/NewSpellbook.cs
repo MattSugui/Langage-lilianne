@@ -234,6 +234,42 @@ public static partial class Interpreter
             case "add":
                 CurrentEffects.Enqueue(new(FELActionType.add));
                 break;
+            case "subtract":
+                CurrentEffects.Enqueue(new(FELActionType.sub));
+                break;
+            case "multiply":
+                CurrentEffects.Enqueue(new(FELActionType.mul));
+                break;
+            case "divide":
+                CurrentEffects.Enqueue(new(FELActionType.div));
+                break;
+            case "remainder":
+                CurrentEffects.Enqueue(new(FELActionType.mod));
+                break;
+            case "lshift":
+                CurrentEffects.Enqueue(new(FELActionType.lst));
+                break;
+            case "rshift":
+                CurrentEffects.Enqueue(new(FELActionType.rst));
+                break;
+            case "store":
+                CurrentEffects.Enqueue(new(
+                    FELActionType.store,
+                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
+                    (sent.Value[1].StartsWith('&') ? 
+                        (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation()) :
+                        throw new Lamentation()
+                    )));
+                break;
+            case "load":
+                CurrentEffects.Enqueue(new(
+                    FELActionType.load,
+                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
+                    (sent.Value[1].StartsWith('&') ?
+                        (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation()) :
+                        throw new Lamentation()
+                    )));
+                break;
         }
     }
 }

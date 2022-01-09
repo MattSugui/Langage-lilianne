@@ -3,9 +3,15 @@ print;
 pop;
 
 push 9;
-push 10;
-// will print 10
+push 10; // will print 10
 print;
-// should print 19
 add;
+print;
+pop;
+
+push "hello, world!";
+store #hello;
+
+load #hello;
+print;
 pop;
