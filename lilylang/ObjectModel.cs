@@ -498,7 +498,7 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic thing = null;
-                if (opcode == 1 || opcode == 29 || opcode == 30)
+                if (opcode == 1 || opcode == 29 || opcode == 30 || opcode <= 34 || opcode >= 44)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
