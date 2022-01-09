@@ -247,7 +247,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index.ToString());
                             }
                             else throw new Lamentation(0x19, z.ToString());
-                            break;
+                            return;
                         case FELActionType.bne:
                             dynamic bne = Value!;
                             if (bne is int index2)
@@ -268,7 +268,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index2.ToString());
                             }
                             else throw new Lamentation(0x19, bne.ToString());
-                            break;
+                            return;
                         case FELActionType.bgt:
                             dynamic z3 = Value!;
                             if (z3 is int index3)
@@ -289,7 +289,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index3.ToString());
                             }
                             else throw new Lamentation(0x19, z3.ToString());
-                            break;
+                            return;
                         case FELActionType.bge:
                             dynamic z4 = Value!;
                             if (z4 is int index4)
@@ -310,7 +310,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index4.ToString());
                             }
                             else throw new Lamentation(0x19, z4.ToString());
-                            break;
+                            return;
                         case FELActionType.blt:
                             dynamic z5 = Value!;
                             if (z5 is int index5)
@@ -331,7 +331,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index5.ToString());
                             }
                             else throw new Lamentation(0x19, z5.ToString());
-                            break;
+                            return;
                         case FELActionType.ble:
                             dynamic z6 = Value!;
                             if (z6 is int index6)
@@ -352,7 +352,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index6.ToString());
                             }
                             else throw new Lamentation(0x19, z6.ToString());
-                            break;
+                            return;
                         case FELActionType.btr:
                             dynamic z7 = Value!;
                             if (z7 is int index7)
@@ -372,7 +372,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index7.ToString());
                             }
                             else throw new Lamentation(0x19, z7.ToString());
-                            break;
+                            return;
                         case FELActionType.bfl:
                             dynamic z8 = Value!;
                             if (z8 is int index8)
@@ -392,7 +392,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index8.ToString());
                             }
                             else throw new Lamentation(0x19, z8.ToString());
-                            break;
+                            return;
                         case FELActionType.@goto:
                             dynamic z9 = Value!;
                             if (z9 is int index9)
@@ -401,7 +401,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, index9.ToString());
                             }
                             else throw new Lamentation(0x19, z9.ToString());
-                            break;
+                            return;
                         default: throw new Lamentation(0x16, ActionType.ToString());
                         case FELActionType.bsa:
                             dynamic zA = Value!;
@@ -423,7 +423,7 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, indexA.ToString());
                             }
                             else throw new Lamentation(0x19, zA.ToString());
-                            break;
+                            return;
                         case FELActionType.bso:
                             dynamic zB = Value!;
                             if (zB is int indexB)
@@ -444,17 +444,28 @@ public static partial class Interpreter
                                 else throw new Lamentation(0x20, indexB.ToString());
                             }
                             else throw new Lamentation(0x19, zB.ToString());
-                            break;
+                            return;
                         case FELActionType.end:
                             Environment.Exit(0);
-                            break;
+                            return;
                     }
                 }
                 catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
                 }
-                GoForward: CurrentPointedEffect++;
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        throw new Lamentation(0x17, ex.Message); // mould
+                    }
+                    catch (Lamentation cry)
+                    {
+                        WriteLine(cry.ToString());
+                    }
+                }
+            GoForward: CurrentPointedEffect++;
             }
         }
 

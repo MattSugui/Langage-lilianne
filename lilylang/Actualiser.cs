@@ -218,6 +218,7 @@ public static partial class Interpreter
     public static void Execute()
     {
         CurrentPointedEffect = 0;
-        while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
+        while (CurrentPointedEffect < CurrentEffects.Count)
+            CurrentEffects[CurrentPointedEffect].Invoke();
     }
 }
