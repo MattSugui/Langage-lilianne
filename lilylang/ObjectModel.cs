@@ -581,7 +581,7 @@ public static partial class Interpreter
                         case FELActionType.@return:
                             if (LocationHistoryForSubroutines.Count > 0) CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
                             else goto case FELActionType.end; // redirect to end
-                            return;
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
