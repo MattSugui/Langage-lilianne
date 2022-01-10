@@ -157,12 +157,21 @@ public static partial class Interpreter
             {
                 if (token.Look)
                 {
-                    int j = i + 1;
-                    string future = currentWord.ToString() + line[j];
-                    bool confirm = 
-                        CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
-                        && temp.Name == token.Name;
-                    if (confirm) continue;
+                    if (i < line.Length - 1)
+                    {
+                        int j = i + 1;
+                        string future = currentWord.ToString() + line[j];
+                        bool confirm =
+                            CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
+                            && temp.Name == token.Name;
+                        if (confirm) continue;
+                        else
+                        {
+                            CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
+                            currentWord.Clear();
+                            continue;
+                        }
+                    }
                     else
                     {
                         CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
