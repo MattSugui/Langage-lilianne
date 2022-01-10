@@ -591,7 +591,7 @@ public static partial class Interpreter
                                     CurrentFrame.Add(new());
                                     CurrentFrameIndex++;
                                     // carry over the variables in the previous context
-                                    foreach (object item in CurrentFrame[CurrentFrameIndex--]) CurrentFrame[CurrentFrameIndex].Push(item);
+                                    foreach (object item in CurrentFrame[CurrentFrameIndex-1]) CurrentFrame[CurrentFrameIndex].Push(item);
                                 }
                                 else throw new Lamentation(0x20, indexC.ToString());
                             }
