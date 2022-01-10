@@ -11,8 +11,13 @@ public static partial class Interpreter
     /// </summary>
     public static void Execute()
     {
+        CurrentFrame.Add(new());
+        CurrentFrameIndex = 0;
         CurrentPointedEffect = 0;
         while (CurrentPointedEffect < CurrentEffects.Count)
+        {
             CurrentEffects[CurrentPointedEffect].Invoke();
+            CurrentPointedSubEffect = CurrentPointedObject - LocationHistoryForSubroutines.Peek();
+        }
     }
 }

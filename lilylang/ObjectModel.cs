@@ -5,14 +5,24 @@ namespace fonder.Lilian.New;
 public static partial class Interpreter
 {
     /// <summary>
-    /// The current collection of objects.
+    /// The current collection of collection of objects relative to the current frame.
     /// </summary>
-    public static Stack<object> CurrentObjects = new();
+    public static List<Stack<object>> CurrentFrame = new();
+
+    /// <summary>
+    /// The current consummate collection of objects.
+    /// </summary>
+    public static Stack<object> CurrentObjects;
 
     /// <summary>
     /// The current saved collection of objects.
     /// </summary>
     public static List<FELObject> CurrentStore = new();
+
+    /// <summary>
+    /// The current frame being pointed to.
+    /// </summary>
+    public static int CurrentFrameIndex;
 
     /// <summary>
     /// The stack pointer.
@@ -23,6 +33,11 @@ public static partial class Interpreter
     /// The current instruction.
     /// </summary>
     public static int CurrentPointedEffect;
+
+    /// <summary>
+    /// The current instruction relative to the current subroutine.
+    /// </summary>
+    public static int CurrentPointedSubEffect;
 
     /// <summary>
     /// The current list of locations where the Call has left its footprint for returning.
@@ -76,20 +91,20 @@ public static partial class Interpreter
                         case FELActionType.nop:
                             goto GoForward;
                         case FELActionType.push:
-                            if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying
+                            if (Value is not null) CurrentFrame[CurrentFrameIndex].Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
-                            if (CurrentObjects.Count != 0) CurrentObjects.Pop(); // do nothing if the stack is empty
+                            if (CurrentFrame[CurrentFrameIndex].Count != 0) CurrentFrame[CurrentFrameIndex].Pop(); // do nothing if the stack is empty
                             goto GoForward;
                         case FELActionType.print:
-                            WriteLine(CurrentObjects.Count != 0? CurrentObjects.Peek() : "There is nothing to print.");
+                            WriteLine(CurrentFrame[CurrentFrameIndex].Count != 0? CurrentFrame[CurrentFrameIndex].Peek() : "There is nothing to print.");
                             goto GoForward;
                         case FELActionType.add:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a + b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a + b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -99,9 +114,9 @@ public static partial class Interpreter
                         case FELActionType.sub:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a - b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a - b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -111,9 +126,9 @@ public static partial class Interpreter
                         case FELActionType.mul:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a * b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a * b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -123,9 +138,9 @@ public static partial class Interpreter
                         case FELActionType.div:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a / b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a / b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -135,9 +150,9 @@ public static partial class Interpreter
                         case FELActionType.mod:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a % b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a % b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -147,9 +162,9 @@ public static partial class Interpreter
                         case FELActionType.lst:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a << b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a << b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -159,9 +174,9 @@ public static partial class Interpreter
                         case FELActionType.rst:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a >> b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a >> b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -171,9 +186,9 @@ public static partial class Interpreter
                         case FELActionType.and:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a & b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a & b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -183,9 +198,9 @@ public static partial class Interpreter
                         case FELActionType.or:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a | b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a | b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -195,9 +210,9 @@ public static partial class Interpreter
                         case FELActionType.xor:
                             try
                             {
-                                dynamic a = CurrentObjects.Pop();
-                                dynamic b = CurrentObjects.Pop();
-                                CurrentObjects.Push(a ^ b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
+                                CurrentFrame[CurrentFrameIndex].Push(a ^ b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -205,7 +220,7 @@ public static partial class Interpreter
                             }
                             goto GoForward;
                         case FELActionType.store:
-                            dynamic x = CurrentObjects.Pop();
+                            dynamic x = CurrentFrame[CurrentFrameIndex].Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
                             else if (Value is int number) CurrentStore.Add(new(number, "", x));
                             goto GoForward;
@@ -219,7 +234,7 @@ public static partial class Interpreter
                                 FELObject selected = default;
                                 if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
                                 else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
-                                CurrentObjects.Push(selected.Value);
+                                CurrentFrame[CurrentFrameIndex].Push(selected.Value);
                                 CurrentStore.Remove(selected);
                             }
                             else throw new Lamentation(0x18,
@@ -240,8 +255,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -261,8 +276,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -282,8 +297,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -303,8 +318,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -324,8 +339,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -345,8 +360,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -366,7 +381,7 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1) CurrentPointedEffect = index7; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -386,7 +401,7 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (!var1) CurrentPointedEffect = index8; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -416,8 +431,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -437,8 +452,8 @@ public static partial class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentObjects.Pop();
-                                        dynamic var2 = CurrentObjects.Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
                                         if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -474,17 +489,17 @@ public static partial class Interpreter
                             else if (double.TryParse(prim, out double valC)) content = valC;
                             else if (decimal.TryParse(prim, out decimal valD)) content = valD;
                             else if (char.TryParse(prim, out char valE)) content = valE;
-                            CurrentObjects.Push(content!);
+                            CurrentFrame[CurrentFrameIndex].Push(content!);
                             goto GoForward;
                         case FELActionType.ask:
                             Write("The programme needs some input > ");
                             string? asked2 = ReadLine();
                             string content2 = string.Empty;
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
-                            CurrentObjects.Push(content2);
+                            CurrentFrame[CurrentFrameIndex].Push(content2);
                             goto GoForward;
                         case FELActionType.narrow:
-                            dynamic narrowand = CurrentObjects.Pop();
+                            dynamic narrowand = CurrentFrame[CurrentFrameIndex].Pop();
                             unchecked
                             {
                                 dynamic result1 = narrowand switch
@@ -506,11 +521,11 @@ public static partial class Interpreter
                                     char => throw new Lamentation(0x26, narrowand.ToString()),
                                     _ => throw new Lamentation(0x28, narrowand.ToString()),
                                 };
-                                CurrentObjects.Push(result1);
+                                CurrentFrame[CurrentFrameIndex].Push(result1);
                             }
                             goto GoForward;
                         case FELActionType.widen:
-                            dynamic widand = CurrentObjects.Pop();
+                            dynamic widand = CurrentFrame[CurrentFrameIndex].Pop();
                             unchecked
                             {
                                 dynamic result1 = widand switch
@@ -532,11 +547,11 @@ public static partial class Interpreter
                                     char => throw new Lamentation(0x27, widand.ToString()),
                                     _ => throw new Lamentation(0x29, widand.ToString()),
                                 };
-                                CurrentObjects.Push(result1);
+                                CurrentFrame[CurrentFrameIndex].Push(result1);
                             }
                             goto GoForward;
                         case FELActionType.realise:
-                            string rel = (string)CurrentObjects.Pop()!;
+                            string rel = (string)CurrentFrame[CurrentFrameIndex].Pop()!;
                             dynamic? realisand = null;
 
                             if (string.IsNullOrEmpty(rel)) goto GoForward;
@@ -557,7 +572,7 @@ public static partial class Interpreter
                             else if (char.TryParse(rel, out char valRE)) realisand = valRE;
                             else throw new Lamentation(0x24, rel); 
 
-                            CurrentObjects.Push(realisand!);
+                            CurrentFrame[CurrentFrameIndex].Push(realisand!);
 
                             goto GoForward;
                         case FELActionType.@catch:
@@ -573,13 +588,23 @@ public static partial class Interpreter
                                 {
                                     LocationHistoryForSubroutines.Push(CurrentPointedEffect);
                                     CurrentPointedEffect = indexC;
+                                    CurrentFrame.Add(new());
+                                    CurrentFrameIndex++;
+                                    // carry over the variables in the previous context
+                                    foreach (object item in CurrentFrame[CurrentFrameIndex--]) CurrentFrame[CurrentFrameIndex].Push(item);
                                 }
                                 else throw new Lamentation(0x20, indexC.ToString());
                             }
                             else throw new Lamentation(0x19, zC.ToString());
                             return;
                         case FELActionType.@return:
-                            if (LocationHistoryForSubroutines.Count > 0) CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
+                            if (LocationHistoryForSubroutines.Count > 0)
+                            {
+                                CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
+                                CurrentFrame[CurrentFrameIndex].Clear();
+                                CurrentFrame.RemoveAt(CurrentFrameIndex); // get rid of frame
+                                CurrentFrameIndex--; // go back
+                            }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
                     }
