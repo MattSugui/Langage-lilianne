@@ -1,10 +1,10 @@
-ask;					// get string
+take;					// get string
 //realise;				// turns string into one of the possible numeric types
 narrow;					// narrows the value down to the nearest smaller type
 print;					// print
 pop;					// remove
 
-ask;
+take;
 //realise;
 widen;					// widens the value up to the nearest larger type
 print;
