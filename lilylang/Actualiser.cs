@@ -17,7 +17,7 @@ public static partial class Interpreter
         while (CurrentPointedEffect < CurrentEffects.Count)
         {
             CurrentEffects[CurrentPointedEffect].Invoke();
-            CurrentPointedSubEffect = CurrentPointedObject - LocationHistoryForSubroutines.Peek();
+            //CurrentPointedSubEffect = CurrentPointedObject - LocationHistoryForSubroutines.Peek();
         }
     }
 }
