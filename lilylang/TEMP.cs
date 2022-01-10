@@ -89,6 +89,6 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "Ask",				TokenStruct = new string[] {	"ASKL",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Narrowing",		TokenStruct = new string[] {	"NARW",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Widening",		TokenStruct = new string[] {	"WIDN",	"SMCL"			} });
-		CurrentSentenceStructures.Add(new() { Name = "Realisation",		TokenStruct = new string[] {	"REAL",	"SMCL"			} });
+		CurrentSentenceStructures.Add(new() { Name = "Realisation",		TokenStruct = new string[] {	"REAL",	"INTL",	"SMCL"	} });
 	}
 }
