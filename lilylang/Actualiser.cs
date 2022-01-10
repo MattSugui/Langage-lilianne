@@ -5,6 +5,7 @@ public static partial class Interpreter
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
     public static bool ErrorRaised = false;
+
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>

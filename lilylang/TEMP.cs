@@ -53,6 +53,9 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "WIDN",	Value = @"^widen$"																				});
 		CurrentTokens.Add(new() { Name = "REAL",	Value = @"^realise$"																			});
 		CurrentTokens.Add(new() { Name = "CTCH",	Value = @"^catch$"																				});
+		CurrentTokens.Add(new() { Name = "CALL",	Value = @"^call$"																				});
+		CurrentTokens.Add(new() { Name = "RETN",	Value = @"^return$"																				});
+
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----
 		CurrentSentenceStructures.Add(new() { Name = "StartPreprocess",	TokenStruct = new string[] {	"PRPR",	"COLN"			} });
@@ -91,5 +94,7 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "Widening",		TokenStruct = new string[] {	"WIDN",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Realisation",		TokenStruct = new string[] {	"REAL",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Catch",			TokenStruct = new string[] {	"CTCH", "INTL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "Call",			TokenStruct = new string[] {	"CALL", "INTL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "Return",			TokenStruct = new string[] {	"RETN", "SMCL"			} });
 	}
 }

@@ -404,6 +404,15 @@ public static partial class Interpreter
                     int.TryParse(sent.Value[1], out int zC) ? zC : throw new Lamentation(0x21, sent.Value[1])
                     ));
                 break;
+            case "call":
+                CurrentEffects.Add(new(
+                    FELActionType.@call,
+                    int.TryParse(sent.Value[1], out int zD) ? zD : throw new Lamentation(0x21, sent.Value[1])
+                    ));
+                break;
+            case "return":
+                CurrentEffects.Add(new(FELActionType.@return));
+                break;
         }
     }
 }

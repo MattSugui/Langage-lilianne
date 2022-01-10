@@ -25,6 +25,11 @@ public static partial class Interpreter
     public static int CurrentPointedEffect;
 
     /// <summary>
+    /// The current list of locations where the Call has left its footprint for returning.
+    /// </summary>
+    public static Stack<int> LocationHistoryForSubroutines = new();
+
+    /// <summary>
     /// The current X register.
     /// </summary>
     public static int CurrentObjectX;
@@ -559,7 +564,24 @@ public static partial class Interpreter
                             if (!ErrorRaised) goto GoForward;
                             ErrorRaised = false;
                             CurrentPointedEffect = Value!;
-                            break;
+                            return;
+                        case FELActionType.call:
+                            dynamic zC = Value!;
+                            if (zC is int indexC)
+                            {
+                                if (indexC < CurrentEffects.Count)
+                                {
+                                    LocationHistoryForSubroutines.Push(CurrentPointedEffect);
+                                    CurrentPointedEffect = indexC;
+                                }
+                                else throw new Lamentation(0x20, indexC.ToString());
+                            }
+                            else throw new Lamentation(0x19, zC.ToString());
+                            return;
+                        case FELActionType.@return:
+                            if (LocationHistoryForSubroutines.Count > 0) CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
+                            else goto case FELActionType.end; // redirect to end
+                            return;
                     }
                 }
                 catch (Lamentation cry)
@@ -599,7 +621,9 @@ public static partial class Interpreter
                     act.ActionType == FELActionType.load ||
                     (act.ActionType >= FELActionType.beq &&
                     act.ActionType <= FELActionType.bso) ||
-                    act.ActionType == FELActionType.@catch)
+                    act.ActionType == FELActionType.@catch ||
+                    act.ActionType == FELActionType.call
+                    )
                 {
                     writer.Write((byte)act.ActionType);
                     byte marker = act.Value! switch
@@ -972,6 +996,17 @@ public static partial class Interpreter
             /// in Visual Basic.)
             /// </summary>
             @catch,
+
+            /// <summary>
+            /// Goes to a location in the stream but it saves the current position and is hence some form of subroutine.
+            /// (<see langword="Call"/> in Visual Basic)
+            /// </summary>
+            call,
+
+            /// <summary>
+            /// <see langword="return"/>
+            /// </summary>
+            @return,
         }
 
 

@@ -1,15 +1,14 @@
-ask;					// get string
-realise;				// turns string into one of the possible numeric types
-narrow;					// narrows the value down to the nearest smaller type
-catch 13;				// catch the error thrown if it does and goes to #13
-print;					// print
-pop;					// remove
-
-ask;
-realise;
-widen;					// widens the value up to the nearest larger type
-catch 13;
-print;
-pop;
-
+take;	
+narrow;	
+push 69;
+beq 5;
 end;
+
+call 8;
+print;
+end;
+
+take;
+take;
+multiply;
+return;
