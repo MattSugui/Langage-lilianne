@@ -133,7 +133,8 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ScanTokens(string line)
     {
-        Start:
+    Start:
+        bool comment = false;
         if (string.IsNullOrWhiteSpace(line)) return;
 
         StringBuilder currentWord = new();
@@ -142,7 +143,11 @@ public static partial class Interpreter
         {
             CurrentLine.Append(line[i]);
             currentWord.Append(line[i]);
-            if (currentWord.ToString() == "//") break; // comment!
+            if (currentWord.ToString() == "//")
+            {
+                comment = true;
+                break;
+            }
             if (CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase), out Token token))
             {
                 if (token.Look)
@@ -177,7 +182,7 @@ public static partial class Interpreter
         CurrentWords.Clear();
         string temp2 = CurrentLine.ToString();
         CurrentLine.Clear();
-        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty))) goto Start; else return;
+        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment) goto Start; else return;
     }
 
     /// <summary>
