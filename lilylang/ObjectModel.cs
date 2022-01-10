@@ -513,22 +513,22 @@ public static partial class Interpreter
                             {
                                 dynamic result1 = widand switch
                                 {
-                                    string => throw new Lamentation(0x24, widand.ToString()),
-                                    bool => throw new Lamentation(0x22, widand.ToString()),
-                                    sbyte => widand > 0 ? 1 : 0,
-                                    byte => (sbyte)widand,
-                                    short => (byte)widand,
-                                    ushort => (short)widand,
-                                    int => (ushort)widand,
-                                    uint => (int)widand,
-                                    long => (uint)widand,
-                                    ulong => (long)widand,
-                                    Half => throw new Lamentation(0x22, widand.ToString()),
-                                    float => (Half)widand,
-                                    double => (float)widand,
-                                    decimal => (double)widand,
-                                    char => throw new Lamentation(0x26, widand.ToString()),
-                                    _ => throw new Lamentation(0x28, widand.ToString()),
+                                    string => throw new Lamentation(0x25, widand.ToString()),
+                                    bool => (sbyte)widand,
+                                    sbyte => (byte)widand,
+                                    byte => (short)widand,
+                                    short => (ushort)widand,
+                                    ushort => (int)widand,
+                                    int => (uint)widand,
+                                    uint => (long)widand,
+                                    long => (ulong)widand,
+                                    ulong => throw new Lamentation(0x23, widand.ToString()),
+                                    Half => (float)widand,
+                                    float => (double)widand,
+                                    double => (decimal)widand,
+                                    decimal => throw new Lamentation(0x23, widand.ToString()),
+                                    char => throw new Lamentation(0x27, widand.ToString()),
+                                    _ => throw new Lamentation(0x29, widand.ToString()),
                                 };
                                 CurrentObjects.Push(result1);
                             }
