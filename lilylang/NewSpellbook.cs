@@ -50,6 +50,11 @@ public static partial class Interpreter
             /// If true, this token will be removed from the parse tree.
             /// </summary>
             public bool IgnoreOnRefinement;
+
+            /// <summary>
+            /// If true, this token will end the scanning for that instruction and moves onto another.
+            /// </summary>
+            public bool Terminate;
         }
 
         /// <summary>
@@ -392,6 +397,12 @@ public static partial class Interpreter
                 break;
             case "realise":
                 CurrentEffects.Add(new(FELActionType.realise));
+                break;
+            case "catch":
+                CurrentEffects.Add(new(
+                    FELActionType.@catch,
+                    int.TryParse(sent.Value[1], out int zC) ? zC : throw new Lamentation(0x21, sent.Value[1])
+                    ));
                 break;
         }
     }

@@ -10,48 +10,48 @@ public static class TEMP
 	/// </summary>
 	public static void LOADPATTERNS()
 	{
-		//----------------------- Name              Value                               Look            IgnoreOnRefinement          
-		CurrentTokens.Add(new() { Name = "PRNT",	Value = "^print$"																});
-		CurrentTokens.Add(new() { Name = "QUOT",	Value = @"^"".*""$"																});
-		CurrentTokens.Add(new() { Name = "INTL",	Value = @"^[0-9]+$",				Look = true									});
-		CurrentTokens.Add(new() { Name = "SMCL",	Value = @"^;$"																	});
-		CurrentTokens.Add(new() { Name = "COLN",	Value = @"^:$"																	});
-		CurrentTokens.Add(new() { Name = "WTSP",	Value = @"^\s$",					Look = true,	IgnoreOnRefinement = true	});
-		CurrentTokens.Add(new() { Name = "PRPR",	Value = @"^preprocess$"															});
-		CurrentTokens.Add(new() { Name = "STRT",	Value = @"^start$"																});
-		CurrentTokens.Add(new() { Name = "LET",		Value = @"^let$"																});
-		CurrentTokens.Add(new() { Name = "IDNT",	Value = @"^#[A-Za-z][0-9A-Za-z]*$",	Look = true									});
-		CurrentTokens.Add(new() { Name = "ADDR",	Value = @"^\&[0-9]+$",				Look = true									});
-		CurrentTokens.Add(new() { Name = "EQUL",	Value = @"^=$"																	});
-		CurrentTokens.Add(new() { Name = "PUSH",	Value = @"^push$"																});
-		CurrentTokens.Add(new() { Name = "POP",		Value = @"^pop$"																});
-		CurrentTokens.Add(new() { Name = "ADDO",	Value = @"^add$"																});
-		CurrentTokens.Add(new() { Name = "SUBO",	Value = @"^subtract$"															});
-		CurrentTokens.Add(new() { Name = "MULO",	Value = @"^multiply$"															});
-		CurrentTokens.Add(new() { Name = "DIVO",	Value = @"^divide$"																});
-		CurrentTokens.Add(new() { Name = "MODO",	Value = @"^remainder$"															});
-		CurrentTokens.Add(new() { Name = "LSFT",	Value = @"^lshift$"																});
-		CurrentTokens.Add(new() { Name = "RSFT",	Value = @"^rshift$"																});
-		CurrentTokens.Add(new() { Name = "STOR",	Value = @"^store$"																});
-		CurrentTokens.Add(new() { Name = "LOAD",	Value = @"^load$"																});
-		CurrentTokens.Add(new() { Name = "BEQ",		Value = @"^beq$"																});
-		CurrentTokens.Add(new() { Name = "BNE",		Value = @"^bne$"																});
-		CurrentTokens.Add(new() { Name = "BGT",		Value = @"^bgt$"																});
-		CurrentTokens.Add(new() { Name = "BGE",		Value = @"^bge$"																});
-		CurrentTokens.Add(new() { Name = "BLT",		Value = @"^blt$"																});
-		CurrentTokens.Add(new() { Name = "BLE",		Value = @"^ble$"																});
-		CurrentTokens.Add(new() { Name = "GOTO",	Value = @"^goto$"																});
-		CurrentTokens.Add(new() { Name = "AND",		Value = @"^and$"																});
-		CurrentTokens.Add(new() { Name = "OR",		Value = @"^or$"																	});
-		CurrentTokens.Add(new() { Name = "XOR",		Value = @"^xor$"																});
-		CurrentTokens.Add(new() { Name = "BTRU",	Value = @"^btr$"																});
-		CurrentTokens.Add(new() { Name = "BFLS",	Value = @"^bfl$"																});
-		CurrentTokens.Add(new() { Name = "END",		Value = @"^end$"																});
-		CurrentTokens.Add(new() { Name = "ASKN",	Value = @"^take$"																});
-		CurrentTokens.Add(new() { Name = "ASKL",	Value = @"^ask$"																});
-		CurrentTokens.Add(new() { Name = "NARW",	Value = @"^narrow$"																});
-		CurrentTokens.Add(new() { Name = "WIDN",	Value = @"^widen$"																});
-		CurrentTokens.Add(new() { Name = "REAL",	Value = @"^realise$"															});
+		//----------------------- Name              Value                               Look            IgnoreOnRefinement          Terminate
+		CurrentTokens.Add(new() { Name = "PRNT",	Value = "^print$"																				});
+		CurrentTokens.Add(new() { Name = "QUOT",	Value = @"^"".*""$"																				});
+		CurrentTokens.Add(new() { Name = "INTL",	Value = @"^[0-9]+$",				Look = true													});
+		CurrentTokens.Add(new() { Name = "SMCL",	Value = @"^;$",																	Terminate = true});
+		CurrentTokens.Add(new() { Name = "COLN",	Value = @"^:$",																	Terminate = true});
+		CurrentTokens.Add(new() { Name = "WTSP",	Value = @"^\s$",					Look = true,	IgnoreOnRefinement = true					});
+		CurrentTokens.Add(new() { Name = "PRPR",	Value = @"^preprocess$"																			});
+		CurrentTokens.Add(new() { Name = "STRT",	Value = @"^start$"																				});
+		CurrentTokens.Add(new() { Name = "LET",		Value = @"^let$"																				});
+		CurrentTokens.Add(new() { Name = "IDNT",	Value = @"^#[A-Za-z][0-9A-Za-z]*$",	Look = true													});
+		CurrentTokens.Add(new() { Name = "ADDR",	Value = @"^\&[0-9]+$",				Look = true													});
+		CurrentTokens.Add(new() { Name = "EQUL",	Value = @"^=$"																					});
+		CurrentTokens.Add(new() { Name = "PUSH",	Value = @"^push$"																				});
+		CurrentTokens.Add(new() { Name = "POP",		Value = @"^pop$"																				});
+		CurrentTokens.Add(new() { Name = "ADDO",	Value = @"^add$"																				});
+		CurrentTokens.Add(new() { Name = "SUBO",	Value = @"^subtract$"																			});
+		CurrentTokens.Add(new() { Name = "MULO",	Value = @"^multiply$"																			});
+		CurrentTokens.Add(new() { Name = "DIVO",	Value = @"^divide$"																				});
+		CurrentTokens.Add(new() { Name = "MODO",	Value = @"^remainder$"																			});
+		CurrentTokens.Add(new() { Name = "LSFT",	Value = @"^lshift$"																				});
+		CurrentTokens.Add(new() { Name = "RSFT",	Value = @"^rshift$"																				});
+		CurrentTokens.Add(new() { Name = "STOR",	Value = @"^store$"																				});
+		CurrentTokens.Add(new() { Name = "LOAD",	Value = @"^load$"																				});
+		CurrentTokens.Add(new() { Name = "BEQ",		Value = @"^beq$"																				});
+		CurrentTokens.Add(new() { Name = "BNE",		Value = @"^bne$"																				});
+		CurrentTokens.Add(new() { Name = "BGT",		Value = @"^bgt$"																				});
+		CurrentTokens.Add(new() { Name = "BGE",		Value = @"^bge$"																				});
+		CurrentTokens.Add(new() { Name = "BLT",		Value = @"^blt$"																				});
+		CurrentTokens.Add(new() { Name = "BLE",		Value = @"^ble$"																				});
+		CurrentTokens.Add(new() { Name = "GOTO",	Value = @"^goto$"																				});
+		CurrentTokens.Add(new() { Name = "AND",		Value = @"^and$"																				});
+		CurrentTokens.Add(new() { Name = "OR",		Value = @"^or$"																					});
+		CurrentTokens.Add(new() { Name = "XOR",		Value = @"^xor$"																				});
+		CurrentTokens.Add(new() { Name = "BTRU",	Value = @"^btr$"																				});
+		CurrentTokens.Add(new() { Name = "BFLS",	Value = @"^bfl$"																				});
+		CurrentTokens.Add(new() { Name = "END",		Value = @"^end$"																				});
+		CurrentTokens.Add(new() { Name = "ASKN",	Value = @"^take$"																				});
+		CurrentTokens.Add(new() { Name = "ASKL",	Value = @"^ask$"																				});
+		CurrentTokens.Add(new() { Name = "NARW",	Value = @"^narrow$"																				});
+		CurrentTokens.Add(new() { Name = "WIDN",	Value = @"^widen$"																				});
+		CurrentTokens.Add(new() { Name = "REAL",	Value = @"^realise$"																			});
 
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----

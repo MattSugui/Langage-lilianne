@@ -555,11 +555,17 @@ public static partial class Interpreter
                             CurrentObjects.Push(realisand!);
 
                             goto GoForward;
+                        case FELActionType.@catch:
+                            if (!ErrorRaised) goto GoForward;
+                            ErrorRaised = false;
+                            CurrentPointedEffect = Value!;
+                            break;
                     }
                 }
                 catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
+                    ErrorRaised = true;
                 }
                 catch (Exception ex)
                 {
@@ -569,16 +575,21 @@ public static partial class Interpreter
                     }
                     catch (Lamentation cry)
                     {
-                        WriteLine(cry.ToString());
+                        WriteLine(cry.ToString()); ErrorRaised = true;
                     }
                 }
             GoForward: CurrentPointedEffect++;
             }
         }
 
-        public static void CreateBinary()
+        /// <summary>
+        /// Creates a binary with the code.
+        /// </summary>
+        /// <param name="path">The path to the file. If it does not exist, the file will be created.</param>
+        /// <exception cref="Lamentation"></exception>
+        public static void CreateBinary(string path = "test.lsa")
         {
-            using FileStream stream = File.Create("test.lsa");
+            using FileStream stream = File.Exists(path.Trim('"'))? File.OpenWrite(path.Trim('"')) : File.Create(path.Trim('"'));
             using BinaryWriter writer = new(stream);
 
             foreach (FELAction act in CurrentEffects)
@@ -621,9 +632,10 @@ public static partial class Interpreter
         /// <summary>
         /// Loads in the binary.
         /// </summary>
+        /// <param name="path">The path to the file.</param>
         public static void LoadBinary(string path = "test.lsa")
         {
-            if (!File.Exists(path.Trim('"'))) throw new Lamentation();
+            if (!File.Exists(path.Trim('"'))) throw new Lamentation(3, path.Trim('"'));
 
             using FileStream stream = File.OpenRead(path.Trim('"'));
             using BinaryReader reader = new(stream);
@@ -952,7 +964,13 @@ public static partial class Interpreter
             /// <summary>
             /// Turns a string or character to an appropriate type. Throws a lamentation if it fails.
             /// </summary>
-            realise
+            realise,
+
+            /// <summary>
+            /// <see langword="catch"/> (<see cref="Exception"/>) { } (<see langword="On"/> <see langword="Error"/> <see langword="GoTo"/>
+            /// in Visual Basic.)
+            /// </summary>
+            @catch,
         }
 
 
