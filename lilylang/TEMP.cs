@@ -15,7 +15,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "QUOT",	Value = @"^"".*""$"																				});
 		CurrentTokens.Add(new() { Name = "INTL",	Value = @"^[0-9]+$",				Look = true													});
 		CurrentTokens.Add(new() { Name = "SMCL",	Value = @"^;$",																	Terminate = true});
-		CurrentTokens.Add(new() { Name = "COLN",	Value = @"^:$",																	Terminate = true});
+		CurrentTokens.Add(new() { Name = "COLN",	Value = @"^:$",																	Terminate = true	});
 		CurrentTokens.Add(new() { Name = "WTSP",	Value = @"^\s$",					Look = true,	IgnoreOnRefinement = true					});
 		CurrentTokens.Add(new() { Name = "PRPR",	Value = @"^preprocess$"																			});
 		CurrentTokens.Add(new() { Name = "STRT",	Value = @"^start$"																				});
@@ -52,7 +52,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "NARW",	Value = @"^narrow$"																				});
 		CurrentTokens.Add(new() { Name = "WIDN",	Value = @"^widen$"																				});
 		CurrentTokens.Add(new() { Name = "REAL",	Value = @"^realise$"																			});
-
+		CurrentTokens.Add(new() { Name = "CTCH",	Value = @"^catch$"																				});
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----
 		CurrentSentenceStructures.Add(new() { Name = "StartPreprocess",	TokenStruct = new string[] {	"PRPR",	"COLN"			} });
@@ -89,6 +89,7 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "Ask",				TokenStruct = new string[] {	"ASKL",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Narrowing",		TokenStruct = new string[] {	"NARW",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Widening",		TokenStruct = new string[] {	"WIDN",	"SMCL"			} });
-		CurrentSentenceStructures.Add(new() { Name = "Realisation",		TokenStruct = new string[] {	"REAL",	"INTL",	"SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "Realisation",		TokenStruct = new string[] {	"REAL",	"SMCL"			} });
+		CurrentSentenceStructures.Add(new() { Name = "Catch",			TokenStruct = new string[] {	"CTCH", "INTL", "SMCL"	} });
 	}
 }
