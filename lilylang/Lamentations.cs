@@ -50,6 +50,14 @@ public static partial class Interpreter
             def.Add(0x0019, "{0} is not a valid Int32 value.");
             def.Add(0x0020, "Index {0} goes beyond the current stream.");
             def.Add(0x0021, "Index {0} is in an incorrect format.");
+            def.Add(0x0022, "'{0}': cannot be shrunk further.");
+            def.Add(0x0023, "'{0}': cannot be grown further.");
+            def.Add(0x0024, "'{0}': cannot shrink a string!");
+            def.Add(0x0025, "'{0}': cannot grow a string!");
+            def.Add(0x0026, "'{0}': cannot shrink a character!");
+            def.Add(0x0027, "'{0}': cannot grow a character!");
+            def.Add(0x0028, "'{0}': cannot shrink whatever this is!");
+            def.Add(0x0029, "'{0}': cannot grow whatever this is!");
         }
 
         /// <summary>

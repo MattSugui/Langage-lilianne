@@ -1,13 +1,11 @@
-ask; // ask for a string
-push "hello!";
-bne 6;
-take; // ask but the value has the potential to change to an integral value if it can
-push 21;
-beq 10;
-push "bruh moment";
-print;
-pop;
-end;
-push "yay!";
+ask;					// get string
+realise;				// turns string into one of the possible numeric types
+narrow;					// narrows the value down to the nearest smaller type
+print;					// print
+pop;					// remove
+
+ask;
+realise;
+widen;					// widens the value up to the nearest larger type
 print;
 pop;

@@ -481,6 +481,58 @@ public static partial class Interpreter
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
                             CurrentObjects.Push(content2);
                             goto GoForward;
+                        case FELActionType.narrow:
+                            dynamic narrowand = CurrentObjects.Pop();
+                            unchecked
+                            {
+                                dynamic result1 = narrowand switch
+                                {
+                                    string => throw new Lamentation(0x24, narrowand.ToString()),
+                                    bool => throw new Lamentation(0x22, narrowand.ToString()),
+                                    sbyte => narrowand > 0 ? 1 : 0,
+                                    byte => (sbyte)narrowand,
+                                    short => (byte)narrowand,
+                                    ushort => (short)narrowand,
+                                    int => (ushort)narrowand,
+                                    uint => (int)narrowand,
+                                    long => (uint)narrowand,
+                                    ulong => (long)narrowand,
+                                    Half => throw new Lamentation(0x22, narrowand.ToString()),
+                                    float => (Half)narrowand,
+                                    double => (float)narrowand,
+                                    decimal => (double)narrowand,
+                                    char => throw new Lamentation(0x26, narrowand.ToString()),
+                                    _ => throw new Lamentation(0x28, narrowand.ToString()),
+                                };
+                                CurrentObjects.Push(result1);
+                            }
+                            goto GoForward;
+                        case FELActionType.widen:
+                            dynamic widand = CurrentObjects.Pop();
+                            unchecked
+                            {
+                                dynamic result1 = widand switch
+                                {
+                                    string => throw new Lamentation(0x24, widand.ToString()),
+                                    bool => throw new Lamentation(0x22, widand.ToString()),
+                                    sbyte => widand > 0 ? 1 : 0,
+                                    byte => (sbyte)widand,
+                                    short => (byte)widand,
+                                    ushort => (short)widand,
+                                    int => (ushort)widand,
+                                    uint => (int)widand,
+                                    long => (uint)widand,
+                                    ulong => (long)widand,
+                                    Half => throw new Lamentation(0x22, widand.ToString()),
+                                    float => (Half)widand,
+                                    double => (float)widand,
+                                    decimal => (double)widand,
+                                    char => throw new Lamentation(0x26, widand.ToString()),
+                                    _ => throw new Lamentation(0x28, widand.ToString()),
+                                };
+                                CurrentObjects.Push(result1);
+                            }
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -858,29 +910,19 @@ public static partial class Interpreter
             /// <summary>
             /// Ask for a value. This will never automatically convert to other types.
             /// </summary>
-            ask
+            ask,
+
+            /// <summary>
+            /// Shrink the value on top to its nearest smaller type.
+            /// </summary>
+            narrow,
+
+            /// <summary>
+            /// Grow the value on top to its nearest larger type.
+            /// </summary>
+            widen
         }
 
-
-        #region Method implementations
-        /// <summary>
-        /// A push operation. Places a value on top of the stack. (Method to be attached to <see cref="PushOperation"/>)
-        /// </summary>
-        /// <param name="value">The value to push onto the stack.</param>
-        public static void Push(object value) => CurrentObjects.Push(value);
-
-
-        /// <summary>
-        /// A pop operation. Removes the value from the top of the stack. (Method to be attached to <see cref="PopOperation"/>)
-        /// </summary>
-        public static void Pop() => _ = CurrentObjects.Pop();
-
-
-        /// <summary>
-        /// A print operation. Displays the value on top of the stack to the screen. (Method to be attached to <see cref="PrintOperation"/>)
-        /// </summary>
-        public static void Print() => WriteLine(CurrentObjects.Peek());
-        #endregion
 
         /* example:
          * push 10;

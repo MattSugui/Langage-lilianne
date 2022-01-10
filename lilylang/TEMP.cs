@@ -48,7 +48,9 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "BFLS",	Value = @"^bfl$"																});
 		CurrentTokens.Add(new() { Name = "END",		Value = @"^end$"																});
 		CurrentTokens.Add(new() { Name = "ASKN",	Value = @"^take$"																});
-		CurrentTokens.Add(new() { Name = "ASKL",	Value = @"^ask$"															});
+		CurrentTokens.Add(new() { Name = "ASKL",	Value = @"^ask$"																});
+		CurrentTokens.Add(new() { Name = "NARW",	Value = @"^narrow$"																});
+		CurrentTokens.Add(new() { Name = "WIDN",	Value = @"^widen$"																});
 
 		//----------------------------------- Name                      PointersToValues            TokenStruct
 		CurrentSentenceStructures.Add(new() { Name = "StartPreprocess",	PointersToValues = null,	TokenStruct = new string[] { "PRPR",	"COLN"			} });
@@ -83,5 +85,7 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "End",											TokenStruct = new string[] { "END",		"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "AskString",									TokenStruct = new string[] { "ASKN",	"SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "Ask",											TokenStruct = new string[] { "ASKL",	"SMCL"			} });
+		CurrentSentenceStructures.Add(new() { Name = "Narrowing",									TokenStruct = new string[] { "NARW",	"SMCL"			} });
+		CurrentSentenceStructures.Add(new() { Name = "Widening",									TokenStruct = new string[] { "WIDN",	"SMCL"			} });
 	}
 }

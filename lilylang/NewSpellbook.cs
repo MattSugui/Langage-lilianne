@@ -133,6 +133,7 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ScanTokens(string line)
     {
+        Start:
         if (string.IsNullOrWhiteSpace(line)) return;
 
         StringBuilder currentWord = new();
@@ -171,10 +172,12 @@ public static partial class Interpreter
                 if (CurrentLine.Length < line.Length) continue; else throw new Lamentation(2, currentWord.ToString());
             }
         }
-
-        CurrentLine.Clear();
+        
         if (CurrentWords.Count > 0) CurrentWordPacks.Add(new(CurrentWords));
         CurrentWords.Clear();
+        string temp2 = CurrentLine.ToString();
+        CurrentLine.Clear();
+        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty))) goto Start; else return;
     }
 
     /// <summary>
@@ -375,6 +378,12 @@ public static partial class Interpreter
                 break;
             case "ask":
                 CurrentEffects.Add(new(FELActionType.ask));
+                break;
+            case "narrow":
+                CurrentEffects.Add(new(FELActionType.narrow));
+                break;
+            case "widen":
+                CurrentEffects.Add(new(FELActionType.widen));
                 break;
         }
     }
