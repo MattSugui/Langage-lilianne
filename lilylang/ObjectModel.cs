@@ -601,6 +601,7 @@ public static partial class Interpreter
                             if (LocationHistoryForSubroutines.Count > 0)
                             {
                                 CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
+                                if (CurrentFrame[CurrentFrameIndex].Count > 0) CurrentFrame[CurrentFrameIndex - 1].Push(CurrentFrame[CurrentFrameIndex].Pop()); // carry over
                                 CurrentFrame[CurrentFrameIndex].Clear();
                                 CurrentFrame.RemoveAt(CurrentFrameIndex); // get rid of frame
                                 CurrentFrameIndex--; // go back
