@@ -1,5 +1,5 @@
 ask;					// get string
-realise;				// turns string into one of the possible numeric types
+//realise;				// turns string into one of the possible numeric types
 narrow;					// narrows the value down to the nearest smaller type
 print;					// print
 pop;					// remove
