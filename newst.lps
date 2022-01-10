@@ -1,11 +1,11 @@
-take;					// get string
-//realise;				// turns string into one of the possible numeric types
+ask;					// get string
+realise;				// turns string into one of the possible numeric types
 narrow;					// narrows the value down to the nearest smaller type
 print;					// print
 pop;					// remove
 
-take;
-//realise;
+ask;
+realise;
 widen;					// widens the value up to the nearest larger type
 print;
 pop;

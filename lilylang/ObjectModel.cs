@@ -56,8 +56,8 @@ public static partial class Interpreter
         /// A form of delegate??? but not quite?? for use with the stack.
         /// </summary>
         /// <param name="ActionType">What to do.</param>
-        /// <param name="Value">The value. Only valid for the Push, Load, Store and branching operations.</param>
-        public record struct FELAction(FELActionType ActionType, dynamic Value = null)
+        /// <param name="Value">The value. Only valid for operations that .</param>
+        public record struct FELAction(FELActionType ActionType, dynamic? Value = null)
         {
             /// <summary>
             /// Invokes the action.
@@ -69,19 +69,15 @@ public static partial class Interpreter
                     switch (ActionType)
                     {
                         case FELActionType.nop:
-                        case FELActionType.str:
-                        case FELActionType.ste:
-                        case FELActionType.nus:
-                        case FELActionType.nue:
                             goto GoForward;
                         case FELActionType.push:
-                            if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying atm
+                            if (Value is not null) CurrentObjects.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
-                            CurrentObjects.Pop();
+                            if (CurrentObjects.Count != 0) CurrentObjects.Pop(); // do nothing if the stack is empty
                             goto GoForward;
                         case FELActionType.print:
-                            WriteLine(CurrentObjects.Peek());
+                            WriteLine(CurrentObjects.Count != 0? CurrentObjects.Peek() : "There is nothing to print.");
                             goto GoForward;
                         case FELActionType.add:
                             try
@@ -227,6 +223,7 @@ public static partial class Interpreter
                                     {
                                         string => name,
                                         int => name.ToString(),
+                                        _ => string.Empty,
                                     }
                                 ));
                             goto GoForward;
@@ -533,6 +530,31 @@ public static partial class Interpreter
                                 CurrentObjects.Push(result1);
                             }
                             goto GoForward;
+                        case FELActionType.realise:
+                            string rel = (string)CurrentObjects.Pop()!;
+                            dynamic? realisand = null;
+
+                            if (string.IsNullOrEmpty(rel)) goto GoForward;
+
+                            if (bool.TryParse(rel, out bool valR1)) realisand = valR1;
+                            else if (sbyte.TryParse(rel, out sbyte valR2)) realisand = valR2;
+                            else if (byte.TryParse(rel, out byte valR3)) realisand = valR3;
+                            else if (short.TryParse(rel, out short valR4)) realisand = valR4;
+                            else if (ushort.TryParse(rel, out ushort valR5)) realisand = valR5;
+                            else if (int.TryParse(rel, out int valR6)) realisand = valR6;
+                            else if (uint.TryParse(rel, out uint valR7)) realisand = valR7;
+                            else if (long.TryParse(rel, out long valR8)) realisand = valR8;
+                            else if (ulong.TryParse(rel, out ulong valR9)) realisand = valR9;
+                            else if (Half.TryParse(rel, out Half valRA)) realisand = valRA;
+                            else if (float.TryParse(rel, out float valRB)) realisand = valRB;
+                            else if (double.TryParse(rel, out double valRC)) realisand = valRC;
+                            else if (decimal.TryParse(rel, out decimal valRD)) realisand = valRD;
+                            else if (char.TryParse(rel, out char valRE)) realisand = valRE;
+                            else throw new Lamentation(0x24, rel); 
+
+                            CurrentObjects.Push(realisand!);
+
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -596,9 +618,14 @@ public static partial class Interpreter
             }
         }
 
-        public static void LoadBinary()
+        /// <summary>
+        /// Loads in the binary.
+        /// </summary>
+        public static void LoadBinary(string path = "test.lsa")
         {
-            using FileStream stream = File.OpenRead("test.lsa");
+            if (!File.Exists(path.Trim('"'))) throw new Lamentation();
+
+            using FileStream stream = File.OpenRead(path.Trim('"'));
             using BinaryReader reader = new(stream);
 
             reader.BaseStream.Position = 0; // bruh stay there!!!
@@ -606,7 +633,7 @@ public static partial class Interpreter
             while (reader.PeekChar() != -1)
             {
                 byte opcode = reader.ReadByte();
-                dynamic thing = null;
+                dynamic? thing = null;
                 if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44))
                 {
                     byte marker = reader.ReadByte();
@@ -920,7 +947,12 @@ public static partial class Interpreter
             /// <summary>
             /// Grow the value on top to its nearest larger type.
             /// </summary>
-            widen
+            widen,
+
+            /// <summary>
+            /// Turns a string or character to an appropriate type. Throws a lamentation if it fails.
+            /// </summary>
+            realise
         }
 
 

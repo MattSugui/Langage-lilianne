@@ -58,6 +58,7 @@ public static partial class Interpreter
             def.Add(0x0027, "'{0}': cannot grow a character!");
             def.Add(0x0028, "'{0}': cannot shrink whatever this is!");
             def.Add(0x0029, "'{0}': cannot grow whatever this is!");
+            def.Add(0x002A, "'{0}': cannot realise this string into an integral value.");
         }
 
         /// <summary>

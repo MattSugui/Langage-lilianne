@@ -390,6 +390,9 @@ public static partial class Interpreter
             case "widen":
                 CurrentEffects.Add(new(FELActionType.widen));
                 break;
+            case "realise":
+                CurrentEffects.Add(new(FELActionType.realise));
+                break;
         }
     }
 }
