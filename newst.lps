@@ -7,12 +7,10 @@
 	store				#lol;
 	load				#lol;
 	push				420;
-	beq					12;
+	beq					13;
 	load				#lol;
 	push				69;
-	beq					13;
-	//nop;				
-	//nop;				
+	beq					14;
 
 	end;				
 

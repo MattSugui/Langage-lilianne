@@ -479,7 +479,7 @@ public static partial class Interpreter
                             Environment.Exit(0);
                             return;
                         case FELActionType.take:
-                            Write("The programme needs some input > ");
+                            Write("-> ");
                             string? asked = ReadLine();
                             dynamic content;
                             if (!string.IsNullOrEmpty(asked)) content = asked!; else goto GoForward;
@@ -502,7 +502,7 @@ public static partial class Interpreter
                             CurrentFrame[CurrentFrameIndex].Push(content!);
                             goto GoForward;
                         case FELActionType.ask:
-                            Write("The programme needs some input > ");
+                            Write("=> ");
                             string? asked2 = ReadLine();
                             string content2 = string.Empty;
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
