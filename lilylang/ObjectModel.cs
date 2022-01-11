@@ -59,6 +59,16 @@ public static partial class Interpreter
     /// </summary>
     public static int CurrentObjectA;
 
+    /// <summary>
+    /// The current queue of labels awaiting assignment to places of code.
+    /// </summary>
+    public static List<string> WaitingGotoPositions = new();
+
+    /// <summary>
+    /// The current queue of recognised labels awaiting assignment to a call statement.
+    /// </summary>
+    public static Dictionary<string, int> WaitingLabelPositions = new();
+
     public static partial class Actualiser
     {
         [Obsolete("Use CurrentEffects")]
@@ -608,6 +618,31 @@ public static partial class Interpreter
                             }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
+                        case FELActionType.label:
+                            string gotola = (string)Value!;
+                            WaitingLabelPositions.Add(gotola, CurrentEffects.IndexOf(this));
+                            ActionType = FELActionType.nop; Value = null; // preserve position so that the goto actually works
+                            if (WaitingGotoPositions.Contains(gotola))
+                            {
+                                var bruh = CurrentEffects[CurrentEffects.IndexOf(CurrentEffects.Find(t => t.Value! as string == gotola))];
+                                bruh.ActionType = FELActionType.call;
+                                bruh.Value = WaitingLabelPositions[gotola];
+                                WaitingLabelPositions.Remove(gotola);
+                                WaitingGotoPositions.Remove(gotola);
+                            }
+                            goto GoForward;
+                        case FELActionType.gotolabel:
+                            string label = (string)Value!;
+                            WaitingGotoPositions.Add(label);
+                            if (WaitingLabelPositions.ContainsKey(label))
+                            {
+                                ActionType = FELActionType.call;
+                                Value = WaitingLabelPositions[label];
+                                WaitingLabelPositions.Remove(label);
+                                WaitingGotoPositions.Remove(label);
+                                goto case FELActionType.call;
+                            }
+                            else goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -627,6 +662,8 @@ public static partial class Interpreter
                     }
                 }
             GoForward: CurrentPointedEffect++;
+
+                
             }
         }
 
@@ -1033,6 +1070,17 @@ public static partial class Interpreter
             /// <see langword="return"/>
             /// </summary>
             @return,
+
+            /// <summary>
+            /// This action is just a label in code. Any action associated with this code will be removed from the binary and turned into
+            /// a no-op.
+            /// </summary>
+            label,
+
+            /// <summary>
+            /// This action will be turned into a standard goto if the label is found later on.
+            /// </summary>
+            gotolabel,
         }
 
 

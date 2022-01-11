@@ -1,14 +1,11 @@
-take;	
-narrow;	
-push 69;
-beq 5;
-end;
+main:
+	push "Hello subroutines!";
+	print;
 
-call 8;
-print;
-end;
+	call Bruh;
 
-take;
-take;
-multiply;
-return;
+Bruh:
+	push "ho";
+	print;
+
+	call main;

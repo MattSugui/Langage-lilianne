@@ -414,13 +414,27 @@ public static partial class Interpreter
                     ));
                 break;
             case "call":
-                CurrentEffects.Add(new(
+                if (sent.Value[1].StartsWith('@'))
+                    CurrentEffects.Add(new(
+                        FELActionType.gotolabel,
+                        sent.Value[1].TrimStart('#')
+                        ));
+                else CurrentEffects.Add(new(
                     FELActionType.@call,
                     int.TryParse(sent.Value[1], out int zD) ? zD : throw new Lamentation(0x21, sent.Value[1])
                     ));
                 break;
             case "return":
                 CurrentEffects.Add(new(FELActionType.@return));
+                break;
+            default:
+                if (sent.Value[0].TrimEnd().EndsWith(':'))
+                    CurrentEffects.Add(new(
+                        FELActionType.label,
+                        sent.Value[1].TrimEnd(':')
+                        ));
+                else
+                    throw new Lamentation(0x16, string.Join(' ', sent.Value));
                 break;
         }
     }

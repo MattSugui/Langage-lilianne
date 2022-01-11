@@ -55,6 +55,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "CTCH",	Value = @"^catch$"																				});
 		CurrentTokens.Add(new() { Name = "CALL",	Value = @"^call$"																				});
 		CurrentTokens.Add(new() { Name = "RETN",	Value = @"^return$"																				});
+		CurrentTokens.Add(new() { Name = "LABL",	Value = @"^@[A-Za-z][0-9A-Za-z]*$",	Look = true													});
 
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----
@@ -96,5 +97,7 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "Catch",			TokenStruct = new string[] {	"CTCH", "INTL", "SMCL"	} });
 		CurrentSentenceStructures.Add(new() { Name = "Call",			TokenStruct = new string[] {	"CALL", "INTL", "SMCL"	} });
 		CurrentSentenceStructures.Add(new() { Name = "Return",			TokenStruct = new string[] {	"RETN", "SMCL"			} });
+		CurrentSentenceStructures.Add(new() { Name = "CallNamed",		TokenStruct = new string[] {	"CALL", "LABL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "SubroutineName",	TokenStruct = new string[] {	"LABL", "COLN"			} });
 	}
 }
