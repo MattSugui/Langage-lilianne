@@ -621,28 +621,11 @@ public static partial class Interpreter
                         case FELActionType.label:
                             string gotola = (string)Value!;
                             WaitingLabelPositions.Add(gotola, CurrentEffects.IndexOf(this));
-                            CurrentEffects[CurrentEffects.IndexOf(this)] = this with { ActionType = FELActionType.nop, Value = null };
-                            if (WaitingGotoPositions.Contains(gotola))
-                            {
-                                var bruh = CurrentEffects[CurrentEffects.IndexOf(CurrentEffects.Find(t => t.Value! as string == gotola))];
-                                bruh.ActionType = FELActionType.call;
-                                bruh.Value = WaitingLabelPositions[gotola];
-                                WaitingLabelPositions.Remove(gotola);
-                                WaitingGotoPositions.Remove(gotola);
-                                CurrentEffects[CurrentEffects.IndexOf(CurrentEffects.Find(t => t.Value! as string == gotola))] = bruh;
-                            }
                             goto GoForward;
                         case FELActionType.gotolabel:
                             string label = (string)Value!;
                             WaitingGotoPositions.Add(label);
-                            if (WaitingLabelPositions.ContainsKey(label))
-                            {
-                                CurrentEffects[CurrentEffects.IndexOf(this)] = this with { ActionType = FELActionType.call, Value = WaitingLabelPositions[label] };
-                                WaitingLabelPositions.Remove(label);
-                                WaitingGotoPositions.Remove(label);
-                                goto case FELActionType.call;
-                            }
-                            else goto GoForward;
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -662,8 +645,6 @@ public static partial class Interpreter
                     }
                 }
             GoForward: CurrentPointedEffect++;
-
-                
             }
         }
 

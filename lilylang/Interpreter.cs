@@ -73,7 +73,7 @@ public static partial class Interpreter
     public static void Interpret()
     {
         //foreach (string line in CurrentFile) ScanTokens(line);
-        //Stopwatch watch = new();
+        Stopwatch watch = new();
         //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
         //PowerShell ps = PowerShell.Create();
 
@@ -143,7 +143,18 @@ public static partial class Interpreter
             //DisplayTimeInRealTime = true,
         };
 
-        //watch.Start();
+        ProgressBarOptions opt6 = new()
+        {
+            ProgressBarOnBottom = false,
+            //DenseProgressBar = true,
+            ProgressCharacter = '\u2588',
+            BackgroundCharacter = '\u2590',
+            CollapseWhenFinished = false,
+            ForegroundColor = ConsoleColor.Cyan
+            //DisplayTimeInRealTime = true,
+        };
+
+        watch.Start();
         Clear();
         using (var pbm = new ProgressBar(4, "Interpretation process", opt))
         {
@@ -251,6 +262,12 @@ public static partial class Interpreter
                 }
                 pbm.Tick();
             }
+            using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
+            {
+                CheckForFriendlyNames();
+                pbe.Tick();
+                pbm.Tick();
+            }
             using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
             {
                 CreateBinary();
@@ -259,7 +276,8 @@ public static partial class Interpreter
             }
         }
         Clear();
-        //watch.Stop();
+        watch.Stop();
+        WriteLine($"Took {watch.ElapsedMilliseconds} ms.");
         //WriteLine("complet");
 
         /*

@@ -438,6 +438,58 @@ public static partial class Interpreter
                 break;
         }
     }
+
+    /// <summary>
+    /// Checks the <see cref="CurrentEffects"/> list for any labels and replaces them with their physical addresses instead.
+    /// </summary>
+    internal static void CheckForFriendlyNames()
+    {
+        (FELAction label, FELAction pointer) = (default, default);
+        (int labelloc, int pointerloc) = (0, 0);
+        List<(int, int)> pairLocations = new();
+
+        int currentEffect = 0;
+        while (CurrentEffects.Exists(a => a.ActionType == FELActionType.label) || CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
+        {
+            switch (CurrentEffects[currentEffect].ActionType)
+            {
+                case FELActionType.label:
+                    label = CurrentEffects[currentEffect];
+                    labelloc = currentEffect;
+                    if (label.Value! == pointer.Value!)
+                    {
+                        CurrentEffects[labelloc] = new(FELActionType.nop);
+                        CurrentEffects[pointerloc] = new(FELActionType.call, labelloc);
+                    }
+                    break;
+                case FELActionType.gotolabel:
+                    pointer = CurrentEffects[currentEffect];
+                    pointerloc = currentEffect;
+                    if (label.Value! == pointer.Value!)
+                    {
+                        CurrentEffects[labelloc] = new(FELActionType.nop);
+                        CurrentEffects[pointerloc] = new(FELActionType.call, labelloc);
+                    }
+                    break;
+                default: break;
+            }
+
+            /*
+            if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.label) && CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
+            {
+                FELAction[] l = CurrentEffects.FindAll(a => a.ActionType == FELActionType.gotolabel).ToArray();
+                throw new Lamentation(
+                    0x2b,
+                    l.Length > 1 ? "s" : string.Empty,
+                    l.Length > 1 ? "don't" : "doesn't",
+                    string.Join(", ", l)
+                    );
+            }
+            */
+            if (currentEffect < CurrentEffects.Count - 1) currentEffect++;
+            else currentEffect = 0; // reset
+        }
+    }
 }
 
 public static partial class Extensions
