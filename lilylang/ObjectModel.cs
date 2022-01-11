@@ -621,7 +621,7 @@ public static partial class Interpreter
                         case FELActionType.label:
                             string gotola = (string)Value!;
                             WaitingLabelPositions.Add(gotola, CurrentEffects.IndexOf(this));
-                            ActionType = FELActionType.nop; Value = null; // preserve position so that the goto actually works
+                            CurrentEffects[CurrentEffects.IndexOf(this)] = this with { ActionType = FELActionType.nop, Value = null };
                             if (WaitingGotoPositions.Contains(gotola))
                             {
                                 var bruh = CurrentEffects[CurrentEffects.IndexOf(CurrentEffects.Find(t => t.Value! as string == gotola))];
@@ -629,6 +629,7 @@ public static partial class Interpreter
                                 bruh.Value = WaitingLabelPositions[gotola];
                                 WaitingLabelPositions.Remove(gotola);
                                 WaitingGotoPositions.Remove(gotola);
+                                CurrentEffects[CurrentEffects.IndexOf(CurrentEffects.Find(t => t.Value! as string == gotola))] = bruh;
                             }
                             goto GoForward;
                         case FELActionType.gotolabel:
@@ -636,8 +637,7 @@ public static partial class Interpreter
                             WaitingGotoPositions.Add(label);
                             if (WaitingLabelPositions.ContainsKey(label))
                             {
-                                ActionType = FELActionType.call;
-                                Value = WaitingLabelPositions[label];
+                                CurrentEffects[CurrentEffects.IndexOf(this)] = this with { ActionType = FELActionType.call, Value = WaitingLabelPositions[label] };
                                 WaitingLabelPositions.Remove(label);
                                 WaitingGotoPositions.Remove(label);
                                 goto case FELActionType.call;
