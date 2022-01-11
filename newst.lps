@@ -1,11 +1,29 @@
 @main:
-	push "Hello subroutines!";
+	push				"Hello subroutines!";
 	print;
+	pop;
 
-	call @Bruh;
+	take;
+	push				420;
+	beq					13;
+	pop;
+	push				69;
+	beq					14;
+	pop;				
+	pop;				
 
-@Bruh:
-	push "ho";
+	end;				
+
+	call				@weedNumber;
+	call				@funniNumber;
+
+@weedNumber:
+	push				"bruh";
 	print;
+	pop;
+	end;
 
-	call @main;
+@funniNumber:
+	push				"hehehehehehe nice";
+	print;
+	goto				22;

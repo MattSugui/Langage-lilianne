@@ -14,9 +14,9 @@ namespace fonder.Lilian.New
 				"Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion + "\n"
 			);
 
-			WriteLine(
-				"Welcome to the REPL mode! Type EXIT if you've had your fun."
-			)//
+			//WriteLine(
+			//	"Welcome to the REPL mode! Type EXIT if you've had your fun."
+			//)//
 			;
 
 			/*
@@ -68,7 +68,7 @@ namespace fonder.Lilian.New
             }
 #endif
 			
-			Write($"Compilation finished.\nFun fact: You've saved up {(double)(File.ReadAllBytes("test.lsa").Length / File.ReadAllBytes(filepath.Trim('"')).Length)*100}%! Press any key to continue.");
+			Write($"Compilation finished.\nPress any key to {(filepath.EndsWith(".lps") && args.Contains("-d")? "run this application" : "continue")}.");
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))
             {
