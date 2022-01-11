@@ -417,7 +417,7 @@ public static partial class Interpreter
                 if (sent.Value[1].StartsWith('@'))
                     CurrentEffects.Add(new(
                         FELActionType.gotolabel,
-                        sent.Value[1].TrimStart('#')
+                        sent.Value[1].TrimStart('@')
                         ));
                 else CurrentEffects.Add(new(
                     FELActionType.@call,
@@ -428,10 +428,10 @@ public static partial class Interpreter
                 CurrentEffects.Add(new(FELActionType.@return));
                 break;
             default:
-                if (sent.Value[0].TrimStart().StartsWith('@'))
+                if (sent.Value[0].StartsWith('@'))
                     CurrentEffects.Add(new(
                         FELActionType.label,
-                        sent.Value[1].TrimStart('@').TrimEnd(':').Trim()
+                        sent.Value[0].TrimStart('@')
                         ));
                 else
                     throw new Lamentation(0x16, string.Join(' ', sent.Value));
