@@ -685,7 +685,9 @@ public static partial class Interpreter
                     (act.ActionType >= FELActionType.beq &&
                     act.ActionType <= FELActionType.bso) ||
                     act.ActionType == FELActionType.@catch ||
-                    act.ActionType == FELActionType.call
+                    act.ActionType == FELActionType.call ||
+                    act.ActionType == FELActionType.label ||
+                    act.ActionType == FELActionType.gotolabel
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -734,7 +736,7 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic? thing = null;
-                if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44) || opcode == 51 || opcode == 52)
+                if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44) || opcode == 51 || opcode == 52 || opcode == 54 || opcode == 55)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
