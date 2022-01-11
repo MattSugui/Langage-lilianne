@@ -245,7 +245,7 @@ public static partial class Interpreter
                                 if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
                                 else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
                                 CurrentFrame[CurrentFrameIndex].Push(selected.Value);
-                                CurrentStore.Remove(selected);
+                                //CurrentStore.Remove(selected);
                             }
                             else throw new Lamentation(0x18,
                                 (

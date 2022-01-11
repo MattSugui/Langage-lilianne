@@ -4,11 +4,13 @@
 	pop;
 
 	take;
+	store				#lol;
+	load				#lol;
 	push				420;
-	beq					10;
-	//nop;
+	beq					12;
+	load				#lol;
 	push				69;
-	beq					11;
+	beq					13;
 	//nop;				
 	//nop;				
 
