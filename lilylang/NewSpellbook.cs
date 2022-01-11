@@ -428,10 +428,10 @@ public static partial class Interpreter
                 CurrentEffects.Add(new(FELActionType.@return));
                 break;
             default:
-                if (sent.Value[0].TrimEnd().EndsWith(':'))
+                if (sent.Value[0].TrimEnd().EndsWith(':') && sent.Value[0].TrimStart().StartsWith('@'))
                     CurrentEffects.Add(new(
                         FELActionType.label,
-                        sent.Value[1].TrimEnd(':')
+                        sent.Value[1].TrimStart('@').TrimEnd(':')
                         ));
                 else
                     throw new Lamentation(0x16, string.Join(' ', sent.Value));

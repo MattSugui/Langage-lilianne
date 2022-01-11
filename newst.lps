@@ -1,10 +1,10 @@
-main:
+@main:
 	push "Hello subroutines!";
 	print;
 
 	call Bruh;
 
-Bruh:
+@Bruh:
 	push "ho";
 	print;
 
