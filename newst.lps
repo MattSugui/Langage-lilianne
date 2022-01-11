@@ -2,10 +2,10 @@
 	push "Hello subroutines!";
 	print;
 
-	call Bruh;
+	call @Bruh;
 
 @Bruh:
 	push "ho";
 	print;
 
-	call main;
+	call @main;
