@@ -449,7 +449,7 @@ public static partial class Interpreter
         List<(int, int)> pairLocations = new();
 
         int currentEffect = 0;
-        while (CurrentEffects.Exists(a => a.ActionType == FELActionType.label) || CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
+        while (/*CurrentEffects.Exists(a => a.ActionType == FELActionType.label) || */CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
         {
             switch (CurrentEffects[currentEffect].ActionType)
             {
