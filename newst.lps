@@ -5,12 +5,12 @@
 
 	take;
 	push				420;
-	beq					13;
-	pop;
+	beq					10;
+	//nop;
 	push				69;
-	beq					14;
-	pop;				
-	pop;				
+	beq					11;
+	//nop;				
+	//nop;				
 
 	end;				
 
