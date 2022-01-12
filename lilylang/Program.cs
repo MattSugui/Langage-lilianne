@@ -78,6 +78,7 @@ namespace fonder.Lilian.New
                 {
 					SetCursorPosition(0, CursorTop - 1);
 					WriteLine(e.ToString());
+					CurrentLine.Clear();
 				}
 			}
 		}
