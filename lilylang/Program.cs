@@ -65,15 +65,19 @@ namespace fonder.Lilian.New
 				try
 				{
 					string st = ReadLine();
+					if (string.IsNullOrWhiteSpace(st)) continue;
 					if (st.StartsWith('.')) ;
-					Interpret(false, false, st);
-					SetCursorPosition(0, CursorTop - 1);
-					WriteLine(
-						$"{CurrentPointedEffect:X2}      " +
-						$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
-						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
-						$"{st}");
-					CurrentPointedEffect++;
+					else
+					{
+						Interpret(false, false, st);
+						SetCursorPosition(0, CursorTop - 1);
+						WriteLine(
+							$"{CurrentPointedEffect:X2}      " +
+							$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
+							$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
+							$"{st}");
+						CurrentPointedEffect++;
+					}
 				}
 				catch (Lamentation e)
                 {
