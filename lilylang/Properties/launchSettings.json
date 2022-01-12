@@ -1,8 +1,7 @@
 {
   "profiles": {
     "lilylang": {
-      "commandName": "Project",
-      "commandLineArgs": "-d"
+      "commandName": "Project"
     },
     "Profil 1": {
       "commandName": "Project"
