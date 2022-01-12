@@ -82,16 +82,32 @@ namespace fonder.Lilian.New
 								string pth = Regex.Match(dir, @"save\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
 								CreateBinary(pth);
 								break;
-							case "seek":
-								if (int.TryParse(dir.Split(' ')[1], out int index1) && index1 <= CurrentEffects.Count - 1)
+							case "load":
+								string pth2 = Regex.Match(dir, @"load\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
+								var key = ReadKey();
+								while (key.Key != ConsoleKey.Y || key.Key != ConsoleKey.N)
                                 {
-									CurrentPointedEffect = index1;
-									WriteLine("Pointer moved to " + index1.ToString() + ". All instructions past this point can be OVERWRITTEN.");
-                                }
-								else WriteLine("Can't go there.");
+									Write("WARNING: This will overwrite your current session! Continue? [Y/N]> ");
+									if (key.Key == ConsoleKey.Y)
+									{
+										CurrentEffects.Clear();
+										LoadBinary(pth2);
+										for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
+										{
+											WriteLine(
+												$"{CurrentPointedEffect:X2}      " +
+												$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
+												$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
+												$"{st}");
+										}
+										break;
+									}
+									else if (key.Key == ConsoleKey.N) break;
+									else continue;
+								}
 								break;
-                        }
-                    }
+						}
+					}
 					else
 					{
 						Interpret(false, false, st);
