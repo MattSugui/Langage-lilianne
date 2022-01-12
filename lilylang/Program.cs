@@ -88,6 +88,7 @@ namespace fonder.Lilian.New
 								var key = ReadKey();
 								if (key.Key == ConsoleKey.Y)
 								{
+									WriteLine();
 									CurrentEffects.Clear();
 									LoadBinary(pth2);
 									for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
@@ -96,7 +97,7 @@ namespace fonder.Lilian.New
 											$"{CurrentPointedEffect:X2}      " +
 											$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
 											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
-											$"{st}");
+											$"(unreconstructable -- {pth2})");
 									}
 									break;
 								}
