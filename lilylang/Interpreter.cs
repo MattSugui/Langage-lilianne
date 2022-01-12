@@ -289,6 +289,9 @@ public static partial class Interpreter
             ScanTokens(line);
             ArrangeTokens(CurrentWordPacks[0]);
             InterpretSentenceNew(CurrentSentences[0]);
+
+            CurrentWordPacks.Clear();
+            CurrentSentences.Clear();
         }
         //WriteLine("complet");
 

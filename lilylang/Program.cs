@@ -64,12 +64,15 @@ namespace fonder.Lilian.New
 			{
 				try
 				{
-					Interpret(false, false, ReadLine());
+					string st = ReadLine();
+					Interpret(false, false, st);
 					SetCursorPosition(0, CursorTop - 1);
 					WriteLine(
 						$"{CurrentPointedEffect:X2}\t" +
 						$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}\t" +
-						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "--")}");
+						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "--")}\t" +
+						$"{st}");
+					CurrentPointedEffect++;
 				}
 				catch (Lamentation e)
                 {
