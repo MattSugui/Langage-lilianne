@@ -64,9 +64,22 @@ namespace fonder.Lilian.New
 			{
 				try
 				{
-					string st = ReadLine();
+					string st = ReadLine().TrimStart();
 					if (string.IsNullOrWhiteSpace(st)) continue;
-					if (st.StartsWith('.')) ;
+					if (st.StartsWith('.'))
+                    {
+						string dir = st.TrimStart('.');
+						switch (dir)
+                        {
+							case "exit":
+								Environment.Exit(0);
+								break;
+							case "run":
+								Clear();
+								Execute();
+								break;
+                        }
+                    }
 					else
 					{
 						Interpret(false, false, st);
