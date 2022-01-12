@@ -68,9 +68,9 @@ namespace fonder.Lilian.New
 					Interpret(false, false, st);
 					SetCursorPosition(0, CursorTop - 1);
 					WriteLine(
-						$"{CurrentPointedEffect:X2}...." +
-						$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}...." +
-						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "--")}.." +
+						$"{CurrentPointedEffect:X2}......" +
+						$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}......" +
+						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "--")}........" +
 						$"{st}");
 					CurrentPointedEffect++;
 				}
