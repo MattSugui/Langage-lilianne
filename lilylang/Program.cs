@@ -69,7 +69,7 @@ namespace fonder.Lilian.New
 					WriteLine(
 						$"{CurrentPointedEffect:X2}\t" +
 						$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}\t" +
-						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? (byte)CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X2") : "--")}");
+						$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X2") : "--")}");
 				}
 				catch (Lamentation e)
                 {
