@@ -84,28 +84,23 @@ namespace fonder.Lilian.New
 								break;
 							case "load":
 								string pth2 = Regex.Match(dir, @"load\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
+								Write("WARNING: This will overwrite your current session! Continue? [Y/N]> ");
 								var key = ReadKey();
-								while (key.Key != ConsoleKey.Y || key.Key != ConsoleKey.N)
-                                {
-									Write("WARNING: This will overwrite your current session! Continue? [Y/N]> ");
-									if (key.Key == ConsoleKey.Y)
+								if (key.Key == ConsoleKey.Y)
+								{
+									CurrentEffects.Clear();
+									LoadBinary(pth2);
+									for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
 									{
-										CurrentEffects.Clear();
-										LoadBinary(pth2);
-										for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
-										{
-											WriteLine(
-												$"{CurrentPointedEffect:X2}      " +
-												$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
-												$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
-												$"{st}");
-										}
-										break;
+										WriteLine(
+											$"{CurrentPointedEffect:X2}      " +
+											$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
+											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
+											$"{st}");
 									}
-									else if (key.Key == ConsoleKey.N) break;
-									else continue;
+									break;
 								}
-								break;
+								else break;
 						}
 					}
 					else
