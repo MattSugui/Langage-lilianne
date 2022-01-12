@@ -78,6 +78,18 @@ namespace fonder.Lilian.New
 								Clear();
 								Execute();
 								break;
+							case "save":
+								string pth = Regex.Match(st, @"\..+\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
+								CreateBinary(pth);
+								break;
+							case "seek":
+								if (int.TryParse(st.Split(' ')[1], out int index1) && index1 <= CurrentEffects.Count - 1)
+                                {
+									CurrentPointedEffect = index1;
+									WriteLine("Pointer moved to " + index1.ToString() + ". All instructions past this point can be OVERWRITTEN.");
+                                }
+								else WriteLine("Can't go there.");
+								break;
                         }
                     }
 					else
