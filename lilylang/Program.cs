@@ -77,13 +77,13 @@ namespace fonder.Lilian.New
 							case "run":
 								Clear();
 								Execute();
-								break;
+								continue;
 							case "save":
-								string pth = Regex.Match(st, @"\..+\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
+								string pth = Regex.Match(dir, @"save\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
 								CreateBinary(pth);
 								break;
 							case "seek":
-								if (int.TryParse(st.Split(' ')[1], out int index1) && index1 <= CurrentEffects.Count - 1)
+								if (int.TryParse(dir.Split(' ')[1], out int index1) && index1 <= CurrentEffects.Count - 1)
                                 {
 									CurrentPointedEffect = index1;
 									WriteLine("Pointer moved to " + index1.ToString() + ". All instructions past this point can be OVERWRITTEN.");
