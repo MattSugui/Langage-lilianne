@@ -69,7 +69,7 @@ namespace fonder.Lilian.New
 					if (st.StartsWith('.'))
                     {
 						string dir = st.TrimStart('.');
-						switch (dir)
+						switch (dir.Split(' ')[0])
                         {
 							case "exit":
 								Environment.Exit(0);
