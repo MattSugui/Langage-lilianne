@@ -14,39 +14,16 @@ namespace fonder.Lilian.New
 				"Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion + "\n"
 			);
 
-			//WriteLine(
-			//	"Welcome to the REPL mode! Type EXIT if you've had your fun."
-			//)//
-			;
-
 			/*
 			object bruh1 = null;
 			object bruh2 = null;
 			*/
-#if !UseREPLAsFileLoader
-			while (true)
-			{
-				try
-				{
-					Write("> ");
-					string input = ReadLine();
-					input.Replace("\\n", "\n");
-					Interpreter.Interpret(input);
-					if (input.ToUpper() == "EXIT") break; else continue;
-				}
-				catch (Interpreter.Lamentation e)
-                {
-					WriteLine($"{e.ErrorCode}: {e.Message}");
-					continue;
-                }
+			if (args.Length == 0) goto REPLLoop;
 
-				//leave: break;
-			}
-#else
 			WriteLine("Type in the full name of the file to be evaluated.");
 			string filepath = ReadLine().Trim('"');
 			try
-            {
+			{
 				if (filepath.EndsWith(".lps"))
 				{
 					ReadFile(path: filepath);
@@ -56,18 +33,16 @@ namespace fonder.Lilian.New
 					CurrentEffects.Clear();
 				}
 				else if (filepath.EndsWith(".lsa"))
-                {
+				{
 					Clear();
 					LoadBinary();
 					Execute();
 				}
 			}
 			catch (Lamentation cry)
-            {
+			{
 				WriteLine(cry.ToString());
-            }
-#endif
-			
+			}
 			Write($"Compilation finished.\nPress any key to {(filepath.EndsWith(".lps") && args.Contains("-d")? "run this application" : "continue")}.");
 			ReadKey();
 			if (filepath.EndsWith(".lps") && args.Contains("-d"))
@@ -76,6 +51,23 @@ namespace fonder.Lilian.New
 				LoadBinary();
 				Execute();
 			}
+
+		REPLLoop:
+			WriteLine(
+				"Welcome to the REPL mode! Type EXIT if you've had your fun.\n" +
+				"ID\tOP\tPB\tINSTRUCTION"
+			//	ID	OP	PB	INSTRUCTION
+			//	01	2E	--	take;
+			);
+
+			while (true)
+            {
+				Interpret(false, false, ReadLine());
+				WriteLine(
+					$"{CurrentPointedEffect:XX}\t" +
+					$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:XX}\t" +
+					$"{(CurrentEffects[CurrentPointedEffect].Value != null? string.Format("{0:XX}", (byte)CurrentEffects[CurrentPointedEffect].Value.GetTypeCode()) : "--" )}");
+            }
 		}
 	}
 

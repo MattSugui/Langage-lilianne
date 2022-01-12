@@ -70,214 +70,226 @@ public static partial class Interpreter
     /// <summary>
     /// Do the whole thing.
     /// </summary>
-    public static void Interpret()
+    /// <param name="GUI">If true, the progress bars will be enabled. True by default.</param>
+    /// <param name="REPL">If true, a single line will be interpreted. False by default.</param>
+    /// <param name="line">The individual line to be parsed. If empty, the entire currently-loaded file will be parsed.</param>
+    public static void Interpret(bool GUI = true, bool REPL = false, string line = "")
     {
         //foreach (string line in CurrentFile) ScanTokens(line);
         Stopwatch watch = new();
         //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
         //PowerShell ps = PowerShell.Create();
 
-        ProgressBarOptions opt = new()
+        if (GUI)
         {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ForegroundColor // what
-                                              //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt1 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Red
-            //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt2 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Yellow
-            //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt3 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Green
-            //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt4 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Blue
-            //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt5 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Magenta
-            //DisplayTimeInRealTime = true,
-        };
-
-        ProgressBarOptions opt6 = new()
-        {
-            ProgressBarOnBottom = false,
-            //DenseProgressBar = true,
-            ProgressCharacter = '\u2588',
-            BackgroundCharacter = '\u2590',
-            CollapseWhenFinished = false,
-            ForegroundColor = ConsoleColor.Cyan
-            //DisplayTimeInRealTime = true,
-        };
-
-        watch.Start();
-        Clear();
-        using (var pbm = new ProgressBar(4, "Interpretation process", opt))
-        {
-            using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
+            ProgressBarOptions opt = new()
             {
-                bool cocotext = false;
-                List<int> CodePositionsWhereCoco = new();
-                string FirstLine = string.Empty;
-                string LastLine = string.Empty;
-                for (int i = 1; i < CurrentFile.Count + 1; i++)
-                {
-                    //int offset = 0;
-                    pbz.Tick();
-                    if (CurrentFile[i - 1].StartsWith("preprocess:"))
-                    {
-                        cocotext = true;
-                        goto RemoveDeclarationIfCocoStartsImmediatelyAfter;
-                    }
-                    else if (CurrentFile[i - 1] == "preprocess:")
-                    {
-                        cocotext = true;
-                    }
-                    else if (CurrentFile[i - 1].EndsWith("start;"))
-                    {
-                        cocotext = false;
-                        goto SaveCodeBeforeEndDeclaration;
-                    }
-                    else if (CurrentFile[i - 1] == "start;")
-                    {
-                        cocotext = false;
-                    }
-                    else goto Otherwise;
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ForegroundColor // what
+                                                  //DisplayTimeInRealTime = true,
+            };
 
-                    RemoveDeclarationIfCocoStartsImmediatelyAfter:
-                    {
-                        CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
-                        if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
-                        else CurrentFile.RemoveAt(i - 1);
-                        i--; 
-                        continue;
-                    }
+            ProgressBarOptions opt1 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Red
+                //DisplayTimeInRealTime = true,
+            };
 
-                SaveCodeBeforeEndDeclaration:
-                    {
-                        CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
-                        if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
-                        else CurrentFile.RemoveAt(i - 1);
-                        break;
-                    }
+            ProgressBarOptions opt2 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Yellow
+                //DisplayTimeInRealTime = true,
+            };
 
-                    
-                Otherwise:
-                    {
-                        if (cocotext) CodePositionsWhereCoco.Add(i - 1); else continue;
-                    }
-                }
-                List<string> CocoCode = new();
-                pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?
-                foreach (int i in CodePositionsWhereCoco)
+            ProgressBarOptions opt3 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Green
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt4 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Blue
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt5 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Magenta
+                //DisplayTimeInRealTime = true,
+            };
+
+            ProgressBarOptions opt6 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Cyan
+                //DisplayTimeInRealTime = true,
+            };
+
+            watch.Start();
+            Clear();
+            using (var pbm = new ProgressBar(4, "Interpretation process", opt))
+            {
+                using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
                 {
-                    CocoCode.Add(CurrentFile[i].TrimStart());
-                    CurrentFile.RemoveAt(i);
-                    pbz.Tick();
-                }
-                if (CocoCode.Count != 0)
-                {
-                    using (TextWriter pen = File.CreateText("cocotmp.ccn"))
+                    bool cocotext = false;
+                    List<int> CodePositionsWhereCoco = new();
+                    string FirstLine = string.Empty;
+                    string LastLine = string.Empty;
+                    for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
-                        foreach (string line in CocoCode)
+                        //int offset = 0;
+                        pbz.Tick();
+                        if (CurrentFile[i - 1].StartsWith("preprocess:"))
                         {
-                            pen.WriteLine(line);
-                            pbz.Tick();
+                            cocotext = true;
+                            goto RemoveDeclarationIfCocoStartsImmediatelyAfter;
+                        }
+                        else if (CurrentFile[i - 1] == "preprocess:")
+                        {
+                            cocotext = true;
+                        }
+                        else if (CurrentFile[i - 1].EndsWith("start;"))
+                        {
+                            cocotext = false;
+                            goto SaveCodeBeforeEndDeclaration;
+                        }
+                        else if (CurrentFile[i - 1] == "start;")
+                        {
+                            cocotext = false;
+                        }
+                        else goto Otherwise;
+
+                        RemoveDeclarationIfCocoStartsImmediatelyAfter:
+                        {
+                            CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
+                            if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
+                            else CurrentFile.RemoveAt(i - 1);
+                            i--;
+                            continue;
+                        }
+
+                    SaveCodeBeforeEndDeclaration:
+                        {
+                            CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
+                            if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
+                            else CurrentFile.RemoveAt(i - 1);
+                            break;
+                        }
+
+
+                    Otherwise:
+                        {
+                            if (cocotext) CodePositionsWhereCoco.Add(i - 1); else continue;
                         }
                     }
-                    FeedingTime("cocotmp.ccn");
+                    List<string> CocoCode = new();
+                    pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?
+                    foreach (int i in CodePositionsWhereCoco)
+                    {
+                        CocoCode.Add(CurrentFile[i].TrimStart());
+                        CurrentFile.RemoveAt(i);
+                        pbz.Tick();
+                    }
+                    if (CocoCode.Count != 0)
+                    {
+                        using (TextWriter pen = File.CreateText("cocotmp.ccn"))
+                        {
+                            foreach (string line1 in CocoCode)
+                            {
+                                pen.WriteLine(line1);
+                                pbz.Tick();
+                            }
+                        }
+                        FeedingTime("cocotmp.ccn");
+                    }
                 }
-            }
-            using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
-            {
-                for (int i = 1; i < CurrentFile.Count + 1; i++)
+                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
-                    //pba.WriteLine(CurrentFile[i - 1]);
-                    ScanTokens(CurrentFile[i - 1]);
-                    pba.Tick();
+                    for (int i = 1; i < CurrentFile.Count + 1; i++)
+                    {
+                        //pba.WriteLine(CurrentFile[i - 1]);
+                        ScanTokens(CurrentFile[i - 1]);
+                        pba.Tick();
+                    }
+                    pbm.Tick();
                 }
-                pbm.Tick();
-            }
-            using (var pbb = pbm.Spawn(CurrentWordPacks.Count, "Parsing tokens", opt2))
-            {
-                foreach (List<TokenFruit> fruits in CurrentWordPacks)
+                using (var pbb = pbm.Spawn(CurrentWordPacks.Count, "Parsing tokens", opt2))
                 {
-                    //pbb.WriteLine(string.Join('¬', from fruit in fruits select fruit.AssociatedToken.Name)); // bruh
-                    ArrangeTokens(fruits);
-                    pbb.Tick();
+                    foreach (List<TokenFruit> fruits in CurrentWordPacks)
+                    {
+                        //pbb.WriteLine(string.Join('¬', from fruit in fruits select fruit.AssociatedToken.Name)); // bruh
+                        ArrangeTokens(fruits);
+                        pbb.Tick();
+                    }
+                    pbm.Tick();
                 }
-                pbm.Tick();
-            }
-            using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
-            {
-                foreach (SentenceFruit sent in CurrentSentences)
+                using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
                 {
-                    //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
-                    InterpretSentenceNew(sent);
-                    pbc.Tick();
+                    foreach (SentenceFruit sent in CurrentSentences)
+                    {
+                        //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
+                        InterpretSentenceNew(sent);
+                        pbc.Tick();
+                    }
+                    pbm.Tick();
                 }
-                pbm.Tick();
+                using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
+                {
+                    CheckForFriendlyNames();
+                    pbe.Tick();
+                    pbm.Tick();
+                }
+                using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
+                {
+                    CreateBinary();
+                    pbd.Tick();
+                    pbm.Tick();
+                }
             }
-            using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
-            {
-                CheckForFriendlyNames();
-                pbe.Tick();
-                pbm.Tick();
-            }
-            using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
-            {
-                CreateBinary();
-                pbd.Tick();
-                pbm.Tick();
-            }
+            Clear();
+            watch.Stop();
+            WriteLine($"Took {watch.ElapsedMilliseconds} ms.");
         }
-        Clear();
-        watch.Stop();
-        WriteLine($"Took {watch.ElapsedMilliseconds} ms.");
+        else
+        {
+            ScanTokens(line);
+            ArrangeTokens(CurrentWordPacks[0]);
+            InterpretSentenceNew(CurrentSentences[0]);
+        }
         //WriteLine("complet");
 
         /*
