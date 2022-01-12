@@ -65,6 +65,7 @@ namespace fonder.Lilian.New
 				try
 				{
 					string st = ReadLine();
+					if (st.StartsWith('.')) ;
 					Interpret(false, false, st);
 					SetCursorPosition(0, CursorTop - 1);
 					WriteLine(
