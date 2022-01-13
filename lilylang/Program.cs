@@ -59,7 +59,7 @@ namespace fonder.Lilian.New
 			//	ID	OP	PB	INSTRUCTION
 			//	01	2E	--	take;
 			);
-
+			CurrentPointedEffect = 0;
 			while (true)
 			{
 				try

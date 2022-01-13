@@ -456,7 +456,7 @@ public static partial class Interpreter
         else
         { for (int i = 0; i < amount; i++) CurrentEffects.Add(new()); }
 
-        if (redirect) CurrentPointedEffect = index != -1? index : CurrentEffects.Count - amount - 1;
+        if (redirect) CurrentPointedEffect = index != -1? index : CurrentEffects.Count - amount - 1 == -1? 0: CurrentEffects.Count - amount - 1;
     }
 
     /// <summary>
