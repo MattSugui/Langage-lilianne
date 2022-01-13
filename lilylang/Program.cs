@@ -81,6 +81,7 @@ namespace fonder.Lilian.New
 							case "save":
 								string pth = Regex.Match(dir, @"save\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');
 								CreateBinary(pth);
+								WriteLine("Saved!");
 								break;
 							case "load":
 								string pth2 = Regex.Match(dir, @"load\s+(?<path>"".*"")").Groups["path"].Value.Trim('"');

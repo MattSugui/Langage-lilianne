@@ -259,10 +259,13 @@ public static partial class Interpreter
                 }
                 using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
                 {
+                    CurrentPointedEffect = 0;
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
                         //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
                         InterpretSentenceNew(sent);
+                        AllocateEffects();
+                        CurrentPointedEffect++;
                         pbc.Tick();
                     }
                     pbm.Tick();
