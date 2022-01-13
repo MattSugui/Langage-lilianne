@@ -264,7 +264,7 @@ public static partial class Interpreter
                     {
 
                         //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
-                        AllocateEffects(1, CurrentPointedEffect, true, true);
+                        AllocateEffects();
                         InterpretSentenceNew(sent);
                         CurrentPointedEffect++;
                         pbc.Tick();
