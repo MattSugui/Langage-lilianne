@@ -91,6 +91,7 @@ namespace fonder.Lilian.New
 								{
 									WriteLine();
 									CurrentEffects.Clear();
+									CurrentPointedEffect = 0;
 									LoadBinary(pth2);
 									for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
 									{
