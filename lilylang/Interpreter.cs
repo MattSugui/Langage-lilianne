@@ -262,9 +262,10 @@ public static partial class Interpreter
                     CurrentPointedEffect = 0;
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
+
                         //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
-                        InterpretSentenceNew(sent);
                         AllocateEffects();
+                        InterpretSentenceNew(sent);
                         CurrentPointedEffect++;
                         pbc.Tick();
                     }
@@ -289,6 +290,7 @@ public static partial class Interpreter
         }
         else
         {
+            AllocateEffects();
             ScanTokens(line);
             ArrangeTokens(CurrentWordPacks[0]);
             InterpretSentenceNew(CurrentSentences[0]);
