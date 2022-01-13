@@ -55,7 +55,7 @@ namespace fonder.Lilian.New
 		REPLLoop:
 			WriteLine(
 				"Welcome to the REPL mode! Type EXIT if you've had your fun.\n" +
-				"ID\tOP\tPB\t\tINSTRUCTION"
+				"ID\tOP\tSL\t\tINSTRUCTION"
 			//	ID	OP	PB	INSTRUCTION
 			//	01	2E	--	take;
 			);
@@ -98,7 +98,7 @@ namespace fonder.Lilian.New
 										WriteLine(
 											$"{CurrentPointedEffect:X2}      " +
 											$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
-											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? CurrentEffects[CurrentPointedEffect].Value!.GetTypeCode().ToString("X") : "        ")}        " +
+											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? (CurrentEffects[CurrentPointedEffect].Value! switch { bool => 1, byte => 1, sbyte => 1, short => 2, ushort => 2, Half => 2, int => 4, uint => 4, float => 4, long => 8, ulong => 8, double => 8, decimal => 16, char => 2, string str => Encoding.ASCII.GetByteCount(str, 0, str.Length) }).ToString("x2") : "        ")}        " +
 											$"(unreconstructable -- {pth2})");
 									}
 									break;
