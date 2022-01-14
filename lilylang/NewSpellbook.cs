@@ -433,7 +433,12 @@ public static partial class Interpreter
     /// <param name="overwrite">If false, the item will be inserted at that location. If true, the item at that location will be overwritten by the new one.</param>
     public static void PlaceEffect(FELAction effect, int index = -1, bool overwrite = true)
     {
-        if (overwrite && index != -1) CurrentEffects[index] = effect; else CurrentEffects.Insert(index != -1? index:CurrentEffects.Count, effect);
+        if (overwrite && index != -1)
+        {
+            if (index >= CurrentEffects.Count) CurrentEffects.Add(effect);
+            else CurrentEffects[index] = effect;
+        }
+        else CurrentEffects.Insert(index != -1 ? index : CurrentEffects.Count, effect);
     }
 
     /// <summary>
