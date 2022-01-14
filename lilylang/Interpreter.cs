@@ -291,7 +291,6 @@ public static partial class Interpreter
         {
             try
             {
-                AllocateEffects();
                 ScanTokens(line);
                 ArrangeTokens(CurrentWordPacks[0]);
                 PlaceEffect(InterpretSentenceNew(CurrentSentences[0]), CurrentPointedEffect, false);
