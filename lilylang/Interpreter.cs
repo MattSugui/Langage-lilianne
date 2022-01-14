@@ -264,8 +264,7 @@ public static partial class Interpreter
                     {
 
                         //pbc.WriteLine($"A{(Regex.IsMatch(sent.AssociatedSentence.Name, "^[AEIOUaeiou].*") ? "n" : string.Empty)} {sent.AssociatedSentence.Name}");
-                        AllocateEffects();
-                        InterpretSentenceNew(sent);
+                        PlaceEffect(InterpretSentenceNew(sent), CurrentPointedEffect, false);
                         CurrentPointedEffect++;
                         pbc.Tick();
                     }
@@ -295,7 +294,7 @@ public static partial class Interpreter
                 AllocateEffects();
                 ScanTokens(line);
                 ArrangeTokens(CurrentWordPacks[0]);
-                InterpretSentenceNew(CurrentSentences[0]);
+                PlaceEffect(InterpretSentenceNew(CurrentSentences[0]), CurrentPointedEffect, false);
 
                 CurrentWordPacks.Clear();
                 CurrentSentences.Clear();
@@ -304,8 +303,8 @@ public static partial class Interpreter
             {
                 throw new Lamentation(
                     0x2c,
-                    Regex.IsMatch(Lamentation.InterpretExceptionName(ex)[0].ToString(), @"[AEIOU]") ? "an" : "a",
-                    Lamentation.InterpretExceptionName(ex)
+                    Regex.IsMatch(Lamentation.InterpretExceptionName(ex.InnerException)[0].ToString(), @"[AEIOU]") ? "an" : "a",
+                    Lamentation.InterpretExceptionName(ex.InnerException)
                     );
             }
         }

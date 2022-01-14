@@ -244,13 +244,12 @@ public static partial class Interpreter
     /// </summary>
     /// <param name="sent">The sentence.</param>
     /// <exception cref="Lamentation"></exception>
-    internal static void InterpretSentenceNew(SentenceFruit sent)
+    internal static FELAction InterpretSentenceNew(SentenceFruit sent)
     {
         switch (sent.Value[0])
         {
             case "think":
-                CurrentEffects[CurrentPointedEffect] = new();
-                break;
+                return new();
             case "push":
                 dynamic val;
                 if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
@@ -269,176 +268,140 @@ public static partial class Interpreter
                 else if (char.TryParse(sent.Value[1], out char valE)) val = valE;
                 else if (sent.Value[1].Contains('"')) val = sent.Value[1].Trim('"');
                 else val = null;
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.push, val);
+                return new(FELActionType.push, val);
                 //throw new Lamentation(0x16, "types other than int and string")
-                break;
             case "print":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.print);
-                break;
+                return new(FELActionType.print);
             case "pop":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.pop);
-                break;
+                return new(FELActionType.pop);
             case "add":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.add);
-                break;
+                return new(FELActionType.add);
             case "subtract":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.sub);
-                break;
+                return new(FELActionType.sub);
             case "multiply":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.mul);
-                break;
+                return new(FELActionType.mul);
             case "divide":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.div);
-                break;
+                return new(FELActionType.div);
             case "remainder":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.mod);
-                break;
+                return new(FELActionType.mod);
             case "lshift":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.lst);
-                break;
+                return new(FELActionType.lst);
             case "rshift":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.rst);
-                break;
+                return new(FELActionType.rst);
             case "and":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.and);
-                break;
+                return new(FELActionType.and);
             case "or":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.or);
-                break;
+                return new(FELActionType.or);
             case "xor":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.xor);
-                break;
+                return new(FELActionType.xor);
             case "store":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.store,
                     sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
                     (sent.Value[1].StartsWith('&') ? 
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
                     ));
-                break;
             case "load":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.load,
                     sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
                     (sent.Value[1].StartsWith('&') ?
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
                     ));
-                break;
             case "beq":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.beq,
                     int.TryParse(sent.Value[1], out int z1) ? z1 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bne":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bne,
                     int.TryParse(sent.Value[1], out int z2) ? z2 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bgt":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bgt,
                     int.TryParse(sent.Value[1], out int z3) ? z3 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bge":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bge,
                     int.TryParse(sent.Value[1], out int z4) ? z4 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "blt":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.blt,
                     int.TryParse(sent.Value[1], out int z5) ? z5 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "ble":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.beq,
                     int.TryParse(sent.Value[1], out int z6) ? z6 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "btr":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.btr,
                     int.TryParse(sent.Value[1], out int z7) ? z7 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bfl":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bfl,
                     int.TryParse(sent.Value[1], out int z8) ? z8 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bsa":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bsa,
                     int.TryParse(sent.Value[1], out int z9) ? z9 : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "bso":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.bso,
                     int.TryParse(sent.Value[1], out int zA) ? zA : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "goto":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.@goto,
                     int.TryParse(sent.Value[1], out int zB) ? zB : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "end":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.end);
-                break;
+                return new(FELActionType.end);
             case "take":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.take);
-                break;
+                return new(FELActionType.take);
             case "ask":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.ask);
-                break;
+                return new(FELActionType.ask);
             case "narrow":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.narrow);
-                break;
+                return new(FELActionType.narrow);
             case "widen":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.widen);
-                break;
+                return new(FELActionType.widen);
             case "realise":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.realise);
-                break;
+                return new(FELActionType.realise);
             case "catch":
-                CurrentEffects[CurrentPointedEffect] = new(
+                return new(
                     FELActionType.@catch,
                     int.TryParse(sent.Value[1], out int zC) ? zC : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "call":
                 if (sent.Value[1].StartsWith('@'))
-                    CurrentEffects[CurrentPointedEffect] = new(
+                    return new(
                         FELActionType.gotolabel,
                         sent.Value[1].TrimStart('@')
                         );
-                else CurrentEffects[CurrentPointedEffect] = new(
+                else return new(
                     FELActionType.@call,
                     int.TryParse(sent.Value[1], out int zD) ? zD : throw new Lamentation(0x21, sent.Value[1])
                     );
-                break;
             case "return":
-                CurrentEffects[CurrentPointedEffect] = new(FELActionType.@return);
-                break;
+                return new(FELActionType.@return);
             default:
                 if (sent.Value[0].StartsWith('@'))
-                    CurrentEffects[CurrentPointedEffect] = new(
+                    return new(
                         FELActionType.label,
                         sent.Value[0].TrimStart('@')
                         );
                 else
                     throw new Lamentation(0x16, string.Join(' ', sent.Value));
-                break;
         }
     }
 
@@ -468,9 +431,9 @@ public static partial class Interpreter
     /// <param name="effect">The action.</param>
     /// <param name="index">The location.</param>
     /// <param name="overwrite">If false, the item will be inserted at that location. If true, the item at that location will be overwritten by the new one.</param>
-    public static void PlaceEffect(FELAction effect, int index, bool overwrite = true)
+    public static void PlaceEffect(FELAction effect, int index = -1, bool overwrite = true)
     {
-        if (overwrite) CurrentEffects[index] = effect; else CurrentEffects.Insert(index, effect);
+        if (overwrite && index != -1) CurrentEffects[index] = effect; else CurrentEffects.Insert(index != -1? index:CurrentEffects.Count, effect);
     }
 
     /// <summary>
