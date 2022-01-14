@@ -1,0 +1,19 @@
+@main:
+	push "Labelling tests";
+	print;
+	call @firstplace;
+	call @secondplace;
+	call @thirdplace;
+	end;
+
+@firstplace:
+	call @secondplace;
+	return;
+
+@secondplace:
+	call @thirdplace;
+	return;
+
+@thirdplace:
+	think;
+	return;

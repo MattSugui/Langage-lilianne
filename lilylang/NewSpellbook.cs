@@ -445,6 +445,8 @@ public static partial class Interpreter
         (int labelloc, int pointerloc) = (0, 0);
         List<(int, int)> pairLocations = new();
 
+        Dictionary<string, int> AssociatedLabels = new();
+
         int currentEffect = 0;
         while (CurrentEffects.Exists(a => a.ActionType == FELActionType.label) || CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
         {
@@ -453,23 +455,19 @@ public static partial class Interpreter
                 case FELActionType.label:
                     label = CurrentEffects[currentEffect];
                     labelloc = currentEffect;
-                    if (label.Value! == pointer.Value!)
-                    {
-                        CurrentEffects[labelloc] = new(FELActionType.nop);
-                        CurrentEffects[pointerloc] = new(FELActionType.call, labelloc);
-                    }
-                    else if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
-                        CurrentEffects[labelloc] = new(FELActionType.nop);
+                    CurrentEffects[labelloc] = new(FELActionType.nop);
+                    AssociatedLabels.Add((string)label.Value!, currentEffect);
                     break;
                 case FELActionType.gotolabel:
                     pointer = CurrentEffects[currentEffect];
                     pointerloc = currentEffect;
-                    if (label.Value! == pointer.Value!)
+                    // if (AssociatedLabels.ContainsKey(pointerloc))
+                    if (AssociatedLabels.ContainsKey((string)pointer.Value!))
                     {
-                        CurrentEffects[labelloc] = new(FELActionType.nop);
-                        CurrentEffects[pointerloc] = new(FELActionType.call, labelloc);
+                        CurrentEffects[pointerloc] = new(FELActionType.call, AssociatedLabels[(string)pointer.Value!]);
+                        break;
                     }
-                    break;
+                    else break;
                 default: break;
             }
 

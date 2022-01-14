@@ -96,7 +96,7 @@ namespace fonder.Lilian.New
 									for (; CurrentPointedEffect < CurrentEffects.Count - 1; CurrentPointedEffect++)
 									{
 										WriteLine(
-											$"{CurrentPointedEffect:X2}      " +
+											$"{CurrentPointedEffect:X4}      " +
 											$"{(byte)CurrentEffects[CurrentPointedEffect].ActionType:X2}      " +
 											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? (CurrentEffects[CurrentPointedEffect].Value! switch { bool => 1, byte => 1, sbyte => 1, short => 2, ushort => 2, Half => 2, int => 4, uint => 4, float => 4, long => 8, ulong => 8, double => 8, decimal => 16, char => 2, string str => Encoding.ASCII.GetByteCount(str, 0, str.Length) } + 1).ToString("x2") : 1.ToString("x2"))}      " +
 											$"{(CurrentEffects[CurrentPointedEffect].Value is not null ? (CurrentEffects[CurrentPointedEffect].Value! switch { bool => 3, byte => 6, sbyte => 5, short => 7, ushort => 8, Half => 17, int => 9, uint => 10, float => 13, long => 11, ulong => 12, double => 14, decimal => 15, char => 4, string => 8, _ => 1 }).ToString("x2") : 0.ToString("x2"))}      " +
