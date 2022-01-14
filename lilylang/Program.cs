@@ -50,6 +50,7 @@ namespace fonder.Lilian.New
 				Clear();
 				LoadBinary();
 				Execute();
+				Environment.Exit(0);
 			}
 
 		REPLLoop:
