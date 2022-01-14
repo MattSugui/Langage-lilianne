@@ -2,3 +2,4 @@ push "lol";
 print;
 pop;
 throw;
+goto @bruh;
