@@ -473,7 +473,7 @@ public static partial class Interpreter
                     }
                     else
                     {
-                        if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.label)) throw new Lamentation(0x2b, CurrentEffects.ToString());
+                        if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.label)) throw new Lamentation(0x2b, CurrentEffects[pointerloc].ToString());
                         else break;
                     }
                 default: break;
