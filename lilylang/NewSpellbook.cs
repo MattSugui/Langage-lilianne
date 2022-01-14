@@ -468,9 +468,14 @@ public static partial class Interpreter
                     if (AssociatedLabels.ContainsKey((string)pointer.Value!))
                     {
                         CurrentEffects[pointerloc] = new(FELActionType.call, AssociatedLabels[(string)pointer.Value!]);
+                        if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel && a.Value == (string)pointer.Value!)) AssociatedLabels.Remove((string)pointer.Value!);
                         break;
                     }
-                    else throw new Lamentation(0x2b, CurrentEffects.ToString());
+                    else
+                    {
+                        if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.label)) throw new Lamentation(0x2b, CurrentEffects.ToString());
+                        else break;
+                    }
                 default: break;
             }
             if (currentEffect < CurrentEffects.Count - 1) currentEffect++;
