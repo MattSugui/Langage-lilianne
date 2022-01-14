@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lilylang", "lilylang\lilylang.csproj", "{3946E588-E41F-452F-A606-40A33E44E06B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{577CB827-B5B0-417C-BF10-77E8A4E052C6} = {577CB827-B5B0-417C-BF10-77E8A4E052C6}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lilylang_archiveur", "lilylang_archiveur\lilylang_archiveur.csproj", "{BE0B1AFD-E356-4062-B525-4533201DA6E3}"
 EndProject
@@ -45,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nestingTest", "nestingTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lilyhelp", "lilyhelp\lilyhelp.csproj", "{BE15DBF4-6F0B-4085-B764-A8BF0C3E2765}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pulpitum", "pulpitum\pulpitum.csproj", "{D2162F56-919E-4D39-BBCC-2D7A4C70F9CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pulpitum", "pulpitum\pulpitum.csproj", "{D2162F56-919E-4D39-BBCC-2D7A4C70F9CD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3946E588-E41F-452F-A606-40A33E44E06B} = {3946E588-E41F-452F-A606-40A33E44E06B}
 	EndProjectSection
