@@ -106,7 +106,7 @@ try
         for ($i = 0; $i -lt $filever.Count; $i++) { $vernums[$i] = [int]::Parse($asmver[$i]) }
         
         $vernums[2]++
-        if ($BigUpgrade.IsPresent) { $vernums[0]++ } elseif ($SmallUpgrade.IsPresent) { $vernums[1]++ }
+        if ($BigUpgrade.IsPresent) { $vernums[0]++; $vernums[1] = 0 } elseif ($SmallUpgrade.IsPresent) { $vernums[1]++ }
 
         #write-host $vernums
 
