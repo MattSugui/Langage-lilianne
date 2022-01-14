@@ -163,7 +163,7 @@ public static partial class Interpreter
             Clear();
             using (var pbm = new ProgressBar(4, "Interpretation process", opt))
             {
-                using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
+                /*using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
                 {
                     bool cocotext = false;
                     List<int> CodePositionsWhereCoco = new();
@@ -236,7 +236,7 @@ public static partial class Interpreter
                         }
                         FeedingTime("cocotmp.ccn");
                     }
-                }
+                }*/
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
