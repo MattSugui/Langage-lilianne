@@ -90,6 +90,12 @@ public static partial class Interpreter
         public record struct FELAction(FELActionType ActionType, dynamic? Value = null)
         {
             /// <summary>
+            /// Returns the string representation of this action.
+            /// </summary>
+            /// <returns>The action in a string format. Does not return the original statement though.</returns>
+            public override string ToString() => $"{ActionType}: {Value ?? "void"}";
+
+            /// <summary>
             /// Invokes the action.
             /// </summary>
             public void Invoke()
@@ -626,6 +632,12 @@ public static partial class Interpreter
                             string label = (string)Value!;
                             WaitingGotoPositions.Add(label);
                             goto GoForward;
+                        case FELActionType.@throw:
+                            dynamic? bruh = Value;
+                            if (bruh is string msg) throw new Lamentation(0x2D, msg);
+                            else if (bruh is int code) throw new Lamentation(code);
+                            else if (bruh is null) throw new Lamentation(0x2F);
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -667,10 +679,8 @@ public static partial class Interpreter
                     act.ActionType == FELActionType.load ||
                     (act.ActionType >= FELActionType.beq &&
                     act.ActionType <= FELActionType.bso) ||
-                    act.ActionType == FELActionType.@catch ||
-                    act.ActionType == FELActionType.call ||
-                    act.ActionType == FELActionType.label ||
-                    act.ActionType == FELActionType.gotolabel
+                    (act.ActionType >= FELActionType.@catch &&
+                    act.ActionType <= FELActionType.@throw)
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -721,7 +731,7 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic? thing = null;
-                if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44) || opcode == 51 || opcode == 52 || opcode == 54 || opcode == 55)
+                if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44) || (opcode >= 51 && opcode <= 56))
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -1069,6 +1079,11 @@ public static partial class Interpreter
             /// This action will be turned into a standard goto if the label is found later on.
             /// </summary>
             gotolabel,
+
+            /// <summary>
+            /// <see langword="throw"/>
+            /// </summary>
+            @throw
         }
 
 

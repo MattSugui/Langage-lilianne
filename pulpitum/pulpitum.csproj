@@ -11,9 +11,9 @@
 	  <Deterministic>False</Deterministic>
 
 	  <AssemblyTitle>Lilian Language</AssemblyTitle>
-	  <AssemblyVersion>0.21.231.0</AssemblyVersion>
-	  <FileVersion>0.21.231.0</FileVersion>
-	  <InformationalVersion>Beta 2 220114-1801</InformationalVersion>
+	  <AssemblyVersion>0.21.239.0</AssemblyVersion>
+	  <FileVersion>0.21.239.0</FileVersion>
+	  <InformationalVersion>Beta 2 220114-2027</InformationalVersion>
 	  <Authors>Matt Sugui</Authors>
 	  <Copyright>Created 2021</Copyright>
 	  <ProductName>Lilian Pulpitum environment</ProductName>
@@ -21,13 +21,36 @@
 
   </PropertyGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<ItemGroup>
+		<Compile Remove="archive\**" />
+		<EmbeddedResource Remove="archive\**" />
+		<None Remove="archive\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="archive\**" />
+		<EmbeddedResource Remove="archive\**" />
+		<None Remove="archive\**" />
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'pulpitum' -IsRelease $false -Platform 1&quot;" />
     </Target>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'pulpitum' -IsRelease $false -Platform 1&quot;" />
     </Target>
+
+    <ItemGroup>
+      <Compile Remove="archive\**" />
+      <EmbeddedResource Remove="archive\**" />
+      <None Remove="archive\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Alsing.SyntaxBox" Version="2.0.0" />
+      <PackageReference Include="FCTB" Version="2.16.24" />
+      <PackageReference Include="jacobslusser.ScintillaNET" Version="3.6.3" />
+    </ItemGroup>
 
 
 </Project>

@@ -229,17 +229,6 @@ public static partial class Interpreter
     }
 
     /// <summary>
-    /// Obsolete. Use InterpretSentenceNew.
-    /// </summary>
-    /// <param name="sent">no.</param>
-    /// <exception cref="NotImplementedException"></exception>
-    [Obsolete("Use InterpretSentenceNew.")]
-    internal static void InterpretSentence(SentenceFruit sent)
-    {
-        throw new NotImplementedException("Use InterpretSentenceNew.");
-    }
-
-    /// <summary>
     /// Interprets a statement. (New stack-based method)
     /// </summary>
     /// <param name="sent">The sentence.</param>
@@ -394,6 +383,15 @@ public static partial class Interpreter
                     );
             case "return":
                 return new(FELActionType.@return);
+            case "throw":
+                dynamic exval = null;
+                if (sent.Value.Length == 2)
+                {
+                    if (int.TryParse(sent.Value[1], out int exval6)) exval = exval6;
+                    else if (sent.Value[1].Contains('"')) exval = sent.Value[1].Trim('"');
+                }
+                else exval = null;
+                return new(FELActionType.push, exval);
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(
@@ -472,22 +470,9 @@ public static partial class Interpreter
                         CurrentEffects[pointerloc] = new(FELActionType.call, AssociatedLabels[(string)pointer.Value!]);
                         break;
                     }
-                    else break;
+                    else throw new Lamentation(0x2b, CurrentEffects.ToString());
                 default: break;
             }
-
-            /*
-            if (!CurrentEffects.Exists(a => a.ActionType == FELActionType.label) && CurrentEffects.Exists(a => a.ActionType == FELActionType.gotolabel))
-            {
-                FELAction[] l = CurrentEffects.FindAll(a => a.ActionType == FELActionType.gotolabel).ToArray();
-                throw new Lamentation(
-                    0x2b,
-                    l.Length > 1 ? "s" : string.Empty,
-                    l.Length > 1 ? "don't" : "doesn't",
-                    string.Join(", ", l)
-                    );
-            }
-            */
             if (currentEffect < CurrentEffects.Count - 1) currentEffect++;
             else currentEffect = 0; // reset
         }
