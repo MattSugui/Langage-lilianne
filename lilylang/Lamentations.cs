@@ -60,6 +60,7 @@ public static partial class Interpreter
             def.Add(0x0029, "'{0}': cannot grow whatever this is!");
             def.Add(0x002A, "'{0}': cannot realise this string into an integral value.");
             def.Add(0x002B, "The following call{0} {1} lead to anywhere: {2}.");
+            def.Add(0x002C, "Internal error: {0} {1}");
         }
 
         /// <summary>
@@ -144,6 +145,18 @@ public static partial class Interpreter
         /// Creates and returns a string representation of the current lamentation.
         /// </summary>
         public override string ToString() => string.Format("LP{0:0000}: {1}", ErrorCode, Message);
+
+        /// <summary>
+        /// Turns an exception name into a friendly one.
+        /// </summary>
+        /// <param name="e">The exception.</param>
+        /// <returns>A friendly name version of the exception.</returns>
+        public static string InterpretExceptionName(Exception e)
+        {
+            string[] name = Regex.Split(e.GetType().Name, "[A-Z][a-z]*");
+            for(int i = 0; i < name.Length; i++) name[i] = name[i].ToLower();
+            return string.Join(' ', name);
+        }
     }
 }
 

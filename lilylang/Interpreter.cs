@@ -290,13 +290,24 @@ public static partial class Interpreter
         }
         else
         {
-            AllocateEffects();
-            ScanTokens(line);
-            ArrangeTokens(CurrentWordPacks[0]);
-            InterpretSentenceNew(CurrentSentences[0]);
+            try
+            {
+                AllocateEffects();
+                ScanTokens(line);
+                ArrangeTokens(CurrentWordPacks[0]);
+                InterpretSentenceNew(CurrentSentences[0]);
 
-            CurrentWordPacks.Clear();
-            CurrentSentences.Clear();
+                CurrentWordPacks.Clear();
+                CurrentSentences.Clear();
+            }
+            catch (Exception ex)
+            {
+                throw new Lamentation(
+                    0x2c,
+                    Regex.IsMatch(Lamentation.InterpretExceptionName(ex)[0].ToString(), @"[AEIOU]") ? "an" : "a",
+                    Lamentation.InterpretExceptionName(ex)
+                    );
+            }
         }
         //WriteLine("complet");
 
