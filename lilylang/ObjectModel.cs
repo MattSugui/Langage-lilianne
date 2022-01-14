@@ -633,10 +633,11 @@ public static partial class Interpreter
                             WaitingGotoPositions.Add(label);
                             goto GoForward;
                         case FELActionType.@throw:
+                            throw new Lamentation(0x2F);
+                        case FELActionType.throwc:
                             dynamic? bruh = Value;
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
-                            else if (bruh is null) throw new Lamentation(0x2F);
                             goto GoForward;
                     }
                 }
@@ -680,7 +681,8 @@ public static partial class Interpreter
                     (act.ActionType >= FELActionType.beq &&
                     act.ActionType <= FELActionType.bso) ||
                     (act.ActionType >= FELActionType.@catch &&
-                    act.ActionType <= FELActionType.@throw)
+                    act.ActionType <= FELActionType.gotolabel) ||
+                    act.ActionType == FELActionType.throwc
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -731,7 +733,15 @@ public static partial class Interpreter
             {
                 byte opcode = reader.ReadByte();
                 dynamic? thing = null;
-                if (opcode == 1 || opcode == 29 || opcode == 30 || (opcode >= 34 && opcode <= 44) || (opcode >= 51 && opcode <= 56))
+                if (
+                    opcode == 1 ||
+                    opcode == 29 ||
+                    opcode == 30 ||
+                    (opcode >= 34 &&
+                    opcode <= 44) ||
+                    (opcode >= 51 &&
+                    opcode <= 55) ||
+                    opcode == 57)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -1083,7 +1093,12 @@ public static partial class Interpreter
             /// <summary>
             /// <see langword="throw"/>
             /// </summary>
-            @throw
+            @throw,
+
+            /// <summary>
+            /// <see langword="throw"/> with an exception.
+            /// </summary>
+            @throwc
         }
 
 

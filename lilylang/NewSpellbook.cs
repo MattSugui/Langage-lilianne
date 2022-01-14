@@ -391,7 +391,7 @@ public static partial class Interpreter
                     else if (sent.Value[1].Contains('"')) exval = sent.Value[1].Trim('"');
                 }
                 else exval = null;
-                return new(FELActionType.push, exval);
+                return new(exval is not null? FELActionType.@throw : FELActionType.throwc, exval);
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(
