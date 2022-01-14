@@ -708,10 +708,14 @@ public static partial class Interpreter
         {
             if (!File.Exists(path.Trim('"'))) throw new Lamentation(3, path.Trim('"'));
 
+            File.WriteAllBytes(path.Trim('"'), new byte[] { 0 });
+
             using FileStream stream = File.OpenRead(path.Trim('"'));
             using BinaryReader reader = new(stream);
 
             reader.BaseStream.Position = 0; // bruh stay there!!!
+
+            CurrentPointedEffect = 0;
 
             while (reader.PeekChar() != -1)
             {
@@ -769,7 +773,8 @@ public static partial class Interpreter
                             break;
                     }
                 }
-                CurrentEffects.Add(new((FELActionType)opcode, thing)); 
+                PlaceEffect(new((FELActionType)opcode, thing), CurrentPointedEffect, true);
+                CurrentPointedEffect++;
             }
         }
 
