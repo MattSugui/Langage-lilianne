@@ -655,6 +655,8 @@ public static partial class Interpreter
         /// <exception cref="Lamentation"></exception>
         public static void CreateBinary(string path = "test.lsa")
         {
+            if (File.Exists(path.Trim('"'))) File.WriteAllBytes(path.Trim('"'), new byte[] { 0 });
+
             using FileStream stream = File.Exists(path.Trim('"'))? File.OpenWrite(path.Trim('"')) : File.Create(path.Trim('"'));
             using BinaryWriter writer = new(stream);
 
@@ -707,8 +709,6 @@ public static partial class Interpreter
         public static void LoadBinary(string path = "test.lsa")
         {
             if (!File.Exists(path.Trim('"'))) throw new Lamentation(3, path.Trim('"'));
-
-            File.WriteAllBytes(path.Trim('"'), new byte[] { 0 });
 
             using FileStream stream = File.OpenRead(path.Trim('"'));
             using BinaryReader reader = new(stream);
