@@ -23,6 +23,7 @@ public static class Programme
         if (args.Length == 0) goto REPLLoop;
 
         string filepath = args[0].Trim('"');
+        bool err = false;
         try
         {
             if (filepath.EndsWith(".lps"))
@@ -43,6 +44,14 @@ public static class Programme
         catch (Lamentation cry)
         {
             WriteLine(cry.ToString());
+            err = true;
+        }
+        
+        if (err)
+        {
+            WriteLine("Compilation failed because of the above error. There could be more errors, but this is the one that ended it. Press any key to continue.");
+            ReadKey();
+            Environment.Exit(1);
         }
 
         Write($"Compilation finished.\nPress any key to {(args.Contains("-d") ? "run this application" : "continue")}.");
