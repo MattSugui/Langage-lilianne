@@ -22,8 +22,7 @@ public static class Programme
         */
         if (args.Length == 0) goto REPLLoop;
 
-        WriteLine("Type in the full name of the file to be evaluated.");
-        string filepath = args.Length >= 1 ? args[0].Trim('"') : ReadLine().Trim('"');
+        string filepath = args[0].Trim('"');
         try
         {
             if (filepath.EndsWith(".lps"))
