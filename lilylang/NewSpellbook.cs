@@ -248,6 +248,9 @@ public static partial class Interpreter
     {
         switch (sent.Value[0])
         {
+            case "think":
+                CurrentEffects[CurrentPointedEffect] = new();
+                break;
             case "push":
                 dynamic val;
                 if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
@@ -457,6 +460,17 @@ public static partial class Interpreter
         { for (int i = 0; i < amount; i++) CurrentEffects.Add(new()); }
 
         if (redirect) CurrentPointedEffect = index != -1? index : CurrentEffects.Count - amount - 1 == -1? 0: CurrentEffects.Count - amount;
+    }
+
+    /// <summary>
+    /// Places an action or effect intp the list.
+    /// </summary>
+    /// <param name="effect">The action.</param>
+    /// <param name="index">The location.</param>
+    /// <param name="overwrite">If false, the item will be inserted at that location. If true, the item at that location will be overwritten by the new one.</param>
+    public static void PlaceEffect(FELAction effect, int index, bool overwrite = true)
+    {
+        if (overwrite) CurrentEffects[index] = effect; else CurrentEffects.Insert(index, effect);
     }
 
     /// <summary>
