@@ -51,7 +51,7 @@
                             <ScrollViewer Margin="24 0 0 0">
                                 <StackPanel>
                                     <Label HorizontalAlignment="Left" FontFamily="Segoe UI Light" FontSize="40" Foreground="Black">Enregistrer sous</Label>
-                                    <Fluent:Button HorizontalAlignment="Left" x:Name="tofile" Header="Au fichier" IsEnabled="false" Click="tofile_Click"/>
+                                    <Fluent:Button HorizontalAlignment="Left" x:Name="tofile" Header="Au fichier" IsEnabled="false"/>
                                 </StackPanel>
                             </ScrollViewer>
                             <!--<StackPanel>-->

@@ -33,6 +33,8 @@ param
     [int] $ProjectType,
     [Parameter(Mandatory = $true)]
     [bool] $IsRelease,
+    [Parameter(Mandatory = $true)]
+    [int] $Platform,
     [Parameter(Mandatory = $false)]
     [string] $CopyExecToThisProject
 )
@@ -123,7 +125,20 @@ try
         $archivepath = $pathpart2 + "\archive\"
         if ([System.IO.File]::Exists($archivepath) -ne $true) { [System.IO.Directory]::CreateDirectory($archivepath) }
 
-        $outpath = $pathpart2 + "\bin\"+ $(if ($IsRelease) {"Release"} else {"Debug"}) +"\net6.0\"
+        $plat = "\net6.0\"
+        switch ($Platform)
+        {
+            0 { $plat = "\net6.0\"; break}
+            1 { $plat = "\net6.0-windows\"; break }
+            2 { $plat = "\net6.0-macos\"; break }
+            3 { $plat = "\net6.0-android\"; break }
+            4 { $plat = "\net6.0-ios\"; break }
+            5 { $plat = "\net6.0-maccatalyst\"; break }
+            6 { $plat = "\net6.0-tvos\"; break }
+            default { $plat = "\net6.0\" } 
+        }
+
+        $outpath = $pathpart2 + "\bin\"+ $(if ($IsRelease) {"Release"} else {"Debug"}) + $plat
         #cd $archivepath; dir $archivepath
         
         $dossier = $archivepath + [string]::Format("{0}.{1}", $vernums[0], $vernums[1])

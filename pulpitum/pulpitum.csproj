@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -11,9 +11,9 @@
 	  <Deterministic>False</Deterministic>
 
 	  <AssemblyTitle>Lilian Language</AssemblyTitle>
-	  <AssemblyVersion>0.1.0.0</AssemblyVersion>
-	  <FileVersion>0.1.0.0</FileVersion>
-	  <InformationalVersion>Developer Release 211228-2104</InformationalVersion>
+	  <AssemblyVersion>0.21.231.0</AssemblyVersion>
+	  <FileVersion>0.21.231.0</FileVersion>
+	  <InformationalVersion>Beta 2 220114-1801</InformationalVersion>
 	  <Authors>Matt Sugui</Authors>
 	  <Copyright>Created 2021</Copyright>
 	  <ProductName>Lilian Pulpitum environment</ProductName>
@@ -22,11 +22,11 @@
   </PropertyGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'pulpitum' -IsRelease $false&quot;" />
+	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'pulpitum' -IsRelease $false -Platform 1&quot;" />
     </Target>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'pulpitum' -IsRelease $false&quot;" />
+	    <Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'pulpitum' -IsRelease $false -Platform 1&quot;" />
     </Target>
 
 

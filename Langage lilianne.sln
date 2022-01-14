@@ -34,7 +34,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lilydevadv", "lilydevadv\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lilydevadvHandlers", "lilydevadvHandlers\lilydevadvHandlers.vcxproj", "{7F303642-B6C9-46E0-8561-0B0AD047FEE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lilydev", "lilydev\lilydev.csproj", "{DA83E3E7-D401-4BEC-92A3-C91777C05C90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lilydev", "lilydev\lilydev.csproj", "{DA83E3E7-D401-4BEC-92A3-C91777C05C90}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3946E588-E41F-452F-A606-40A33E44E06B} = {3946E588-E41F-452F-A606-40A33E44E06B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textboxsettings", "textboxsettings\textboxsettings.csproj", "{8E963366-F510-4CEC-AB57-8FF34F4E8A19}"
 EndProject
@@ -43,12 +46,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lilyhelp", "lilyhelp\lilyhelp.csproj", "{BE15DBF4-6F0B-4085-B764-A8BF0C3E2765}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pulpitum", "pulpitum\pulpitum.csproj", "{D2162F56-919E-4D39-BBCC-2D7A4C70F9CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3946E588-E41F-452F-A606-40A33E44E06B} = {3946E588-E41F-452F-A606-40A33E44E06B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bonjour", "bonjour\bonjour.vcxproj", "{2B51B504-4882-468E-8625-018B99A966CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "refl2", "refl2\refl2.csproj", "{89906742-7E4E-4196-9635-AB70EEC34080}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "record_remplacement", "record_remplacement\record_remplacement.csproj", "{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "record_remplacement", "record_remplacement\record_remplacement.csproj", "{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
