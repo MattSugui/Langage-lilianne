@@ -49,7 +49,7 @@ public static class Programme
         
         if (err)
         {
-            WriteLine("Compilation failed because of the above error. There could be more errors, but this is the one that ended it. Press any key to continue.");
+            WriteLine("Compilation failed because of the above error. There could be more errors, but this is the one that ended it.\nPress any key to continue.");
             ReadKey();
             Environment.Exit(1);
         }
