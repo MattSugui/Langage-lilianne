@@ -1,4 +1,5 @@
 ﻿namespace fonder.Lilian.New;
+
 public static partial class Interpreter
 {
     /// <summary>
@@ -14,10 +15,7 @@ public static partial class Interpreter
         CurrentFrame.Add(new());
         CurrentFrameIndex = 0;
         CurrentPointedEffect = 0;
-        while (CurrentPointedEffect < CurrentEffects.Count)
-        {
-            CurrentEffects[CurrentPointedEffect].Invoke();
-            //CurrentPointedSubEffect = CurrentPointedObject - LocationHistoryForSubroutines.Peek();
-        }
+
+        while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
 }

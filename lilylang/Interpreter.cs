@@ -137,7 +137,7 @@ public static partial class Interpreter
                 //DisplayTimeInRealTime = true,
             };
 
-            ProgressBarOptions opt5 = new()
+            /*ProgressBarOptions opt5 = new()
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
@@ -146,7 +146,7 @@ public static partial class Interpreter
                 CollapseWhenFinished = false,
                 ForegroundColor = ConsoleColor.Magenta
                 //DisplayTimeInRealTime = true,
-            };
+            };*/
 
             ProgressBarOptions opt6 = new()
             {
@@ -326,27 +326,6 @@ public static partial class Interpreter
 /// </summary>
 public static partial class Extensions
 {
-    /// <summary>
-    /// Simplification of the <c>Char.IsWhiteSpace(char)</c> method.
-    /// </summary>
-    /// <param name="character">The Unicode character to evaluate.</param>
-    /// <returns></returns>
-    public static bool IsWhiteSpace(this char character)
-    {
-        if (char.IsWhiteSpace(character)) return true; else return false;
-    }
-
-    /// <summary>
-    /// Simplification of the <c>Char.IsLetterOrDigit(char)</c> method.
-    /// </summary>
-    /// <param name="character">The Unicode character to evaluate.</param>
-    /// <returns></returns>
-
-    public static bool IsAlphanumeric(this char character)
-    {
-        if (char.IsLetterOrDigit(character)) return true; else return false;
-    }
-
     /// <summary>
     /// <see cref="Array.IndexOf(Array, object?)"/>
     /// </summary>
