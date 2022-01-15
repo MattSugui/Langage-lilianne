@@ -17,31 +17,38 @@ public static class Programme
         );
 
         if (args.Length == 0) goto REPLLoop;
-        if (args.Length == 1)
-        {
-            WriteLine("You must supply two arguments: the first one for the input, then the second one for the output.");
-            Environment.Exit(0);
-        }
 
         string filepath = args[0].Trim('"');
-        string outpath = args[1].Trim('"');
+        string outpath = string.Empty;
+        if (args.Length == 2) outpath = args[1].Trim('"');
         bool err = false;
         try
         {
             if (filepath.EndsWith(".lps"))
             {
-                WriteLine("Build: " + Path.GetFullPath(filepath));
-                WriteLine("Output: " + Path.GetFullPath(outpath));
-                ReadFile(Path.GetFullPath(filepath));
-                Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
-                CurrentSentences.Clear();
-                CurrentWordPacks.Clear();
-                CurrentEffects.Clear();
+                if (args.Length == 1)
+                {
+                    WriteLine("Build: " + Path.GetFullPath(filepath));
+                    WriteLine("Output: ...where?");
+                    WriteLine("You must supply two arguments: the first one for the input, then the second one for the output, if you are going to supply a script file.");
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    WriteLine("Build: " + Path.GetFullPath(filepath));
+                    WriteLine("Output: " + Path.GetFullPath(outpath));
+                    ReadFile(Path.GetFullPath(filepath));
+                    Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
+                    CurrentSentences.Clear();
+                    CurrentWordPacks.Clear();
+                    CurrentEffects.Clear();
+                }
             }
             else if (filepath.EndsWith(".lsa"))
             {
                 WriteLine("Run: " + Path.GetFullPath(filepath));
                 LoadBinary(Path.GetFullPath(filepath));
+                WriteLine("Load complete");
                 Clear();
                 Execute();
             }
