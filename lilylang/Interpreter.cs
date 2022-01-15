@@ -73,7 +73,8 @@ public static partial class Interpreter
     /// <param name="GUI">If true, the progress bars will be enabled. True by default.</param>
     /// <param name="REPL">If true, a single line will be interpreted. False by default.</param>
     /// <param name="line">The individual line to be parsed. If empty, the entire currently-loaded file will be parsed.</param>
-    public static void Interpret(bool GUI = true, bool REPL = false, string line = "")
+    /// <param name="outfile">The path to the output file.</param>
+    public static void Interpret(bool GUI = true, bool REPL = false, string line = "", string outfile = "")
     {
         //foreach (string line in CurrentFile) ScanTokens(line);
         Stopwatch watch = new();
@@ -274,7 +275,7 @@ public static partial class Interpreter
                 }
                 using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
                 {
-                    CreateBinary();
+                    CreateBinary(outfile);
                     pbd.Tick();
                     pbm.Tick();
                 }

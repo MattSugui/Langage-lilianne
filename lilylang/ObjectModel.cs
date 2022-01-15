@@ -60,7 +60,7 @@ public static partial class Interpreter
     public static int CurrentObjectA;
 
     /// <summary>
-    /// the
+    /// The main opcode interpretation class.
     /// </summary>
     public static partial class Actualiser
     {
@@ -648,7 +648,7 @@ public static partial class Interpreter
         /// </summary>
         /// <param name="path">The path to the file. If it does not exist, the file will be created.</param>
         /// <exception cref="Lamentation"></exception>
-        public static void CreateBinary(string path = "test.lsa")
+        public static void CreateBinary(string path)
         {
             if (File.Exists(path.Trim('"'))) File.WriteAllBytes(path.Trim('"'), new byte[] { 0 });
 
@@ -700,7 +700,7 @@ public static partial class Interpreter
         /// Loads in the binary.
         /// </summary>
         /// <param name="path">The path to the file.</param>
-        public static void LoadBinary(string path = "test.lsa")
+        public static void LoadBinary(string path)
         {
             if (!File.Exists(path.Trim('"'))) throw new Lamentation(3, path.Trim('"'));
 

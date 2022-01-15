@@ -16,29 +16,33 @@ public static class Programme
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion + "\n"
         );
 
-        /*
-        object bruh1 = null;
-        object bruh2 = null;
-        */
         if (args.Length == 0) goto REPLLoop;
+        if (args.Length == 1)
+        {
+            WriteLine("You must supply two arguments: the first one for the input, then the second one for the output.");
+            Environment.Exit(0);
+        }
 
         string filepath = args[0].Trim('"');
+        string outpath = args[1].Trim('"');
         bool err = false;
         try
         {
             if (filepath.EndsWith(".lps"))
             {
-                WriteLine(Path.GetFullPath(filepath));
-                ReadFile(path: filepath);
-                Interpret();
+                WriteLine("Build: " + Path.GetFullPath(filepath));
+                WriteLine("Output: " + Path.GetFullPath(outpath));
+                ReadFile(Path.GetFullPath(filepath));
+                Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
                 CurrentSentences.Clear();
                 CurrentWordPacks.Clear();
                 CurrentEffects.Clear();
             }
             else if (filepath.EndsWith(".lsa"))
             {
+                WriteLine("Run: " + Path.GetFullPath(filepath));
+                LoadBinary(Path.GetFullPath(filepath));
                 Clear();
-                LoadBinary();
                 Execute();
             }
         }
@@ -58,10 +62,10 @@ public static class Programme
         Write($"Compilation finished.\nPress any key to {(args.Contains("-d") ? "run this application" : "continue")}.");
         ReadKey();
         
-        if (filepath.EndsWith(".lps") && args.Contains("-d"))
+        if (args.Contains("-d"))
         {
             Clear();
-            LoadBinary();
+            LoadBinary(Path.GetFullPath(outpath));
             Execute();
             Environment.Exit(0);
         }

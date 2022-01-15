@@ -1,11 +1,4 @@
-﻿//#define OrbPonderingTime
-//#define TemporaryTokenTestingTime // test for recognising patterns
-
-// Guide to comments
-// if the comments look like this line, they're omitted code.
-/* if the comments look like this line, they're actual comments. */
-
-namespace fonder.Lilian.New;
+﻿namespace fonder.Lilian.New;
 
 public static partial class Interpreter
 {
@@ -401,26 +394,6 @@ public static partial class Interpreter
                 else
                     throw new Lamentation(0x16, string.Join(' ', sent.Value));
         }
-    }
-
-    /// <summary>
-    /// Creates spaces in the <see cref="CurrentEffects"/> list.
-    /// </summary>
-    /// <param name="amount">The amount of spaces to allocate. Only one by default.</param>
-    /// <param name="index">Where to put the spaces. -1 by default, i.e., it will put the spaces at the end of the list.</param>
-    /// <param name="redirect">After adding the spaces, lead the pointer at the start of the space allocation. True by default.</param>
-    /// <param name="overwrite">If true, the insertion method will overwrite the succeeding instructions.</param>
-    public static void AllocateEffects(int amount = 1, int index = -1, bool redirect = true, bool overwrite = false)
-    {
-        if (index != -1)
-        {
-            if (overwrite) for (int i = 0; i < amount; i++) CurrentEffects[index + i] = new();
-            else for (int i = 0; i < amount; i++) CurrentEffects.Insert(i, new());
-        }
-        else
-        { for (int i = 0; i < amount; i++) CurrentEffects.Add(new()); }
-
-        if (redirect) CurrentPointedEffect = index != -1? index : CurrentEffects.Count - amount - 1 == -1? 0: CurrentEffects.Count - amount;
     }
 
     /// <summary>
