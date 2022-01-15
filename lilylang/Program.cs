@@ -28,6 +28,7 @@ public static class Programme
         {
             if (filepath.EndsWith(".lps"))
             {
+                WriteLine(Path.GetFullPath(filepath));
                 ReadFile(path: filepath);
                 Interpret();
                 CurrentSentences.Clear();
@@ -68,7 +69,7 @@ public static class Programme
 
         REPLLoop:
         WriteLine(
-            "Welcome to the REPL mode! Type EXIT if you've had your fun.\n" +
+            "Welcome to the monitor mode! Type EXIT if you've had your fun.\n" +
             "ID\tOP\tSL\tVT\tINSTRUCTION"
         //	ID	OP	SL	VT	INSTRUCTION
         //	01	2E	01	--	take;
