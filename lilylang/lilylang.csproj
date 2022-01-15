@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>0.22.256.0</AssemblyVersion>
-		<FileVersion>0.22.256.0</FileVersion>
-		<InformationalVersion>Release Candidate 1 220115-1232</InformationalVersion>
+		<AssemblyVersion>0.22.257.0</AssemblyVersion>
+		<FileVersion>0.22.257.0</FileVersion>
+		<InformationalVersion>Release Candidate 1 220115-1419</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created 2021</Copyright>
 		<ProductName>Lilian language interpreter</ProductName>

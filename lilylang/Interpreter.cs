@@ -96,7 +96,7 @@ public static partial class Interpreter
             ProgressBarOptions opt1 = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -107,7 +107,7 @@ public static partial class Interpreter
             ProgressBarOptions opt2 = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -118,7 +118,7 @@ public static partial class Interpreter
             ProgressBarOptions opt3 = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -129,7 +129,7 @@ public static partial class Interpreter
             ProgressBarOptions opt4 = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -151,7 +151,7 @@ public static partial class Interpreter
             ProgressBarOptions opt6 = new()
             {
                 ProgressBarOnBottom = false,
-                DenseProgressBar = true,
+                //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
@@ -160,7 +160,6 @@ public static partial class Interpreter
             };
 
             watch.Start();
-            Clear();
             using (var pbm = new ProgressBar(4, "Interpretation process", opt))
             {
                 /*using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
@@ -280,7 +279,6 @@ public static partial class Interpreter
                     pbm.Tick();
                 }
             }
-            Clear();
             watch.Stop();
             WriteLine($"Took {watch.ElapsedMilliseconds} ms.");
         }
