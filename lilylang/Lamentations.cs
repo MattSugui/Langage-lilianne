@@ -59,7 +59,7 @@ public static partial class Interpreter
             def.Add(0x0028, "'{0}': cannot shrink whatever this is!");
             def.Add(0x0029, "'{0}': cannot grow whatever this is!");
             def.Add(0x002A, "'{0}': cannot realise this string into an integral value.");
-            def.Add(0x002B, "The following call doesn't lead to anywhere: {0}.");
+            def.Add(0x002B, "The following call doesn't lead to anywhere: '{0}'.");
             def.Add(0x002C, "Internal error: {0} {1}");
             def.Add(0x002D, "I've just got a letter. '{0}'");
             def.Add(0x002E, "aYO wat the fuk! Lamentation no. {0} does not exist!!!");
@@ -109,7 +109,7 @@ public static partial class Interpreter
                 Message = def[code];
                 ErrorCode = code;
             }
-            else throw new Lamentation(0x2e, $"Lamentation provider failed to retrieve error code {code} because it does not exist. How ironic.");
+            else throw new Lamentation(0x2e, code.ToString());
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ public static partial class Interpreter
                 Message = string.Format(def[code], data);
                 ErrorCode = code;
             }
-            else throw new Lamentation(0x2e, $"Lamentation provider failed to retrieve error code {code} because it does not exist. How ironic.");
+            else throw new Lamentation(0x2e, code.ToString());
         }
 
         /// <summary>
