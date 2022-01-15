@@ -60,20 +60,10 @@ public static partial class Interpreter
     public static int CurrentObjectA;
 
     /// <summary>
-    /// The current queue of labels awaiting assignment to places of code.
+    /// the
     /// </summary>
-    public static List<string> WaitingGotoPositions = new();
-
-    /// <summary>
-    /// The current queue of recognised labels awaiting assignment to a call statement.
-    /// </summary>
-    public static Dictionary<string, int> WaitingLabelPositions = new();
-
     public static partial class Actualiser
     {
-        [Obsolete("Use CurrentEffects")]
-        public static Queue<Delegate> CurrentActions = new();
-
         /// <summary>
         /// The current list of actions.
         /// </summary>
@@ -623,14 +613,6 @@ public static partial class Interpreter
                                 CurrentFrameIndex--; // go back
                             }
                             else goto case FELActionType.end; // redirect to end
-                            goto GoForward;
-                        case FELActionType.label:
-                            string gotola = (string)Value!;
-                            WaitingLabelPositions.Add(gotola, CurrentEffects.IndexOf(this));
-                            goto GoForward;
-                        case FELActionType.gotolabel:
-                            string label = (string)Value!;
-                            WaitingGotoPositions.Add(label);
                             goto GoForward;
                         case FELActionType.@throw:
                             throw new Lamentation(0x2F);
