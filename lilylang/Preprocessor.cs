@@ -19,7 +19,7 @@ public static partial class Interpreter
                 {
                     var data = Regex.Match(line, @"Lilian\s(?<MajorVersion>[0-9]+)\.(?<MinorVersion>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)").Groups;
                     (int maj, int min, int build, int rev) = (int.Parse(data["MajorVersion"].Value), int.Parse(data["MinorVersion"].Value), int.Parse(data["Build"].Value), int.Parse(data["Revision"].Value));
-                    if (Assembly.GetExecutingAssembly().GetName().Version.Build > build) throw new Lamentation(0x31, build.ToString());
+                    if (Assembly.GetExecutingAssembly().GetName().Version.Build < build) throw new Lamentation(0x31, build.ToString());
                 }
                 else if (Regex.IsMatch(line, @"Title\s""(?<AppTitle>.*)""")) ConsummateSource.Add($"title \"{Regex.Match(line, @"Title\s""(?<AppTitle>.*)""").Groups["AppTitle"].Value}\"");
                 else if (Regex.IsMatch(line, @"Append\s""(?<Filename>.*)"""))
