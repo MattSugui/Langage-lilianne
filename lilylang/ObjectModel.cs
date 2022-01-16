@@ -621,6 +621,9 @@ public static partial class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
+                        case FELActionType.settitle:
+                            Title = Value!;
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -664,7 +667,8 @@ public static partial class Interpreter
                     act.ActionType <= FELActionType.bso) ||
                     (act.ActionType >= FELActionType.@catch &&
                     act.ActionType <= FELActionType.gotolabel) ||
-                    act.ActionType == FELActionType.throwc
+                    act.ActionType == FELActionType.throwc ||
+                    act.ActionType == FELActionType.settitle
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -723,7 +727,8 @@ public static partial class Interpreter
                     opcode <= 44) ||
                     (opcode >= 51 &&
                     opcode <= 55) ||
-                    opcode == 57)
+                    opcode == 57 ||
+                    opcode == 58)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -1080,7 +1085,15 @@ public static partial class Interpreter
             /// <summary>
             /// <see langword="throw"/> with an exception.
             /// </summary>
-            @throwc
+            @throwc,
+
+            /// <summary>
+            /// Sets the title of the console.
+            /// </summary>
+            /// <remarks>
+            /// This is added to the top of the source file if a project file has a Title directive.
+            /// </remarks>
+            settitle
         }
 
 

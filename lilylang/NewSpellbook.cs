@@ -385,6 +385,8 @@ public static partial class Interpreter
                 }
                 else exval = null;
                 return new(exval is not null? FELActionType.@throwc : FELActionType.@throw, exval);
+            case "title":
+                return new(FELActionType.settitle, sent.Value[1].Trim('"'));
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(

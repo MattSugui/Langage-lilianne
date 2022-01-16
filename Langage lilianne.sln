@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lilylang", "lilylang\lilylang.csproj", "{3946E588-E41F-452F-A606-40A33E44E06B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67} = {E0DA47CB-C449-4271-AF4F-13B460E33C67}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lilylang_archiveur", "lilylang_archiveur\lilylang_archiveur.csproj", "{BE0B1AFD-E356-4062-B525-4533201DA6E3}"
 EndProject
@@ -52,6 +55,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "refl2", "refl2\refl2.csproj", "{89906742-7E4E-4196-9635-AB70EEC34080}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "record_remplacement", "record_remplacement\record_remplacement.csproj", "{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}"
+EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "cocoprep", "cocoprep\cocoprep.vbproj", "{E0DA47CB-C449-4271-AF4F-13B460E33C67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -321,6 +326,18 @@ Global
 		{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}.Release|x64.Build.0 = Release|Any CPU
 		{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}.Release|x86.ActiveCfg = Release|Any CPU
 		{B4C3911F-BEE2-4A32-B24E-0F636106C0E6}.Release|x86.Build.0 = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|x64.Build.0 = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0DA47CB-C449-4271-AF4F-13B460E33C67}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.0.265.0</AssemblyVersion>
-		<FileVersion>1.0.265.0</FileVersion>
-		<InformationalVersion>releaseman 220115-2254</InformationalVersion>
+		<AssemblyVersion>1.0.268.0</AssemblyVersion>
+		<FileVersion>1.0.268.0</FileVersion>
+		<InformationalVersion>releaseman 220115-2258</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created 2021</Copyright>
 		<ProductName>Lilian language interpreter</ProductName>
@@ -25,16 +25,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="syntaxes.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="ShellProgressBar" Version="5.1.0" />
 		<PackageReference Include="System.CodeDom" Version="6.0.0" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $true -Platform 0&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -NewVerName 'Coco Alpha 1'&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $true -Platform 0&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -SmallUpgrade&quot;" />
 	</Target>
 
 </Project>

@@ -26,6 +26,7 @@ public static class Programme
         {
             if (filepath.EndsWith(".lps"))
             {
+                WriteLine("TIP: Submit a Lilian makefile to compile several files into one executable!");
                 if (args.Length == 1)
                 {
                     WriteLine("Build: " + Path.GetFullPath(filepath));
@@ -45,6 +46,15 @@ public static class Programme
                     CurrentWordPacks.Clear();
                     CurrentEffects.Clear();
                 }
+            }
+            else if (filepath.EndsWith(".lpj"))
+            {
+                WriteLine("Build project: " + Path.GetFullPath(filepath));
+                tempCurrFile = File.ReadAllLines(Path.GetFullPath(filepath));
+                Interpret(true, false, string.Empty, string.Empty, true);
+                CurrentSentences.Clear();
+                CurrentWordPacks.Clear();
+                CurrentEffects.Clear();
             }
             else if (filepath.EndsWith(".lsa"))
             {

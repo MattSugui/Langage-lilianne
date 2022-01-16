@@ -58,6 +58,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "LABL",	Value = @"^@[A-Za-z][0-9A-Za-z]*$",	Look = true													});
 		CurrentTokens.Add(new() { Name = "THNK",	Value = @"^think$"																				});
 		CurrentTokens.Add(new() { Name = "THRW",	Value = @"^throw$"																				});
+		CurrentTokens.Add(new() { Name = "TITL",	Value = @"^title$"																				});
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----
 		CurrentSentenceStructures.Add(new() { Name = "StartPreprocess",	TokenStruct = new string[] {	"PRPR",	"COLN"			} });
@@ -104,5 +105,6 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "ThrowGeneric",	TokenStruct = new string[] {	"THRW", "SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "ThrowCode",		TokenStruct = new string[] {	"THRW", "QUOT", "SMCL"	} });
 		CurrentSentenceStructures.Add(new() { Name = "ThrowMessage",	TokenStruct = new string[] {	"THRW", "INTL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "SetTitle",		TokenStruct = new string[] {	"TITL", "QUOT", "SMCL" } });
 	}
 }

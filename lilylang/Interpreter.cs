@@ -18,6 +18,11 @@ public static partial class Interpreter
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
+    
+    /// <summary>
+    /// The unprocessed project file.
+    /// </summary>
+    public static string[] tempCurrFile;
 
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
@@ -70,11 +75,12 @@ public static partial class Interpreter
     /// <summary>
     /// Do the whole thing.
     /// </summary>
-    /// <param name="GUI">If true, the progress bars will be enabled. True by default.</param>
+    /// <param name="GUI">If true, the progress bars will be enabled. True by default. Somehow also controls whether the REPL mode is activated.</param>
     /// <param name="REPL">If true, a single line will be interpreted. False by default.</param>
     /// <param name="line">The individual line to be parsed. If empty, the entire currently-loaded file will be parsed.</param>
     /// <param name="outfile">The path to the output file.</param>
-    public static void Interpret(bool GUI = true, bool REPL = false, string line = "", string outfile = "")
+    /// <param name="projfile">If true, the intepretation starts at the "Initialising the compilation process" stage. False by default.</param>
+    public static void Interpret(bool GUI = true, bool REPL = false, string line = "", string outfile = "", bool projfile = false)
     {
         //foreach (string line in CurrentFile) ScanTokens(line);
         Stopwatch watch = new();
@@ -138,16 +144,16 @@ public static partial class Interpreter
                 DisplayTimeInRealTime = true,
             };
 
-            /*ProgressBarOptions opt5 = new()
+            ProgressBarOptions opt5 = new()
             {
                 ProgressBarOnBottom = false,
                 //DenseProgressBar = true,
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Magenta
-                //DisplayTimeInRealTime = true,
-            };*/
+                ForegroundColor = ConsoleColor.Gray,
+                DisplayTimeInRealTime = true,
+            };
 
             ProgressBarOptions opt6 = new()
             {
@@ -161,82 +167,19 @@ public static partial class Interpreter
             };
 
             watch.Start();
-            using (var pbm = new ProgressBar(4, "Interpretation process", opt))
+            using (var pbm = new ProgressBar(5, "Compilation process", opt))
             {
-                /*using (var pbz = pbm.Spawn(CurrentFile.Count, "Calling Coco for help", opt5))
+                if (projfile) goto ProjectCompilation; else goto SingleFileCompilation;
+
+                ProjectCompilation:
+                using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
                 {
-                    bool cocotext = false;
-                    List<int> CodePositionsWhereCoco = new();
-                    string FirstLine = string.Empty;
-                    string LastLine = string.Empty;
-                    for (int i = 1; i < CurrentFile.Count + 1; i++)
-                    {
-                        //int offset = 0;
-                        pbz.Tick();
-                        if (CurrentFile[i - 1].StartsWith("preprocess:"))
-                        {
-                            cocotext = true;
-                            goto RemoveDeclarationIfCocoStartsImmediatelyAfter;
-                        }
-                        else if (CurrentFile[i - 1] == "preprocess:")
-                        {
-                            cocotext = true;
-                        }
-                        else if (CurrentFile[i - 1].EndsWith("start;"))
-                        {
-                            cocotext = false;
-                            goto SaveCodeBeforeEndDeclaration;
-                        }
-                        else if (CurrentFile[i - 1] == "start;")
-                        {
-                            cocotext = false;
-                        }
-                        else goto Otherwise;
+                    Preprocess(tempCurrFile);
+                    outfile = outgoing;
+                    pbg.Tick();
+                }
 
-                        RemoveDeclarationIfCocoStartsImmediatelyAfter:
-                        {
-                            CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"^\s*preprocess:\s*", string.Empty);
-                            if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
-                            else CurrentFile.RemoveAt(i - 1);
-                            i--;
-                            continue;
-                        }
-
-                    SaveCodeBeforeEndDeclaration:
-                        {
-                            CurrentFile[i - 1] = Regex.Replace(CurrentFile[i - 1], @"\s*start;\s*$", string.Empty);
-                            if (!string.IsNullOrWhiteSpace(CurrentFile[i - 1])) CodePositionsWhereCoco.Add(i - 1);
-                            else CurrentFile.RemoveAt(i - 1);
-                            break;
-                        }
-
-
-                    Otherwise:
-                        {
-                            if (cocotext) CodePositionsWhereCoco.Add(i - 1); else continue;
-                        }
-                    }
-                    List<string> CocoCode = new();
-                    pbz.MaxTicks += CodePositionsWhereCoco.Count; // you can do this?
-                    foreach (int i in CodePositionsWhereCoco)
-                    {
-                        CocoCode.Add(CurrentFile[i].TrimStart());
-                        CurrentFile.RemoveAt(i);
-                        pbz.Tick();
-                    }
-                    if (CocoCode.Count != 0)
-                    {
-                        using (TextWriter pen = File.CreateText("cocotmp.ccn"))
-                        {
-                            foreach (string line1 in CocoCode)
-                            {
-                                pen.WriteLine(line1);
-                                pbz.Tick();
-                            }
-                        }
-                        FeedingTime("cocotmp.ccn");
-                    }
-                }*/
+                SingleFileCompilation:
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
