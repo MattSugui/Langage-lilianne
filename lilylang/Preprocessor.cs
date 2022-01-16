@@ -26,7 +26,7 @@ public static partial class Interpreter
                 {
                     string fullpath = Regex.Match(line, @"Append\s""(?<Filename>.*)""").Groups["Filename"].Value;
                     if (File.Exists(fullpath)) foreach (string ligne in File.ReadAllLines(Path.GetFullPath(fullpath))) ConsummateSource.Add(ligne);
-                    else throw new Lamentation(0x2, fullpath);
+                    else throw new Lamentation(0x3, fullpath);
                 }
                 else if (Regex.IsMatch(line, @"Name\s(?<AppName>.*)")) outgoing = Regex.Match(line, @"Name\s(?<AppName>.*)").Groups["AppName"].Value + ".lsa";
                 else if (string.IsNullOrWhiteSpace(line)) continue;
