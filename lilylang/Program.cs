@@ -20,7 +20,6 @@ public static class Programme
 
         string filepath = args[0].Trim('"');
         string outpath = string.Empty;
-        if (args.Length == 2) outpath = args[1].Trim('"');
         bool err = false;
         try
         {
@@ -38,6 +37,7 @@ public static class Programme
                 }
                 else
                 {
+                    outpath = args[1].Trim('"');
                     WriteLine("Build: " + Path.GetFullPath(filepath));
                     WriteLine("Output: " + Path.GetFullPath(outpath));
                     ReadFile(Path.GetFullPath(filepath));
