@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.1.274.0</AssemblyVersion>
-		<FileVersion>1.1.274.0</FileVersion>
-		<InformationalVersion>Coco Alpha 1 220116-2111</InformationalVersion>
+		<AssemblyVersion>1.1.275.0</AssemblyVersion>
+		<FileVersion>1.1.275.0</FileVersion>
+		<InformationalVersion>Coco Alpha 1 220116-2118</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created 2021</Copyright>
 		<ProductName>Lilian language interpreter</ProductName>
