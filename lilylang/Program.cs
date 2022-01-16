@@ -84,7 +84,7 @@ public static class Programme
         if (args.Contains("-d"))
         {
             Clear();
-            LoadBinary(Path.GetFullPath(outpath));
+            LoadBinary(Path.GetFullPath(outgoing));
             Execute();
             Environment.Exit(0);
         }

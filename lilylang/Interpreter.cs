@@ -87,7 +87,7 @@ public static partial class Interpreter
         //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
         //PowerShell ps = PowerShell.Create();
 
-        string outgoingfilepath = outfile;
+        outgoing = !string.IsNullOrWhiteSpace(outfile)? outfile : outgoing;
 
         if (GUI)
         {
@@ -177,7 +177,6 @@ public static partial class Interpreter
                 using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
                 {
                     Preprocess(tempCurrFile);
-                    outgoingfilepath = outgoing;
                     pbg.Tick();
                 }
 
@@ -220,7 +219,7 @@ public static partial class Interpreter
                 }
                 using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
                 {
-                    CreateBinary(outgoingfilepath);
+                    CreateBinary(outgoing);
                     pbd.Tick();
                     pbm.Tick();
                 }
