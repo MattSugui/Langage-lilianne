@@ -64,7 +64,7 @@ public static partial class Interpreter
             def.Add(0x002D, "I've just got a letter. '{0}'");
             def.Add(0x002E, "aYO wat the fuk! Lamentation no. {0} does not exist!!!");
             def.Add(0x002F, "Hi!");
-            def.Add(0x0030, "Preprocessing error. The project does not use this version of Lilian. Use at least version {0}.{1}.");
+            def.Add(0x0030, "Preprocessing error. Invalid build number.");
             def.Add(0x0031, "Preprocessing error. The project does not use this build of Lilian. Use at least build {0}.");
             def.Add(0x0032, "Preprocessing error. Unknown directive.");
         }

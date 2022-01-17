@@ -49,12 +49,20 @@ public static class Programme
             }
             else if (filepath.EndsWith(".lpj"))
             {
-                WriteLine("Build project: " + Path.GetFullPath(filepath));
-                tempCurrFile = File.ReadAllLines(Path.GetFullPath(filepath));
-                Interpret(true, false, string.Empty, string.Empty, true);
-                CurrentSentences.Clear();
-                CurrentWordPacks.Clear();
-                CurrentEffects.Clear();
+                if (File.Exists(Path.GetFullPath(filepath)))
+                {
+                    WriteLine("Build project: " + Path.GetFullPath(filepath));
+                    tempCurrFile = new XmlDocument();
+                    tempCurrFile.Load(Path.GetFullPath(filepath));
+                    Interpret(true, false, string.Empty, string.Empty, true);
+                    CurrentSentences.Clear();
+                    CurrentWordPacks.Clear();
+                    CurrentEffects.Clear();
+                }
+                else
+                {
+                    WriteLine("File does not exist!");
+                }
             }
             else if (filepath.EndsWith(".lsa"))
             {

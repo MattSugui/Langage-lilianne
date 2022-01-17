@@ -22,7 +22,7 @@ public static partial class Interpreter
     /// <summary>
     /// The unprocessed project file.
     /// </summary>
-    public static string[] tempCurrFile;
+    public static XmlDocument tempCurrFile;
 
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.

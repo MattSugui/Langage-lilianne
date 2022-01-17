@@ -7,81 +7,41 @@ public static partial class Interpreter
     /// </summary>
     public static class Preprocessor
     {
-        /// <summary>
-        /// Preprocess the project into a single file.
-        /// </summary>
-        /// <param name="file">The project file.</param>
-        public static void Preprocess(string[] file)
+        public static void Preprocess(XmlDocument file)
         {
-            foreach (string line in file)
+            XmlNode root = file.DocumentElement;
+
+            // get version
+            int build = int.TryParse(root.Attributes["MinimumBuild"].Value, out int i)? i: throw new Lamentation(0x30);
+            if (Assembly.GetExecutingAssembly().GetName().Version.Build < build) throw new Lamentation(0x31, build.ToString());
+
+            //get output path
+            XmlNode outputPath = root.SelectSingleNode("descendants::Output");
+            string outputType = outputPath.Attributes["Type"].Value; // use later
+            outgoing = outputPath.Attributes["Path"].Value;
+            
+
+            // get project contents
+            XmlNodeList projContents = root.SelectNodes("descendants::Include");
+            foreach (XmlNode projNode in projContents)
             {
-                if (Regex.IsMatch(line, @"Lilian\s(?<MajorVersion>[0-9]+)\.(?<MinorVersion>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)"))
-                {
-                    var data = Regex.Match(line, @"Lilian\s(?<MajorVersion>[0-9]+)\.(?<MinorVersion>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)").Groups;
-                    (int maj, int min, int build, int rev) = (int.Parse(data["MajorVersion"].Value), int.Parse(data["MinorVersion"].Value), int.Parse(data["Build"].Value), int.Parse(data["Revision"].Value));
-                    if (Assembly.GetExecutingAssembly().GetName().Version.Build < build) throw new Lamentation(0x31, build.ToString());
-                }
-                else if (Regex.IsMatch(line, @"Title\s""(?<AppTitle>.*)""")) ConsummateSource.Add($"title \"{Regex.Match(line, @"Title\s""(?<AppTitle>.*)""").Groups["AppTitle"].Value}\";");
-                else if (Regex.IsMatch(line, @"Append\s""(?<Filename>.*)"""))
-                {
-                    string fullpath = Regex.Match(line, @"Append\s""(?<Filename>.*)""").Groups["Filename"].Value;
-                    if (Regex.IsMatch(line, @"Append\s""(?<Filename>.*)""\sAs\s(?<VariableName>[0-9A-Za-z]+)"))
-                    {
-                        Codefiles.Add(new(
-                            fullpath,
-                            Regex.Match(line, @"Append\s""(?<Filename>.*)""\sAs\s(?<VariableName>[0-9A-Za-z]+)").Groups["VariableName"].Value,
-                            File.Exists(fullpath)? File.ReadAllText(Path.GetFullPath(fullpath)) : throw new Lamentation(0x3, fullpath))
-                            );
-                    }
-                    if (File.Exists(fullpath)) foreach (string ligne in File.ReadAllLines(Path.GetFullPath(fullpath))) ConsummateSource.Add(ligne);
-                    else throw new Lamentation(0x3, fullpath);
-                }
-                else if (Regex.IsMatch(line, @"Name\s(?<AppName>.*)")) outgoing = Regex.Match(line, @"Name\s(?<AppName>.*)").Groups["AppName"].Value + ".lsa";
-                else if (string.IsNullOrWhiteSpace(line)) continue;
-                else throw new Lamentation(0x32);
+                if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
+                else throw new Lamentation(0x3, projNode.Attributes["Path"].Value);
             }
-
-            CurrentFile = ConsummateSource;
         }
 
-        public record struct PreprocessorAction(PreprocWhatToDo ActionType, string File);
-
-        public enum PreprocWhatToDo
+        public enum LilianOutputType
         {
-            Version,
-            Name,
-            Title,
-            Append,
-            Define,
+            LilianExe,
+            WindowsExe
         }
-        
+
         /// <summary>
         /// The complete compiled source.
         /// </summary>
         public static List<string> ConsummateSource = new();
 
-        /// <summary>
-        /// The collection of currently-loaded files with their file names and internal variable names for
-        /// conditional compilation or something.
-        /// </summary>
-        public static FileRegister Codefiles = new();
-
         public static string outgoing = "";
 
-        /// <summary>
-        /// A code file.
-        /// </summary>
-        /// <param name="Name">The name of the file.</param>
-        /// <param name="VarName">Its internal name.</param>
-        /// <param name="Contents">The contents of the file.</param>
-        public record struct Codefile(string Name, string VarName, string Contents);
-
-        /// <summary>
-        /// The file registry.
-        /// </summary>
-        public class FileRegister: List<Codefile>
-        {
-            public Codefile this[string name] => Find(a => a.VarName == name);
-        }
     }
 }
