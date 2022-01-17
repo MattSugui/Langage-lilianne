@@ -119,7 +119,8 @@ public static partial class Interpreter
                     lignes.Add((val, new()));
                     currindx++;
 
-                    if (!inseq) inseq = true; else throw new Lamentation(0x34);
+                    if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
+                    
                 }
                 else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]"))
                 {
@@ -144,6 +145,7 @@ public static partial class Interpreter
                 {
                     if (!inseq) throw new Lamentation(0x37);
                     inseq = false;
+                    collect = false;
 
                     // equation time!
                     bool found = false;
