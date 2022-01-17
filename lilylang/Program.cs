@@ -6,6 +6,11 @@
 public static class Programme
 {
     /// <summary>
+    /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
+    /// </summary>
+    public static bool ConserveMemory = false;
+
+    /// <summary>
     /// The main entry point.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
@@ -13,7 +18,8 @@ public static class Programme
     {
         WriteLine(
             "Fonder Lilian Language Environment\n" +
-            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n"
+            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) +
+            (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
         if (args.Length == 0) goto REPLLoop;
@@ -23,57 +29,65 @@ public static class Programme
         bool err = false;
         try
         {
-            if (filepath.EndsWith(".lps"))
+            try
             {
-                WriteLine("TIP: Submit a Lilian makefile to compile several files into one executable!");
-                if (args.Length == 1)
+                if (filepath.EndsWith(".lps"))
                 {
-                    WriteLine("Build: " + Path.GetFullPath(filepath));
-                    WriteLine("Output: ...where?");
-                    WriteLine("You must supply two arguments: the first one for the input, then the second one for the output, if you are going to supply a script file.");
-                    WriteLine("Press any key to continue.");
-                    ReadKey();
+                    WriteLine("TIP: Submit a Lilian makefile to compile several files into one executable!");
+                    if (args.Length == 1)
+                    {
+                        WriteLine("Build: " + Path.GetFullPath(filepath));
+                        WriteLine("Output: ...where?");
+                        WriteLine("You must supply two arguments: the first one for the input, then the second one for the output, if you are going to supply a script file.");
+                        WriteLine("Press any key to continue.");
+                        ReadKey();
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        outpath = args[1].Trim('"');
+                        WriteLine("Build: " + Path.GetFullPath(filepath));
+                        WriteLine("Output: " + Path.GetFullPath(outpath));
+                        ReadFile(Path.GetFullPath(filepath));
+                        if (args.Contains("-d")) ConserveMemory = true;
+                        Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
+                        CurrentSentences.Clear();
+                        CurrentWordPacks.Clear();
+                        CurrentEffects.Clear();
+                    }
+                }
+                else if (filepath.EndsWith(".lilianproj"))
+                {
+                    if (File.Exists(Path.GetFullPath(filepath)))
+                    {
+                        WriteLine("Build project: " + Path.GetFullPath(filepath));
+                        tempCurrFile = new XmlDocument();
+                        tempCurrFile.Load(Path.GetFullPath(filepath));
+                        Interpret(true, false, string.Empty, string.Empty, true);
+                        CurrentSentences.Clear();
+                        CurrentWordPacks.Clear();
+                        CurrentEffects.Clear();
+                    }
+                    else
+                    {
+                        WriteLine("File does not exist! Press any key to continue.");
+                        ReadKey();
+                        Environment.Exit(0);
+                    }
+                }
+                else if (filepath.EndsWith(".lsa"))
+                {
+                    WriteLine("Run: " + Path.GetFullPath(filepath));
+                    LoadBinary(Path.GetFullPath(filepath));
+                    WriteLine("Load complete!");
+                    Clear();
+                    Execute();
                     Environment.Exit(0);
                 }
-                else
-                {
-                    outpath = args[1].Trim('"');
-                    WriteLine("Build: " + Path.GetFullPath(filepath));
-                    WriteLine("Output: " + Path.GetFullPath(outpath));
-                    ReadFile(Path.GetFullPath(filepath));
-                    Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
-                    CurrentSentences.Clear();
-                    CurrentWordPacks.Clear();
-                    CurrentEffects.Clear();
-                }
             }
-            else if (filepath.EndsWith(".lilianproj"))
+            catch (OutOfMemoryException)
             {
-                if (File.Exists(Path.GetFullPath(filepath)))
-                {
-                    WriteLine("Build project: " + Path.GetFullPath(filepath));
-                    tempCurrFile = new XmlDocument();
-                    tempCurrFile.Load(Path.GetFullPath(filepath));
-                    Interpret(true, false, string.Empty, string.Empty, true);
-                    CurrentSentences.Clear();
-                    CurrentWordPacks.Clear();
-                    CurrentEffects.Clear();
-                }
-                else
-                {
-                    WriteLine("File does not exist! Press any key to continue.");
-                    ReadKey();
-                    Environment.Exit(0);
-                }
-            }
-            else if (filepath.EndsWith(".lsa"))
-            {
-                WriteLine("Run: " + Path.GetFullPath(filepath));
-                LoadBinary(Path.GetFullPath(filepath));
-                WriteLine("Load complete!");
-                Clear();
-                Execute();
-                Environment.Exit(0);
+
             }
         }
         catch (Lamentation cry)

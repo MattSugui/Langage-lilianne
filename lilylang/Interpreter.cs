@@ -1,5 +1,4 @@
-﻿//#define Level0TestingMode
-#define VERBOSE
+﻿#pragma warning disable CA2211
 
 using ShellProgressBar;
 
@@ -201,6 +200,7 @@ public static partial class Interpreter
 
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
+                    if (Programme.ConserveMemory) ConsummateSource.Clear();
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
                         ScanTokens(CurrentFile[i - 1]);
@@ -220,6 +220,7 @@ public static partial class Interpreter
                 using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
                 {
                     CurrentPointedEffect = 0;
+                    if (Programme.ConserveMemory) CurrentWordPacks.Clear();
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
 
@@ -231,6 +232,7 @@ public static partial class Interpreter
                 }
                 using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
                 {
+                    if (Programme.ConserveMemory) CurrentSentences.Clear();
                     CheckForFriendlyNames();
                     pbe.Tick();
                     pbm.Tick();

@@ -1,4 +1,6 @@
-﻿namespace fonder.Lilian.New;
+﻿#pragma warning disable CA2211
+
+namespace fonder.Lilian.New;
 
 public static partial class Interpreter
 {

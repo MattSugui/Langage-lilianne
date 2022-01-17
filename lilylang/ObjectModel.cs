@@ -1,4 +1,5 @@
 ﻿#nullable enable // oh boy here we go, we in sport mode now
+#pragma warning disable CA2211
 
 namespace fonder.Lilian.New;
 

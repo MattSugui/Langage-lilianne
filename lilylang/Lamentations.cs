@@ -74,6 +74,7 @@ public static partial class Interpreter
             def.Add(0x0037, "Preprocessing error. There was no 'if' statement to terminate.");
             def.Add(0x0038, "Preprocessing error. '{0}' already exists. Use 'defifn' if needed.");
             def.Add(0x0039, "Preprocessing error. '{0}' does not exist. Use 'undefife' if needed.");
+            def.Add(0x003A, "Internal error. There is no more memory to work with on this compilation.");
         }
 
         /// <summary>

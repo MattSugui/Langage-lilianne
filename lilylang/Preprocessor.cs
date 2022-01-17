@@ -1,6 +1,7 @@
 ﻿#nullable enable
 #pragma warning disable CS8600
 #pragma warning disable CS8602
+#pragma warning disable CA2211
 
 namespace fonder.Lilian.New;
 
@@ -83,6 +84,13 @@ public static partial class Interpreter
 
             bool collect = false;
             bool inseq = false;
+            bool togglefind = false;
+
+            if (!Array.Exists(file, s => s.TrimStart().StartsWith('.')))
+            {
+                CurrentFile = new(file);
+                return;
+            }
 
             foreach (string line in file)
             {
@@ -148,7 +156,34 @@ public static partial class Interpreter
                     currindx++;
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
+                }
+                else if (Regex.IsMatch(preprocline, @"ifdef\s+(?<SymbolName>[^\s]+)\s+then"))
+                {
+                    var mat = Regex.Match(preprocline, @"ifdef\s+(?<SymbolName>[^\s]+)\s+then").Groups;
+                    string symbolname = mat["SymbolName"].Value;
+                    string val = mat["Value"].Value;
+                    if (symbols.ContainsKey(symbolname))
+                    { currval = symbolname; currsym = null; }
+                    else throw new Lamentation(0x33, symbolname);
+                    lignes.Add((symbolname, new()));
+                    currindx++;
+                    togglefind = true;
 
+                    if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
+                }
+                else if (Regex.IsMatch(preprocline, @"ifndef\s+(?<SymbolName>[^\s]+)\s+then"))
+                {
+                    var mat = Regex.Match(preprocline, @"ifndef\s+(?<SymbolName>[^\s]+)\s+then").Groups;
+                    string symbolname = mat["SymbolName"].Value;
+                    string val = mat["Value"].Value;
+                    if (symbols.ContainsKey(symbolname))
+                    { currval = symbolname; currsym = null; }
+                    else throw new Lamentation(0x33, symbolname);
+                    lignes.Add((symbolname, new()));
+                    currindx++;
+                    togglefind = false;
+
+                    if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
                 else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
                 {
@@ -177,17 +212,51 @@ public static partial class Interpreter
 
                     // equation time!
                     bool found = false;
-                    foreach ((string?, List<string>) item in lignes)
+                    if (currsym is not null)
                     {
-                        if (symbols[currsym] == item.Item1)
+                        foreach ((string?, List<string>) item in lignes)
                         {
-                            found = true;
-                            foreach (string val in item.Item2) CurrentFile.Add(val);
-                            break;
+                            if (symbols[currsym] == item.Item1!)
+                            {
+                                found = true;
+                                foreach (string val in item.Item2) CurrentFile.Add(val);
+                                break;
+                            }
+                            else continue;
                         }
-                        else continue;
+                        if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
                     }
-                    if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                    else
+                    {
+                        if (togglefind)
+                        {
+                            foreach ((string?, List<string>) item in lignes)
+                            {
+                                if (symbols.ContainsKey(item.Item1!))
+                                {
+                                    found = true;
+                                    foreach (string val in item.Item2) CurrentFile.Add(val);
+                                    break;
+                                }
+                                else continue;
+                            }
+                            if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                        }
+                        else
+                        {
+                            foreach ((string?, List<string>) item in lignes)
+                            {
+                                if (!symbols.ContainsKey(item.Item1!))
+                                {
+                                    found = true;
+                                    foreach (string val in item.Item2) CurrentFile.Add(val);
+                                    break;
+                                }
+                                else continue;
+                            }
+                            if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                        }
+                    }
                 }
                 else throw new Lamentation(0x32);
             }
