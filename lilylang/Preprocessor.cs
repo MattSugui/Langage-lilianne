@@ -259,7 +259,7 @@ public static partial class Interpreter
                     }
 
                     lignes = new();
-                    currindx = 0;
+                    currindx = -1;
                 }
                 else throw new Lamentation(0x32);
             }
