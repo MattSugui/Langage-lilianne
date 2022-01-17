@@ -47,7 +47,7 @@ public static class Programme
                     CurrentEffects.Clear();
                 }
             }
-            else if (filepath.EndsWith(".lpj"))
+            else if (filepath.EndsWith(".lilianproj"))
             {
                 if (File.Exists(Path.GetFullPath(filepath)))
                 {
@@ -61,7 +61,9 @@ public static class Programme
                 }
                 else
                 {
-                    WriteLine("File does not exist!");
+                    WriteLine("File does not exist! Press any key to continue.");
+                    ReadKey();
+                    Environment.Exit(0);
                 }
             }
             else if (filepath.EndsWith(".lsa"))

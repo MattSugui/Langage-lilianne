@@ -16,13 +16,13 @@ public static partial class Interpreter
             if (Assembly.GetExecutingAssembly().GetName().Version.Build < build) throw new Lamentation(0x31, build.ToString());
 
             //get output path
-            XmlNode outputPath = root.SelectSingleNode("descendants::Output");
+            XmlNode outputPath = root.SelectSingleNode("descendant::Output");
             string outputType = outputPath.Attributes["Type"].Value; // use later
             outgoing = outputPath.Attributes["Path"].Value;
             
 
             // get project contents
-            XmlNodeList projContents = root.SelectNodes("descendants::Include");
+            XmlNodeList projContents = root.SelectNodes("descendant::Include");
             foreach (XmlNode projNode in projContents)
             {
                 if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
