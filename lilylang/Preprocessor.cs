@@ -86,7 +86,7 @@ public static partial class Interpreter
 
             foreach (string line in file)
             {
-                if (!line.StartsWith('.'))
+                if (!line.TrimStart().StartsWith('.'))
                 {
                     if (collect)
                         lignes[currindx].lines.Add(line);
@@ -95,7 +95,7 @@ public static partial class Interpreter
                     continue;
                 }
 
-                string preprocline = line.TrimStart('.');
+                string preprocline = line.TrimStart().TrimStart('.');
 
                 if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[^\s]+)"))
                     symbols.Add(Regex.Match(preprocline, @"define\s+(?<SymbolName>[^\s]+)").Groups["SymbolName"].Value, string.Empty);
