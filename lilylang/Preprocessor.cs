@@ -3,10 +3,19 @@
 public static partial class Interpreter
 {
     /// <summary>
-    /// Coco interop for preproc
+    /// The main class for the preprocessor.
     /// </summary>
     public static class Preprocessor
     {
+        /// <summary>
+        /// Takes a project file and processes it.
+        /// </summary>
+        /// <remarks>
+        /// The project file is an XML-based file which contains the entire project including conditional
+        /// compilation.
+        /// </remarks>
+        /// <param name="file">The file.</param>
+        /// <exception cref="Lamentation"></exception>
         public static void Preprocess(XmlDocument file)
         {
             XmlNode root = file.DocumentElement;
@@ -19,17 +28,20 @@ public static partial class Interpreter
             XmlNode outputPath = root.SelectSingleNode("descendant::Output");
             string outputType = outputPath.Attributes["Type"].Value; // use later
             outgoing = outputPath.Attributes["Path"].Value;
+            XmlNode titleNode = outputPath.Attributes["Title"];
+            if (titleNode is not null) CurrentFile.Add($"title \"{titleNode}\";");
             
 
             // get project contents
             XmlNodeList projContents = root.SelectNodes("descendant::Include");
             foreach (XmlNode projNode in projContents)
             {
-                if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
+                if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) CurrentFile.Add(line);
                 else throw new Lamentation(0x3, projNode.Attributes["Path"].Value);
             }
 
-            CurrentFile = ConsummateSource;
+            XmlNode condComp = root.SelectSingleNode("descendant::Compilation");
+            if (condComp is null) return;
         }
 
         public enum LilianOutputType
@@ -37,11 +49,6 @@ public static partial class Interpreter
             LilianExe,
             WindowsExe
         }
-
-        /// <summary>
-        /// The complete compiled source.
-        /// </summary>
-        public static List<string> ConsummateSource = new();
 
         public static string outgoing = "";
 
