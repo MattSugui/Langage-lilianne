@@ -257,6 +257,9 @@ public static partial class Interpreter
                             if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
                         }
                     }
+
+                    lignes = new();
+                    currindx = 0;
                 }
                 else throw new Lamentation(0x32);
             }
