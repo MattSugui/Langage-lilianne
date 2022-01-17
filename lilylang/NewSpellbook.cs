@@ -387,6 +387,13 @@ public static partial class Interpreter
                 return new(exval is not null? FELActionType.@throwc : FELActionType.@throw, exval);
             case "title":
                 return new(FELActionType.settitle, sent.Value[1].Trim('"'));
+            case "pause":
+                return new(
+                    FELActionType.pause,
+                    int.TryParse(sent.Value[1], out int zE) ? zE : throw new Lamentation(0x21, sent.Value[1])
+                    );
+            case "wait":
+                return new(FELActionType.wait);
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(

@@ -59,6 +59,8 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "THNK",	Value = @"^think$"																				});
 		CurrentTokens.Add(new() { Name = "THRW",	Value = @"^throw$"																				});
 		CurrentTokens.Add(new() { Name = "TITL",	Value = @"^title$"																				});
+		CurrentTokens.Add(new() { Name = "PAUS",	Value = @"^pause$"																				});
+		CurrentTokens.Add(new() { Name = "WAIT",	Value = @"^wait$"																				});
 
 		//----------------------------------- Name                      TokenStruct ----------------                            -----
 		CurrentSentenceStructures.Add(new() { Name = "StartPreprocess",	TokenStruct = new string[] {	"PRPR",	"COLN"			} });
@@ -103,8 +105,10 @@ public static class TEMP
 		CurrentSentenceStructures.Add(new() { Name = "SubroutineName",	TokenStruct = new string[] {	"LABL", "COLN"			} });
 		CurrentSentenceStructures.Add(new() { Name = "NoOperation",		TokenStruct = new string[] {	"THNK", "SMCL"			} });
 		CurrentSentenceStructures.Add(new() { Name = "ThrowGeneric",	TokenStruct = new string[] {	"THRW", "SMCL"			} });
-		CurrentSentenceStructures.Add(new() { Name = "ThrowCode",		TokenStruct = new string[] {	"THRW", "QUOT", "SMCL"	} });
-		CurrentSentenceStructures.Add(new() { Name = "ThrowMessage",	TokenStruct = new string[] {	"THRW", "INTL", "SMCL"	} });
-		CurrentSentenceStructures.Add(new() { Name = "SetTitle",		TokenStruct = new string[] {	"TITL", "QUOT", "SMCL" } });
+		CurrentSentenceStructures.Add(new() { Name = "ThrowMessage",	TokenStruct = new string[] {	"THRW", "QUOT", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "ThrowCode",		TokenStruct = new string[] {	"THRW", "INTL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "SetTitle",		TokenStruct = new string[] {	"TITL", "QUOT", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "ThreadSleep",		TokenStruct = new string[] {	"PAUS", "INTL", "SMCL"	} });
+		CurrentSentenceStructures.Add(new() { Name = "Pause",			TokenStruct = new string[] {	"WAIT", "SMCL"			} });
 	}
 }

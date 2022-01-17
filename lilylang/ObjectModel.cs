@@ -624,6 +624,14 @@ public static partial class Interpreter
                         case FELActionType.settitle:
                             Title = Value!;
                             goto GoForward;
+                        case FELActionType.pause:
+                            dynamic pause = Value!;
+                            if (pause is int duration) Thread.Sleep(duration);
+                            else throw new Lamentation(0x19, pause.ToString());
+                            goto GoForward;
+                        case FELActionType.wait:
+                            ReadKey(true);
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -670,7 +678,8 @@ public static partial class Interpreter
                     (act.ActionType >= FELActionType.label &&
                     act.ActionType <= FELActionType.gotolabel) ||
                     act.ActionType == FELActionType.throwc ||
-                    act.ActionType == FELActionType.settitle
+                    act.ActionType == FELActionType.settitle ||
+                    act.ActionType == FELActionType.pause
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -732,7 +741,8 @@ public static partial class Interpreter
                     (opcode >= 54 &&
                     opcode <= 55) ||
                     opcode == 57 ||
-                    opcode == 58)
+                    opcode == 58 ||
+                    opcode == 59)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -1097,7 +1107,17 @@ public static partial class Interpreter
             /// <remarks>
             /// This is added to the top of the source file if a project file has a Title directive.
             /// </remarks>
-            settitle
+            settitle,
+
+            /// <summary>
+            /// <see cref="Thread.Sleep(int)"/>
+            /// </summary>
+            pause,
+
+            /// <summary>
+            /// <see cref="ReadKey(bool)"/>
+            /// </summary>
+            wait
         }
 
 

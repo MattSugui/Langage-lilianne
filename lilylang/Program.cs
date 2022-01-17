@@ -73,6 +73,7 @@ public static class Programme
                 WriteLine("Load complete!");
                 Clear();
                 Execute();
+                Environment.Exit(0);
             }
         }
         catch (Lamentation cry)
