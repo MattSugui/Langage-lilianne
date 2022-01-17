@@ -72,6 +72,8 @@ public static partial class Interpreter
             def.Add(0x0035, "Preprocessing error. There was no 'if' statement to attach this 'else' statement to.");
             def.Add(0x0036, "Preprocessing error. There was no 'if' statement to attach this 'elseif' statement to.");
             def.Add(0x0037, "Preprocessing error. There was no 'if' statement to terminate.");
+            def.Add(0x0038, "Preprocessing error. '{0}' already exists. Use 'defifn' if needed.");
+            def.Add(0x0039, "Preprocessing error. '{0}' does not exist. Use 'undefife' if needed.");
         }
 
         /// <summary>
