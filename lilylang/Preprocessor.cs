@@ -28,6 +28,8 @@ public static partial class Interpreter
                 if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
                 else throw new Lamentation(0x3, projNode.Attributes["Path"].Value);
             }
+
+            CurrentFile = ConsummateSource;
         }
 
         public enum LilianOutputType
