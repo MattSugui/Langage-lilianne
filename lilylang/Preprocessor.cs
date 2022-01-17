@@ -34,7 +34,7 @@ public static partial class Interpreter
             string outputType = outputPath.Attributes["Type"].Value; // use later
             outgoing = outputPath.Attributes["Path"].Value;
             XmlNode titleNode = outputPath.Attributes["Title"];
-            if (titleNode is not null) ConsummateSource.Add($"title \"{titleNode}\";");
+            if (titleNode is not null) ConsummateSource.Add($"title \"{titleNode.Value}\";");
             
 
             // get project contents
