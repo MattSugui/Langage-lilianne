@@ -155,6 +155,7 @@ public static partial class Interpreter
                         {
                             found = true;
                             foreach (string val in item.Item2) CurrentFile.Add(val);
+                            break;
                         }
                         else continue;
                     }
