@@ -67,6 +67,11 @@ public static partial class Interpreter
             def.Add(0x0030, "Preprocessing error. Invalid build number.");
             def.Add(0x0031, "Preprocessing error. The project does not use this build of Lilian. Use at least build {0}.");
             def.Add(0x0032, "Preprocessing error. Unknown directive.");
+            def.Add(0x0033, "Preprocessing error. Unknown symbol '{0}'.");
+            def.Add(0x0034, "Preprocessing error. Cannot redefine the previous 'if' statement.");
+            def.Add(0x0035, "Preprocessing error. There was no 'if' statement to attach this 'else' statement to.");
+            def.Add(0x0036, "Preprocessing error. There was no 'if' statement to attach this 'elseif' statement to.");
+            def.Add(0x0037, "Preprocessing error. There was no 'if' statement to terminate.");
         }
 
         /// <summary>

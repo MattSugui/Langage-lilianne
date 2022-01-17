@@ -153,7 +153,7 @@ public static partial class Interpreter
                 ProgressCharacter = '\u2588',
                 BackgroundCharacter = '\u2590',
                 CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Gray,
+                ForegroundColor = ConsoleColor.DarkGray,
                 DisplayTimeInRealTime = true,
             };
 
@@ -168,6 +168,18 @@ public static partial class Interpreter
                 DisplayTimeInRealTime = true,
             };
 
+            ProgressBarOptions opt7 = new()
+            {
+                ProgressBarOnBottom = false,
+                //DenseProgressBar = true,
+                ProgressCharacter = '\u2588',
+                BackgroundCharacter = '\u2590',
+                CollapseWhenFinished = false,
+                ForegroundColor = ConsoleColor.Gray,
+                DisplayTimeInRealTime = true,
+            };
+
+
             watch.Start();
             using (var pbm = new ProgressBar(5, "Compilation process", opt))
             {
@@ -176,11 +188,17 @@ public static partial class Interpreter
                 ProjectCompilation:
                 using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
                 {
-                    Preprocess(tempCurrFile);
+                    ReadProjectFile(tempCurrFile);
                     pbg.Tick();
                 }
 
-                SingleFileCompilation:
+            SingleFileCompilation:
+                using (var pbh = pbm.Spawn(1, "Calling Coco for help", opt7))
+                {
+                    Preprocess(ConsummateSource.ToArray());
+                    pbh.Tick();
+                }
+
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
