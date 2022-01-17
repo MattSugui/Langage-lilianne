@@ -25,6 +25,14 @@ public static partial class Interpreter
                 else if (Regex.IsMatch(line, @"Append\s""(?<Filename>.*)"""))
                 {
                     string fullpath = Regex.Match(line, @"Append\s""(?<Filename>.*)""").Groups["Filename"].Value;
+                    if (Regex.IsMatch(line, @"Append\s""(?<Filename>.*)""\sAs\s(?<VariableName>[0-9A-Za-z]+)"))
+                    {
+                        Codefiles.Add(new(
+                            fullpath,
+                            Regex.Match(line, @"Append\s""(?<Filename>.*)""\sAs\s(?<VariableName>[0-9A-Za-z]+)").Groups["VariableName"].Value,
+                            File.Exists(fullpath)? File.ReadAllText(Path.GetFullPath(fullpath)) : throw new Lamentation(0x3, fullpath))
+                            );
+                    }
                     if (File.Exists(fullpath)) foreach (string ligne in File.ReadAllLines(Path.GetFullPath(fullpath))) ConsummateSource.Add(ligne);
                     else throw new Lamentation(0x3, fullpath);
                 }
@@ -35,12 +43,45 @@ public static partial class Interpreter
 
             CurrentFile = ConsummateSource;
         }
+
+        public record struct PreprocessorAction(PreprocWhatToDo ActionType, string File);
+
+        public enum PreprocWhatToDo
+        {
+            Version,
+            Name,
+            Title,
+            Append,
+            Define,
+        }
         
         /// <summary>
         /// The complete compiled source.
         /// </summary>
         public static List<string> ConsummateSource = new();
 
-        internal static string outgoing = "";
+        /// <summary>
+        /// The collection of currently-loaded files with their file names and internal variable names for
+        /// conditional compilation or something.
+        /// </summary>
+        public static FileRegister Codefiles = new();
+
+        public static string outgoing = "";
+
+        /// <summary>
+        /// A code file.
+        /// </summary>
+        /// <param name="Name">The name of the file.</param>
+        /// <param name="VarName">Its internal name.</param>
+        /// <param name="Contents">The contents of the file.</param>
+        public record struct Codefile(string Name, string VarName, string Contents);
+
+        /// <summary>
+        /// The file registry.
+        /// </summary>
+        public class FileRegister: List<Codefile>
+        {
+            public Codefile this[string name] => Find(a => a.VarName == name);
+        }
     }
 }
