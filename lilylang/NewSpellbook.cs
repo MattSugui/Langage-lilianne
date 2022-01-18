@@ -202,12 +202,7 @@ public static partial class Interpreter
         CurrentWords.Clear();
         string temp2 = CurrentLine.ToString();
         CurrentLine.Clear();
-        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment)
-        {
-            bruh = bruh.Replace(temp2, string.Empty);
-            goto Start;
-        }
-        else return;
+        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment) goto Start; else return;
     }
 
     /// <summary>
@@ -217,11 +212,13 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ArrangeTokens(List<TokenFruit> bunch)
     {
+        List<TokenFruit> tokenFruits = bunch;
         List<string> @struct = new();
         List<TokenFruit> other = new();
         int removed = 0;
 
-        foreach (TokenFruit fruit in bunch)
+        Start:
+        foreach (TokenFruit fruit in tokenFruits)
         {
             if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
             @struct.Add(fruit.AssociatedToken.Name);
@@ -229,7 +226,11 @@ public static partial class Interpreter
             if (CurrentSentenceStructures.Exists(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())))
             {
                 List<string> values = new();
-                foreach (TokenFruit fruit1 in other) values.Add(fruit1.Value);
+                foreach (TokenFruit fruit1 in other)
+                {
+                    values.Add(fruit1.Value);
+                    tokenFruits.Remove(fruit1);
+                }
                 CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
             }
             else
@@ -237,6 +238,9 @@ public static partial class Interpreter
                 if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
             }
         }
+
+        if (tokenFruits.Count != 0) goto Start; else return;
+
     }
 
     /// <summary>
