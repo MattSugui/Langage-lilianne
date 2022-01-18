@@ -136,48 +136,48 @@ public static partial class Interpreter
 
                 string preprocline = line.TrimStart().TrimStart('.');
 
-                if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[^\s]+)"))
+                if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"define\s+(?<SymbolName>[^\s]+)").Groups;
+                    var mat = Regex.Match(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
                     if (!symbols.ContainsKey(symbolname)) symbols.Add(symbolname, string.Empty);
                     else throw new Lamentation(0x38, symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"defifn\s+(?<SymbolName>[^\s]+)"))
+                else if (Regex.IsMatch(preprocline, @"defifn\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"defifn\s+(?<SymbolName>[^\s]+)").Groups;
+                    var mat = Regex.Match(preprocline, @"defifn\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
                     if (!symbols.ContainsKey(symbolname)) symbols.Add(symbolname, string.Empty);
                 }
-                else if (Regex.IsMatch(preprocline, @"undef\s+(?<SymbolName>[^\s]+)"))
+                else if (Regex.IsMatch(preprocline, @"undef\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"undef\s+(?<SymbolName>[^\s]+)").Groups;
+                    var mat = Regex.Match(preprocline, @"undef\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
                     if (symbols.ContainsKey(symbolname)) symbols.Remove(symbolname);
                     else throw new Lamentation(0x39, symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"undefife\s+(?<SymbolName>[^\s]+)"))
+                else if (Regex.IsMatch(preprocline, @"undefife\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"undefife\s+(?<SymbolName>[^\s]+)").Groups;
+                    var mat = Regex.Match(preprocline, @"undefife\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
                     if (symbols.ContainsKey(symbolname)) symbols.Remove(symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"let\s+(?<SymbolName>[^\s]+)\s+be\s+\[(?<Value>.*)\]"))
+                else if (Regex.IsMatch(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]"))
                 {
-                    var mat = Regex.Match(preprocline, @"let\s+(?<SymbolName>[^\s]+)\s+be\s+\[(?<Value>.*)\]").Groups;
+                    var mat = Regex.Match(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
                         symbols[symbolname] = val;
                     else throw new Lamentation(0x33, symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
+                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
                 {
-                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
+                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -188,9 +188,9 @@ public static partial class Interpreter
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"ifdef\s+(?<SymbolName>[^\s]+)\s+then"))
+                else if (Regex.IsMatch(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then"))
                 {
-                    var mat = Regex.Match(preprocline, @"ifdef\s+(?<SymbolName>[^\s]+)\s+then").Groups;
+                    var mat = Regex.Match(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -202,9 +202,9 @@ public static partial class Interpreter
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"ifndef\s+(?<SymbolName>[^\s]+)\s+then"))
+                else if (Regex.IsMatch(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then"))
                 {
-                    var mat = Regex.Match(preprocline, @"ifndef\s+(?<SymbolName>[^\s]+)\s+then").Groups;
+                    var mat = Regex.Match(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -216,11 +216,11 @@ public static partial class Interpreter
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
+                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
                 {
                     if (!inseq) throw new Lamentation(0x36);
 
-                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[^\s]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
+                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -304,15 +304,16 @@ public static partial class Interpreter
                     lignes = new();
                     currindx = -1;
                 }
-                else if (Regex.IsMatch(preprocline, @"replace\s+(?<SymbolName>[^\s]+)"))
-                {
-                    var mat = Regex.Match(preprocline, @"replace\s+(?<SymbolName>[^\s]+)").Groups;
-                    string symbolname = mat["SymbolName"].Value;
-                    if (symbols.ContainsKey(symbolname))
-                        for (int i = 0; i < file.Length; i++) file[i] = Regex.Replace(file[i], @$"\%{symbolname}", symbols[symbolname]);
-                    else throw new Lamentation(0x33, symbolname);
-                }
                 else throw new Lamentation(0x32);
+            }
+
+            foreach ((string symb, string val) in symbols) Regex.Replace(string.Join('\n', file), @$"\%{symb}", val);
+
+            if (Regex.IsMatch(string.Join('\n', file), @"%[0-9A-Za-z]+"))
+            {
+                List<string> avail = new();
+                foreach (string bruh in Regex.Match(string.Join('\n', file), @"%[0-9A-Za-z]+").Captures) avail.Add(bruh.TrimStart('%'));
+                throw new Lamentation(0x3c, string.Join(", ", avail.ToArray()));
             }
         }
 
