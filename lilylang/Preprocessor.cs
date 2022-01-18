@@ -224,7 +224,11 @@ public static partial class Interpreter
                             }
                             else continue;
                         }
-                        if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                        if (!found)
+                        {
+                            if (lignes.Exists(x => x.symval == null)) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                            else continue;
+                        }
                     }
                     else
                     {
@@ -240,7 +244,11 @@ public static partial class Interpreter
                                 }
                                 else continue;
                             }
-                            if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                            if (!found)
+                            {
+                                if (lignes.Exists(x => x.symval == null)) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                                else continue;
+                            }
                         }
                         else
                         {
@@ -254,7 +262,11 @@ public static partial class Interpreter
                                 }
                                 else continue;
                             }
-                            if (!found) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                            if (!found)
+                            {
+                                if (lignes.Exists(x => x.symval == null)) foreach (string val in lignes.Find(x => x.symval == null).lines) CurrentFile.Add(val);
+                                else continue;
+                            }
                         }
                     }
 
