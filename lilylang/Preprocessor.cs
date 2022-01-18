@@ -301,6 +301,14 @@ public static partial class Interpreter
                     lignes = new();
                     currindx = -1;
                 }
+                else if (Regex.IsMatch(preprocline, @"replace\s+(?<SymbolName>[^\s]+)"))
+                {
+                    var mat = Regex.Match(preprocline, @"replace\s+(?<SymbolName>[^\s]+)").Groups;
+                    string symbolname = mat["SymbolName"].Value;
+                    if (symbols.ContainsKey(symbolname))
+                        for (int i = 0; i < file.Length; i++) file[i] = Regex.Replace(file[i], @$"\%{symbolname}", symbols[symbolname]);
+                    else throw new Lamentation(0x33, symbolname);
+                }
                 else throw new Lamentation(0x32);
             }
         }
