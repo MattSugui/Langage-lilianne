@@ -234,12 +234,16 @@ public static partial class Interpreter
                     otherFruits.Remove(fruit1);
                 }
                 CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
+                break;
             }
             else
             {
                 if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
             }
         }
+
+        @struct.Clear();
+        other.Clear();
 
         if (tokenFruits.Count != 0) goto Start; else return;
 
