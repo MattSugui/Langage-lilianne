@@ -87,7 +87,7 @@ public static class Programme
             }
             catch (OutOfMemoryException)
             {
-
+                throw new Lamentation(0x3a);
             }
         }
         catch (Lamentation cry)
