@@ -12,6 +12,11 @@ public static partial class Interpreter
     /// </summary>
     public static class Preprocessor
     {
+        /// <summary>
+        /// If true, enable the preprocessor. If false, all directive lines will be ignored.
+        /// </summary>
+        public static bool RegulateCompilation = false;
+
         #region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
@@ -33,7 +38,7 @@ public static partial class Interpreter
             //get output path
             XmlNode outputPath = root.SelectSingleNode("descendant::Output");
             string outputType = outputPath.Attributes["Type"].Value; // use later
-            outgoing = outputPath.Attributes["Path"].Value;
+            Outgoing = outputPath.Attributes["Path"].Value;
             XmlNode titleNode = outputPath.Attributes["Title"];
             if (titleNode is not null) ConsummateSource.Add($"title \"{titleNode.Value}\";");
             
@@ -47,7 +52,7 @@ public static partial class Interpreter
             }
 
             XmlNode condComp = root.SelectSingleNode("descendant::RegulateCompilation");
-            if (condComp is null) return;
+            if (condComp is not null) RegulateCompilation = true; else RegulateCompilation = false;
         }
         #endregion
 
@@ -56,15 +61,28 @@ public static partial class Interpreter
         /// </summary>
         public static List<string> ConsummateSource = new();
 
+        /// <summary>
+        /// The kind of output.
+        /// </summary>
         public enum LilianOutputType
         {
+            /// <summary>
+            /// Lilian bytecode.
+            /// </summary>
             LilianExe,
+
+            /// <summary>
+            /// The entire bytecode is parsed into IL instructions then compiled into a Windows executable.
+            /// </summary>
             WindowsExe
         }
 
-        public static string outgoing = "";
+        /// <summary>
+        /// The path of the output.
+        /// </summary>
+        public static string Outgoing = "";
 
-        #region Coco
+        #region Vrai Coco
 
         /// <summary>
         /// Preprocesses the file.
@@ -89,6 +107,16 @@ public static partial class Interpreter
             if (!Array.Exists(file, s => s.TrimStart().StartsWith('.')))
             {
                 CurrentFile = new(file);
+                return;
+            }
+
+            if (!RegulateCompilation)
+            {
+                foreach (string line in file)
+                {
+                    if (!line.TrimStart().StartsWith('.')) CurrentFile.Add(line); else continue;
+                }
+
                 return;
             }
 

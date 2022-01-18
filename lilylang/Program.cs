@@ -33,7 +33,7 @@ public static class Programme
             {
                 if (filepath.EndsWith(".lps"))
                 {
-                    WriteLine("TIP: Submit a Lilian makefile to compile several files into one executable!");
+                    WriteLine("TIP: Submit a Lilian project to compile several files into one executable!");
                     if (args.Length == 1)
                     {
                         WriteLine("Build: " + Path.GetFullPath(filepath));
@@ -109,7 +109,7 @@ public static class Programme
         if (args.Contains("-d"))
         {
             Clear();
-            LoadBinary(Path.GetFullPath(outgoing));
+            LoadBinary(Path.GetFullPath(Outgoing));
             Execute();
             Environment.Exit(0);
         }

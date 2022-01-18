@@ -86,7 +86,7 @@ public static partial class Interpreter
         //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
         //PowerShell ps = PowerShell.Create();
 
-        outgoing = !string.IsNullOrWhiteSpace(outfile)? outfile : outgoing;
+        Outgoing = !string.IsNullOrWhiteSpace(outfile)? outfile : Outgoing;
 
         if (GUI)
         {
@@ -239,7 +239,7 @@ public static partial class Interpreter
                 }
                 using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
                 {
-                    CreateBinary(outgoing);
+                    CreateBinary(Outgoing);
                     pbd.Tick();
                     pbm.Tick();
                 }
