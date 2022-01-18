@@ -143,16 +143,17 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ScanTokens(string line)
     {
+        string bruh = line;
     Start:
         bool comment = false;
         if (string.IsNullOrWhiteSpace(line)) return;
 
         StringBuilder currentWord = new();
 
-        for (int i = 0; i < line.Length; i++)
+        for (int i = 0; i < bruh.Length; i++)
         {
-            CurrentLine.Append(line[i]);
-            currentWord.Append(line[i]);
+            CurrentLine.Append(bruh[i]);
+            currentWord.Append(bruh[i]);
             if (currentWord.ToString() == "//")
             {
                 comment = true;
@@ -162,10 +163,10 @@ public static partial class Interpreter
             {
                 if (token.Look)
                 {
-                    if (i < line.Length - 1)
+                    if (i < bruh.Length - 1)
                     {
                         int j = i + 1;
-                        string future = currentWord.ToString() + line[j];
+                        string future = currentWord.ToString() + bruh[j];
                         bool confirm =
                             CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
                             && temp.Name == token.Name;
@@ -193,7 +194,7 @@ public static partial class Interpreter
             }
             else
             {
-                if (CurrentLine.Length < line.Length) continue; else throw new Lamentation(2, currentWord.ToString());
+                if (CurrentLine.Length < bruh.Length) continue; else throw new Lamentation(2, currentWord.ToString());
             }
         }
         
@@ -201,7 +202,12 @@ public static partial class Interpreter
         CurrentWords.Clear();
         string temp2 = CurrentLine.ToString();
         CurrentLine.Clear();
-        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment) goto Start; else return;
+        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment)
+        {
+            bruh = bruh.Replace(temp2, string.Empty);
+            goto Start;
+        }
+        else return;
     }
 
     /// <summary>
