@@ -220,6 +220,9 @@ public static partial class Interpreter
 
     Start:
         tokenFruits = new(otherFruits);
+
+        if (tokenFruits.All(thing => thing.AssociatedToken.IgnoreOnRefinement)) return; // gtfo outta there
+
         foreach (TokenFruit fruit in tokenFruits)
         {
             if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
