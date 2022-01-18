@@ -190,8 +190,11 @@ public static partial class Interpreter
                     ReadProjectFile(tempCurrFile);
                     pbg.Tick();
                 }
+                goto Start;
 
             SingleFileCompilation:
+                ConsummateSource = CurrentFile; 
+            Start:
                 using (var pbh = pbm.Spawn(1, "Calling Coco for help", opt7))
                 {
                     Preprocess(ConsummateSource.ToArray());
