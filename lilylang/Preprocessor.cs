@@ -314,7 +314,9 @@ public static partial class Interpreter
             if (Regex.IsMatch(string.Join('\n', CurrentFile), @"%[0-9A-Za-z]+"))
             {
                 List<string> avail = new();
-                foreach (Match bruh in Regex.Match(string.Join('\n', CurrentFile), @"%[0-9A-Za-z]+").Captures) avail.Add(bruh.Value.TrimStart('%'));
+                for (int i = 0; i < CurrentFile.Count; i++)
+                    foreach (Match bruh in Regex.Match(CurrentFile[i], @"%[0-9A-Za-z]+").Captures)
+                        avail.Add(bruh.Value.TrimStart('%'));
                 throw new Lamentation(0x3c, string.Join(", ", avail.ToArray()));
             }
         }
