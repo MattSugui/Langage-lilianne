@@ -103,10 +103,20 @@ public static partial class Interpreter
             public int Code;
         }
 
+        /// <summary>
+        /// The result of a sentence.
+        /// </summary>
         [Serializable]
         public class SentenceFruit
         {
+            /// <summary>
+            /// The associated sentence structure.
+            /// </summary>
             public SentenceStructure AssociatedSentence;
+
+            /// <summary>
+            /// The tokens of the sentence for data collection.
+            /// </summary>
             public string[] Value;
         }
     }

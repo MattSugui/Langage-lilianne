@@ -34,7 +34,7 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -NewVerName 'Coco Beta'&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
