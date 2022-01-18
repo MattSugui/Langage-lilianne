@@ -213,11 +213,13 @@ public static partial class Interpreter
     internal static void ArrangeTokens(List<TokenFruit> bunch)
     {
         List<TokenFruit> tokenFruits = bunch;
+        List<TokenFruit> otherFruits = new(tokenFruits);
         List<string> @struct = new();
         List<TokenFruit> other = new();
         int removed = 0;
 
-        Start:
+    Start:
+        tokenFruits = new(otherFruits);
         foreach (TokenFruit fruit in tokenFruits)
         {
             if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
@@ -229,7 +231,7 @@ public static partial class Interpreter
                 foreach (TokenFruit fruit1 in other)
                 {
                     values.Add(fruit1.Value);
-                    tokenFruits.Remove(fruit1);
+                    otherFruits.Remove(fruit1);
                 }
                 CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
             }
