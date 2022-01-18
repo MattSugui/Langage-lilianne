@@ -52,7 +52,10 @@ public static partial class Interpreter
             }
 
             XmlNode condComp = root.SelectSingleNode("descendant::RegulateCompilation");
-            if (condComp is not null) RegulateCompilation = true; else RegulateCompilation = false;
+            if (condComp is not null)
+                RegulateCompilation = true;
+            else
+                RegulateCompilation = false;
         }
         #endregion
 
