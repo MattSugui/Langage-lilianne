@@ -307,12 +307,14 @@ public static partial class Interpreter
                 else throw new Lamentation(0x32);
             }
 
-            foreach ((string symb, string val) in symbols) Regex.Replace(string.Join('\n', file), @$"\%{symb}", val);
+            foreach ((string symb, string val) in symbols)
+                for (int i = 0; i < CurrentFile.Count; i++)
+                    CurrentFile[i] = Regex.Replace(CurrentFile[i], @$"\%{symb}", val);
 
-            if (Regex.IsMatch(string.Join('\n', file), @"%[0-9A-Za-z]+"))
+            if (Regex.IsMatch(string.Join('\n', CurrentFile), @"%[0-9A-Za-z]+"))
             {
                 List<string> avail = new();
-                foreach (Match bruh in Regex.Match(string.Join('\n', file), @"%[0-9A-Za-z]+").Captures) avail.Add(bruh.Value.TrimStart('%'));
+                foreach (Match bruh in Regex.Match(string.Join('\n', CurrentFile), @"%[0-9A-Za-z]+").Captures) avail.Add(bruh.Value.TrimStart('%'));
                 throw new Lamentation(0x3c, string.Join(", ", avail.ToArray()));
             }
         }
