@@ -51,9 +51,9 @@ public static class Programme
                         ReadFile(Path.GetFullPath(filepath));
                         if (args.Contains("-f")) ConserveMemory = true;
                         Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
-                        CurrentSentences.Clear();
-                        CurrentWordPacks.Clear();
-                        CurrentEffects.Clear();
+                        CurrentSentences = new();
+                        CurrentWordPacks = new();
+                        CurrentEffects = new();
                     }
                 }
                 else if (filepath.EndsWith(".lilianproj"))
@@ -64,9 +64,9 @@ public static class Programme
                         tempCurrFile = new XmlDocument();
                         tempCurrFile.Load(Path.GetFullPath(filepath));
                         Interpret(true, false, string.Empty, string.Empty, true);
-                        CurrentSentences.Clear();
-                        CurrentWordPacks.Clear();
-                        CurrentEffects.Clear();
+                        CurrentSentences = new();
+                        CurrentWordPacks = new();
+                        CurrentEffects = new();
                     }
                     else
                     {
