@@ -49,7 +49,7 @@ public static class Programme
                         WriteLine("Build: " + Path.GetFullPath(filepath));
                         WriteLine("Output: " + Path.GetFullPath(outpath));
                         ReadFile(Path.GetFullPath(filepath));
-                        if (args.Contains("-d")) ConserveMemory = true;
+                        if (args.Contains("-f")) ConserveMemory = true;
                         Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
                         CurrentSentences.Clear();
                         CurrentWordPacks.Clear();

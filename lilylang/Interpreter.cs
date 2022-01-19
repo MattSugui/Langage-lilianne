@@ -184,7 +184,7 @@ public static partial class Interpreter
             {
                 if (projfile) goto ProjectCompilation; else goto SingleFileCompilation;
 
-                ProjectCompilation:
+            ProjectCompilation:
                 using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
                 {
                     ReadProjectFile(tempCurrFile);
@@ -193,7 +193,11 @@ public static partial class Interpreter
                 goto Start;
 
             SingleFileCompilation:
-                ConsummateSource = CurrentFile; 
+                using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
+                {
+                    ConsummateSource = CurrentFile;
+                    pbg.Tick();
+                }
             Start:
                 using (var pbh = pbm.Spawn(1, "Calling Coco for help", opt7))
                 {
@@ -203,7 +207,7 @@ public static partial class Interpreter
 
                 using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
                 {
-                    if (Programme.ConserveMemory) ConsummateSource.Clear();
+                    if (Programme.ConserveMemory) ConsummateSource = new();
                     for (int i = 1; i < CurrentFile.Count + 1; i++)
                     {
                         ScanTokens(CurrentFile[i - 1]);
@@ -223,7 +227,7 @@ public static partial class Interpreter
                 using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
                 {
                     CurrentPointedEffect = 0;
-                    if (Programme.ConserveMemory) CurrentWordPacks.Clear();
+                    if (Programme.ConserveMemory) CurrentWordPacks = new();
                     foreach (SentenceFruit sent in CurrentSentences)
                     {
 
@@ -235,7 +239,7 @@ public static partial class Interpreter
                 }
                 using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
                 {
-                    if (Programme.ConserveMemory) CurrentSentences.Clear();
+                    if (Programme.ConserveMemory) CurrentSentences = new();
                     CheckForFriendlyNames();
                     pbe.Tick();
                     pbm.Tick();
