@@ -5,7 +5,7 @@
 [System.Collections.Generic.List[string]] $things = [System.Collections.Generic.List[string]]::new()
 $etaget = [System.Diagnostics.Stopwatch]::new()
 
-$j = 1024*128
+$j = [int16]::MaxValue
 $k = 0; $l = 0
 $etaget.Start()
 for ($i = 1; $i -le $j + 1; $i++)
