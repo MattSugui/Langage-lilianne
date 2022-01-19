@@ -40,7 +40,7 @@ public static class Programme
                         WriteLine("Output: ...where?");
                         WriteLine("You must supply two arguments: the first one for the input, then the second one for the output, if you are going to supply a script file.");
                         WriteLine("Press any key to continue.");
-                        ReadKey();
+                        ReadKey(true);
                         Environment.Exit(0);
                     }
                     else
@@ -71,7 +71,7 @@ public static class Programme
                     else
                     {
                         WriteLine("File does not exist! Press any key to continue.");
-                        ReadKey();
+                        ReadKey(true);
                         Environment.Exit(0);
                     }
                 }
@@ -99,12 +99,12 @@ public static class Programme
         if (err)
         {
             WriteLine("Compilation failed because of the above error. There could be more errors, but this is the one that ended it.\nPress any key to continue.");
-            ReadKey();
+            ReadKey(true);
             Environment.Exit(1);
         }
 
         Write($"Compilation finished.\nPress any key to {(args.Contains("-d") ? "run this application" : "continue")}.");
-        ReadKey();
+        ReadKey(true);
         
         if (args.Contains("-d"))
         {
