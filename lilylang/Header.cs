@@ -13,6 +13,7 @@ global using System.Threading.Tasks;
 global using System.Reflection;
 global using System.IO;
 global using System.Diagnostics;
+global using System.Xml;
 global using System.Xml.Serialization;
 
 global using static fonder.Lilian.New.Interpreter;

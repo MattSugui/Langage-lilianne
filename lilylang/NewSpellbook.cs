@@ -1,4 +1,6 @@
-﻿namespace fonder.Lilian.New;
+﻿#pragma warning disable CA2211
+
+namespace fonder.Lilian.New;
 
 public static partial class Interpreter
 {
@@ -101,10 +103,20 @@ public static partial class Interpreter
             public int Code;
         }
 
+        /// <summary>
+        /// The result of a sentence.
+        /// </summary>
         [Serializable]
         public class SentenceFruit
         {
+            /// <summary>
+            /// The associated sentence structure.
+            /// </summary>
             public SentenceStructure AssociatedSentence;
+
+            /// <summary>
+            /// The tokens of the sentence for data collection.
+            /// </summary>
             public string[] Value;
         }
     }
@@ -131,16 +143,17 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ScanTokens(string line)
     {
+        string bruh = line;
     Start:
         bool comment = false;
         if (string.IsNullOrWhiteSpace(line)) return;
 
         StringBuilder currentWord = new();
 
-        for (int i = 0; i < line.Length; i++)
+        for (int i = 0; i < bruh.Length; i++)
         {
-            CurrentLine.Append(line[i]);
-            currentWord.Append(line[i]);
+            CurrentLine.Append(bruh[i]);
+            currentWord.Append(bruh[i]);
             if (currentWord.ToString() == "//")
             {
                 comment = true;
@@ -150,10 +163,10 @@ public static partial class Interpreter
             {
                 if (token.Look)
                 {
-                    if (i < line.Length - 1)
+                    if (i < bruh.Length - 1)
                     {
                         int j = i + 1;
-                        string future = currentWord.ToString() + line[j];
+                        string future = currentWord.ToString() + bruh[j];
                         bool confirm =
                             CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
                             && temp.Name == token.Name;
@@ -181,7 +194,7 @@ public static partial class Interpreter
             }
             else
             {
-                if (CurrentLine.Length < line.Length) continue; else throw new Lamentation(2, currentWord.ToString());
+                if (CurrentLine.Length < bruh.Length) continue; else throw new Lamentation(2, currentWord.ToString());
             }
         }
         
@@ -199,11 +212,18 @@ public static partial class Interpreter
     /// <exception cref="Lamentation"></exception>
     internal static void ArrangeTokens(List<TokenFruit> bunch)
     {
+        List<TokenFruit> tokenFruits = bunch;
+        List<TokenFruit> otherFruits = new(tokenFruits);
         List<string> @struct = new();
         List<TokenFruit> other = new();
         int removed = 0;
 
-        foreach (TokenFruit fruit in bunch)
+    Start:
+        tokenFruits = new(otherFruits);
+
+        if (tokenFruits.All(thing => thing.AssociatedToken.IgnoreOnRefinement)) return; // gtfo outta there
+
+        foreach (TokenFruit fruit in tokenFruits)
         {
             if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
             @struct.Add(fruit.AssociatedToken.Name);
@@ -211,14 +231,25 @@ public static partial class Interpreter
             if (CurrentSentenceStructures.Exists(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())))
             {
                 List<string> values = new();
-                foreach (TokenFruit fruit1 in other) values.Add(fruit1.Value);
+                foreach (TokenFruit fruit1 in other)
+                {
+                    values.Add(fruit1.Value);
+                    otherFruits.Remove(fruit1);
+                }
                 CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
+                break;
             }
             else
             {
                 if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
             }
         }
+
+        @struct.Clear();
+        other.Clear();
+
+        if (tokenFruits.Count != 0) goto Start; else return;
+
     }
 
     /// <summary>
@@ -385,6 +416,15 @@ public static partial class Interpreter
                 }
                 else exval = null;
                 return new(exval is not null? FELActionType.@throwc : FELActionType.@throw, exval);
+            case "title":
+                return new(FELActionType.settitle, sent.Value[1].Trim('"'));
+            case "pause":
+                return new(
+                    FELActionType.pause,
+                    int.TryParse(sent.Value[1], out int zE) ? zE : throw new Lamentation(0x21, sent.Value[1])
+                    );
+            case "wait":
+                return new(FELActionType.wait);
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(

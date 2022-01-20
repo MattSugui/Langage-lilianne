@@ -1,4 +1,5 @@
 ﻿#nullable enable // oh boy here we go, we in sport mode now
+#pragma warning disable CA2211
 
 namespace fonder.Lilian.New;
 
@@ -621,6 +622,17 @@ public static partial class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
+                        case FELActionType.settitle:
+                            Title = Value!;
+                            goto GoForward;
+                        case FELActionType.pause:
+                            dynamic pause = Value!;
+                            if (pause is int duration) Thread.Sleep(duration);
+                            else throw new Lamentation(0x19, pause.ToString());
+                            goto GoForward;
+                        case FELActionType.wait:
+                            ReadKey(true);
+                            goto GoForward;
                     }
                 }
                 catch (Lamentation cry)
@@ -662,9 +674,13 @@ public static partial class Interpreter
                     act.ActionType == FELActionType.load ||
                     (act.ActionType >= FELActionType.beq &&
                     act.ActionType <= FELActionType.bso) ||
-                    (act.ActionType >= FELActionType.@catch &&
+                    act.ActionType == FELActionType.@catch ||
+                    act.ActionType == FELActionType.call ||
+                    (act.ActionType >= FELActionType.label &&
                     act.ActionType <= FELActionType.gotolabel) ||
-                    act.ActionType == FELActionType.throwc
+                    act.ActionType == FELActionType.throwc ||
+                    act.ActionType == FELActionType.settitle ||
+                    act.ActionType == FELActionType.pause
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -685,7 +701,7 @@ public static partial class Interpreter
                         double => 26,
                         decimal => 27,
                         char => 28,
-                        _ => throw new Lamentation($"Marker seeks a(n) {act.Value?.GetType()}")
+                        _ => throw new Lamentation(0x3d)
                     };
 
                     writer.Write(marker);
@@ -721,9 +737,13 @@ public static partial class Interpreter
                     opcode == 30 ||
                     (opcode >= 34 &&
                     opcode <= 44) ||
-                    (opcode >= 51 &&
+                    opcode == 51 ||
+                    opcode == 52 ||
+                    (opcode >= 54 &&
                     opcode <= 55) ||
-                    opcode == 57)
+                    opcode == 57 ||
+                    opcode == 58 ||
+                    opcode == 59)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -1080,7 +1100,25 @@ public static partial class Interpreter
             /// <summary>
             /// <see langword="throw"/> with an exception.
             /// </summary>
-            @throwc
+            @throwc,
+
+            /// <summary>
+            /// Sets the title of the console.
+            /// </summary>
+            /// <remarks>
+            /// This is added to the top of the source file if a project file has a Title directive.
+            /// </remarks>
+            settitle,
+
+            /// <summary>
+            /// <see cref="Thread.Sleep(int)"/>
+            /// </summary>
+            pause,
+
+            /// <summary>
+            /// <see cref="ReadKey(bool)"/>
+            /// </summary>
+            wait
         }
 
 

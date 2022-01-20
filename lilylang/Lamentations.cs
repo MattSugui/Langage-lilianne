@@ -64,6 +64,20 @@ public static partial class Interpreter
             def.Add(0x002D, "I've just got a letter. '{0}'");
             def.Add(0x002E, "aYO wat the fuk! Lamentation no. {0} does not exist!!!");
             def.Add(0x002F, "Hi!");
+            def.Add(0x0030, "Preprocessing error. Invalid build number.");
+            def.Add(0x0031, "Preprocessing error. The project does not use this build of Lilian. Use at least build {0}.");
+            def.Add(0x0032, "Preprocessing error. Unknown directive.");
+            def.Add(0x0033, "Preprocessing error. Unknown symbol '{0}'.");
+            def.Add(0x0034, "Preprocessing error. Cannot redefine the previous 'if' statement.");
+            def.Add(0x0035, "Preprocessing error. There was no 'if' statement to attach this 'else' statement to.");
+            def.Add(0x0036, "Preprocessing error. There was no 'if' statement to attach this 'elseif' statement to.");
+            def.Add(0x0037, "Preprocessing error. There was no 'if' statement to terminate.");
+            def.Add(0x0038, "Preprocessing error. '{0}' already exists. Use 'defifn' if needed.");
+            def.Add(0x0039, "Preprocessing error. '{0}' does not exist. Use 'undefife' if needed.");
+            def.Add(0x003A, "Internal error. There is no more memory to work with on this compilation.");
+            def.Add(0x003B, "Preprocessing error. '{0}' does not exist.");
+            def.Add(0x003C, "Preprocessing error. There are references to the following inexistent symbols: {0}.");
+            def.Add(0x003D, "Internal error. For this version of Lilian, you cannot declare types other than the standard 15 .NET types.");
         }
 
         /// <summary>

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<RootNamespace>fonder.Lilian.Coco.ReleaseMan</RootNamespace>
+		<Deterministic>False</Deterministic>
+
+		<AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
+		<AssemblyVersion>1.0.268.0</AssemblyVersion>
+		<FileVersion>1.0.268.0</FileVersion>
+		<InformationalVersion>releaseman 220115-2258</InformationalVersion>
+		<Authors>Matt Sugui</Authors>
+		<Copyright>Created 2021</Copyright>
+		<ProductName>Lilian language interpreter</ProductName>
+		<RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="archive\**" />
+		<EmbeddedResource Remove="archive\**" />
+		<None Remove="archive\**" />
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoprep' -ProjectType 1 -IsRelease $false -Platform 0 -NewVerName 'Coco Alpha 1'&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'cocoprep' -ProjectType 1 -IsRelease $false -Platform 0 -SmallUpgrade&quot;" />
+	</Target>
+
+</Project>
