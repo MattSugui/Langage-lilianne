@@ -20,8 +20,8 @@ part of the structure.
 
 Coco grammar syntax
 
-.feature "IfBranch"
-	.contains "IfStart"
+.feature [IfBranch]
+	.contains [IfStart]
 	.contains unlimited anything
-	.contains "EndBracket"
+	.contains [EndBracket]
 .endfeature
