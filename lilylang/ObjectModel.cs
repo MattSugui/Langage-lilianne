@@ -701,7 +701,7 @@ public static partial class Interpreter
                         double => 26,
                         decimal => 27,
                         char => 28,
-                        _ => throw new Lamentation($"Marker seeks a(n) {act.Value?.GetType()}")
+                        _ => throw new Lamentation(0x3d)
                     };
 
                     writer.Write(marker);

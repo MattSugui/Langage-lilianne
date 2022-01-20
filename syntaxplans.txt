@@ -1,0 +1,27 @@
+Code translations
+
+Code									Translated
+			
+main:									@main:
+{										--
+	print "Hello, world!";				push "Hello, world!"; print; pop;
+}										return;
+
+
+if (10 > 1)								push 10; push 1; beq {UUID};
+{										@{UUID};
+	print "yo";							push "yo"; print; pop;
+}										return;
+
+goto HelloWorld;						goto @HelloWorld;
+
+The UUID is generated and saved and placed onto the immediate bracket since this opening bracket is
+part of the structure.
+
+Coco grammar syntax
+
+.feature "IfBranch"
+	.contains "IfStart"
+	.contains unlimited anything
+	.contains "EndBracket"
+.endfeature

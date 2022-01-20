@@ -77,6 +77,7 @@ public static partial class Interpreter
             def.Add(0x003A, "Internal error. There is no more memory to work with on this compilation.");
             def.Add(0x003B, "Preprocessing error. '{0}' does not exist.");
             def.Add(0x003C, "Preprocessing error. There are references to the following inexistent symbols: {0}.");
+            def.Add(0x003D, "Internal error. For this version of Lilian, you cannot declare types other than the standard 15 .NET types.");
         }
 
         /// <summary>

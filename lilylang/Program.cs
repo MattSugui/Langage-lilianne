@@ -38,7 +38,7 @@ public static class Programme
                     {
                         WriteLine("Build: " + Path.GetFullPath(filepath));
                         WriteLine("Output: ...where?");
-                        WriteLine("You must supply two arguments: the first one for the input, then the second one for the output, if you are going to supply a script file.");
+                        WriteLine("You must supply two arguments for individual scripts: the first one for the input, then the second one for the output, if you are going to supply a script file.");
                         WriteLine("Press any key to continue.");
                         ReadKey(true);
                         Environment.Exit(0);

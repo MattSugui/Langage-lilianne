@@ -51,7 +51,7 @@ namespace fonder.Lilian.Develop
             
             textBox = new();
             textBox.Dock = DockStyle.Fill;
-            textBox.Font = new Font("Consolas", 12, GraphicsUnit.Point);
+            textBox.Font = new Font("Cascadia Code", 12.5f, GraphicsUnit.Point);
             textBox.AutoCompleteBracketsList = new char[] { '(', ')', '{', '}', '[', ']', '\"', '\"', '\'', '\'' };
             textBox.AutoScrollMinSize = new System.Drawing.Size(179, 14);
             textBox.BackBrush = null;
@@ -61,6 +61,8 @@ namespace fonder.Lilian.Develop
             textBox.CharWidth = 8;
             textBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             textBox.DisabledColor = System.Drawing.Color.FromArgb(100,180,180,180);
+            textBox.DescriptionFile = @"styles.xml";
+            textBox.ForeColor = System.Drawing.Color.FromArgb(248, 248, 248);
             textBox.IndentBackColor = System.Drawing.Color.FromArgb(18,18,18);
             textBox.IsReplaceMode = false;
             textBox.LineNumberColor = System.Drawing.Color.FromArgb(43,145,175);
