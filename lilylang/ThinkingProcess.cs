@@ -40,7 +40,7 @@ public static partial class Coco
 
             XmlNode root = gram.DocumentElement;
 
-            XmlNodeList tokens = root.SelectNodes("descendant:Tokens/Token");
+            XmlNodeList tokens = root.SelectNodes("descendant::Tokens/Token");
             foreach (XmlNode token in tokens) Tokens.Add(
                     new
                     (
@@ -52,7 +52,7 @@ public static partial class Coco
                     )
                 );
 
-            XmlNodeList sentences = root.SelectNodes("descendant:SentenceStructures/SentenceStructure");
+            XmlNodeList sentences = root.SelectNodes("descendant::SentenceStructures/SentenceStructure");
             foreach (XmlNode sentence in sentences)
             {
                 string name = sentence.Attributes["Name"].Value;
