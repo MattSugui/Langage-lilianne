@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.1.341.0</AssemblyVersion>
-		<FileVersion>1.1.341.0</FileVersion>
-		<InformationalVersion>releaseman 220120-1932</InformationalVersion>
+		<AssemblyVersion>1.2.342.0</AssemblyVersion>
+		<FileVersion>1.2.342.0</FileVersion>
+		<InformationalVersion>Scholarly Alpha 1 220121-1853</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
@@ -34,11 +34,11 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -NewVerName 'Scholarly Alpha 1'&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -SmallUpgrade&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0&quot;" />
 	</Target>
 
 </Project>

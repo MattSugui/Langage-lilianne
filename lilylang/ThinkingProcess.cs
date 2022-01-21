@@ -36,7 +36,7 @@ public static partial class Coco
             GrammarType = true;
 
             XmlDocument gram = new();
-            gram.LoadXml(temp);
+            gram.Load(temp);
 
             XmlNode root = gram.DocumentElement;
 
