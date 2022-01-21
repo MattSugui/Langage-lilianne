@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LilianGrammar Name="Core" MinimumBuild="340">
+	<Tokens>
+		<Token Name="String" Pattern="&quot;.*&quot;"/>
+		<Token Name="Integer" Pattern="[0-9]+$"/>
+		<Token Name="Whitespace" Pattern="\s"/>
+		<Token Name="Semicolon" Pattern=";"/>
+		<Token Name="Colon" Pattern=":"/>
+		<Token Name="Identifier" Pattern="[A-Za-z][^\s]*"/>
+		<!-- Keywords -->
+		<Token Name="Print" Pattern="print"/>
+		<Token Name="Return" Pattern="return"/>
+	</Tokens>
+	<SentenceStructures>
+		<SentenceStructure Name="PrintString" Pattern="[Print][String][Semicolon]">
+			push {1};
+			print;
+			pop;
+		</SentenceStructure>
+		<SentenceStructure Name="PrintInteger" Pattern="[Print][Integer][Semicolon]">
+			push {1};
+			realise;
+			print;
+			pop;
+		</SentenceStructure>
+	</SentenceStructures>
+</LilianGrammar>

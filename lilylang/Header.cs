@@ -19,7 +19,8 @@ global using System.Xml.Serialization;
 global using static fonder.Lilian.New.Interpreter;
 global using static fonder.Lilian.New.Interpreter.Spellbook;
 global using static fonder.Lilian.New.Interpreter.Actualiser;
-global using static fonder.Lilian.New.Interpreter.Preprocessor;
+global using static fonder.Lilian.New.Coco.Preprocessor;
+global using static fonder.Lilian.New.Coco.Grammar;
 global using static fonder.Lilian.New.ObjectModel;
 
 global using static System.Console;

@@ -190,7 +190,7 @@ public static partial class Interpreter
                     ReadProjectFile(tempCurrFile);
                     pbg.Tick();
                 }
-                goto Start;
+                if (!DoNotDoCompilation) goto Start; else return;
 
             SingleFileCompilation:
                 using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))

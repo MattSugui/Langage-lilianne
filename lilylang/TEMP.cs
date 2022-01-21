@@ -20,7 +20,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "PRPR",	Value = @"^preprocess$"																			});
 		CurrentTokens.Add(new() { Name = "STRT",	Value = @"^start$"																				});
 		CurrentTokens.Add(new() { Name = "LET",		Value = @"^let$"																				});
-		CurrentTokens.Add(new() { Name = "IDNT",	Value = @"^#[A-Za-z][0-9A-Za-z]*$",	Look = true													});
+		CurrentTokens.Add(new() { Name = "IDNT",	Value = @"^#[A-Za-z][^\s]*$",	Look = true														});
 		CurrentTokens.Add(new() { Name = "ADDR",	Value = @"^\&[0-9]+$",				Look = true													});
 		CurrentTokens.Add(new() { Name = "EQUL",	Value = @"^=$"																					});
 		CurrentTokens.Add(new() { Name = "PUSH",	Value = @"^push$"																				});
@@ -55,7 +55,7 @@ public static class TEMP
 		CurrentTokens.Add(new() { Name = "CTCH",	Value = @"^catch$"																				});
 		CurrentTokens.Add(new() { Name = "CALL",	Value = @"^call$"																				});
 		CurrentTokens.Add(new() { Name = "RETN",	Value = @"^return$"																				});
-		CurrentTokens.Add(new() { Name = "LABL",	Value = @"^@[A-Za-z][0-9A-Za-z]*$",	Look = true													});
+		CurrentTokens.Add(new() { Name = "LABL",	Value = @"^@[A-Za-z][^\s]*$",	Look = true														});
 		CurrentTokens.Add(new() { Name = "THNK",	Value = @"^think$"																				});
 		CurrentTokens.Add(new() { Name = "THRW",	Value = @"^throw$"																				});
 		CurrentTokens.Add(new() { Name = "TITL",	Value = @"^title$"																				});

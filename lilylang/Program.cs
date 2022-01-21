@@ -64,6 +64,7 @@ public static class Programme
                         tempCurrFile = new XmlDocument();
                         tempCurrFile.Load(Path.GetFullPath(filepath));
                         Interpret(true, false, string.Empty, string.Empty, true);
+                        if (DoNotDoCompilation) goto CompilationCancelled;
                         CurrentSentences = new();
                         CurrentWordPacks = new();
                         CurrentEffects = new();
@@ -115,7 +116,7 @@ public static class Programme
         }
         else Environment.Exit(0);
 
-        REPLLoop:
+    REPLLoop:
         WriteLine(
             "Hey! Restart the program and supply these arguments:\n" +
             "<input> [<output>] [-d] [-f]\n" +
@@ -134,8 +135,22 @@ public static class Programme
             "[-f]\n" +
             "\tDuring compilation, the program will delete some of her data to conserve memory, since it has been proven that she will" +
             " inflate unbelievably large especially for codefiles or projects with a consummate size of more than 2.5 MB. If you're" +
-            "building this application, enabling the -f switch will be less helpful for debugging as it deletes useful interpretation" +
-            "data."
+            " building this application, enabling the -f switch will be less helpful for debugging as it deletes useful interpretation" +
+            " data."
             );
+
+    CompilationCancelled:
+        WriteLine("Project did not include any files.");
+#if DEBUG
+        WriteLine(
+            "Hello, mate. This is a debug build, so you will be fed some information through here in case your debugger does not or is inactive.\n" +
+            "\n");
+        WriteLine("Grammar contents");
+        foreach (var token in Tokens) WriteLine(token.ToString());
+        foreach (var sentence in Sentences) WriteLine(sentence.ToString());
+#endif
+        WriteLine("Press any key to continue.");
+        ReadKey(true);
+        Environment.Exit(0);
     }
 }

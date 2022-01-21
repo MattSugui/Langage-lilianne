@@ -78,6 +78,7 @@ public static partial class Interpreter
             def.Add(0x003B, "Preprocessing error. '{0}' does not exist.");
             def.Add(0x003C, "Preprocessing error. There are references to the following inexistent symbols: {0}.");
             def.Add(0x003D, "Internal error. For this version of Lilian, you cannot declare types other than the standard 15 .NET types.");
+            def.Add(0x003E, "Implementation error. The core grammar does not exist. Fall back to assembly syntax, or reinstall Lilian.");
         }
 
         /// <summary>

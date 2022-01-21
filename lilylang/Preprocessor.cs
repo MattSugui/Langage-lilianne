@@ -5,7 +5,10 @@
 
 namespace fonder.Lilian.New;
 
-public static partial class Interpreter
+/// <summary>
+/// The entire Coco processing implementation.
+/// </summary>
+public static partial class Coco
 {
     /// <summary>
     /// The main class for the preprocessor.
@@ -16,6 +19,12 @@ public static partial class Interpreter
         /// If true, enable the preprocessor. If false, all directive lines will be ignored.
         /// </summary>
         public static bool RegulateCompilation = false;
+
+        /// <summary>
+        /// If true, the compiler will report that nothing has been added and hence nothing will happen.
+        /// The only preserved elements are the grammar and output path, if the build is a debug build.
+        /// </summary>
+        public static bool DoNotDoCompilation = false;
 
         #region Faux Coco
         /// <summary>
@@ -42,13 +51,28 @@ public static partial class Interpreter
             XmlNode titleNode = outputPath.Attributes["Title"];
             if (titleNode is not null) ConsummateSource.Add($"title \"{titleNode.Value}\";");
             
+            XmlNode grammarPath = root.SelectSingleNode("descendant::Grammar");
+            if (grammarPath is not null)
+            {
+                GrammarType = true;
+                LoadGrammar(grammarPath.Attributes["Path"].Value);
+            }
+            else GrammarType = false;
 
             // get project contents
             XmlNodeList projContents = root.SelectNodes("descendant::Include");
-            foreach (XmlNode projNode in projContents)
+            if (projContents is not null)
             {
-                if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
-                else throw new Lamentation(0x3, projNode.Attributes["Path"].Value);
+                foreach (XmlNode projNode in projContents)
+                {
+                    if (File.Exists(projNode.Attributes["Path"].Value)) foreach (string line in File.ReadAllLines(projNode.Attributes["Path"].Value)) ConsummateSource.Add(line);
+                    else throw new Lamentation(0x3, projNode.Attributes["Path"].Value);
+                }
+            }
+            else
+            {
+                DoNotDoCompilation = true;
+                return;
             }
 
             XmlNode condComp = root.SelectSingleNode("descendant::RegulateCompilation");

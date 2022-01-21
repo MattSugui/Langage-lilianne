@@ -1,0 +1,29 @@
+.token [String]
+	.structure {".*"}
+.endtoken
+
+.token [Print]
+	.structure {print}
+.endtoken
+
+.token [Whitespace]
+	.structure {\s}
+.endtoken
+
+.token [Semicolon]
+	.structure {;}
+.endtoken
+
+// yes
+
+.sentence [PrintString]
+	.structure <[Print]|[String]|[Semicolon]>
+	.pick 1
+.endsentence
+
+.sub [Print]
+	.params 1
+	.code
+
+	.endcode
+.endsub
