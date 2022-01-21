@@ -61,7 +61,7 @@ public static partial class Coco
 
             // get project contents
             XmlNodeList projContents = root.SelectNodes("descendant::Include");
-            if (projContents is not null || projContents.Count != 0)
+            if (projContents.Count != 0)
             {
                 foreach (XmlNode projNode in projContents)
                 {
