@@ -61,7 +61,7 @@ public static partial class Coco
                 foreach (Match match in col) pattemp.Add(match.Value);
                 string[] pattern = pattemp.ToArray();
 
-                string[] logic = sentence.Value.Split('\u003b');
+                string logic = sentence.InnerText;
                 Sentences.Add(new(name, pattern, logic));
             }
 #if DEBUG
@@ -115,7 +115,7 @@ public static partial class Coco
         /// <param name="Name">The name of the structure.</param>
         /// <param name="Pattern">The pattern of the structure, made up of the names of the tokens.</param>
         /// <param name="AssociatedSub">The subroutine it converts to. It is not validated beforehand for certain case uses.</param>
-        public record class NewSentenceStructure(string Name, string[] Pattern, string[] AssociatedSub);
+        public record class NewSentenceStructure(string Name, string[] Pattern, string AssociatedSub);
 
         /// <summary>
         /// A captured sentence.
