@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.2.349.0</AssemblyVersion>
-		<FileVersion>1.2.349.0</FileVersion>
-		<InformationalVersion>Scholarly Alpha 1 220130-1345</InformationalVersion>
+		<AssemblyVersion>1.2.350.0</AssemblyVersion>
+		<FileVersion>1.2.350.0</FileVersion>
+		<InformationalVersion>Scholarly Alpha 1 220130-1347</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
@@ -29,6 +29,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="docfx.console" Version="2.59.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="ShellProgressBar" Version="5.1.0" />
 		<PackageReference Include="System.CodeDom" Version="6.0.0" />
 	</ItemGroup>
