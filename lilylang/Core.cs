@@ -120,30 +120,30 @@
 
 #region Imports
 // corlibs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.IO;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Serialization;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Text.RegularExpressions;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using System.Reflection;
+global using System.IO;
+global using System.Diagnostics;
+global using System.Xml;
+global using System.Xml.Serialization;
 
 // nugets
-using ShellProgressBar;
+global using ShellProgressBar;
 
 // name simplification
-using static fonder.Lilian.New.Interpreter;
-using static fonder.Lilian.New.Interpreter.Spellbook;
-using static fonder.Lilian.New.Interpreter.Actualiser;
-using static fonder.Lilian.New.Coco.Preprocessor;
-using static fonder.Lilian.New.Coco.Grammar;
-using static fonder.Lilian.New.ObjectModel;
-using static System.Console;
+global using static fonder.Lilian.New.Interpreter;
+global using static fonder.Lilian.New.Interpreter.Spellbook;
+global using static fonder.Lilian.New.Interpreter.Actualiser;
+global using static fonder.Lilian.New.Coco.Preprocessor;
+global using static fonder.Lilian.New.Coco.Grammar;
+global using static fonder.Lilian.New.ObjectModel;
+global using static System.Console;
 #endregion
 
 namespace fonder.Lilian.New;
