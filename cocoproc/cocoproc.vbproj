@@ -8,11 +8,12 @@
 		<Deterministic>False</Deterministic>
 
 		<AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
-		<AssemblyVersion>0.9.42.0</AssemblyVersion>
-		<FileVersion>0.9.42.0</FileVersion>
-		<InformationalVersion>Pre-alpha 2, 220108-1347</InformationalVersion>
+		<AssemblyVersion>1.2.353.0</AssemblyVersion>
+		<FileVersion>1.2.353.0</FileVersion>
+		<InformationalVersion>Scholarly Alpha 1 220130-1659</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
-		<Copyright>Created 2021</Copyright>
+		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright>
+		<!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
 		<RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
 	</PropertyGroup>

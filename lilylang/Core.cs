@@ -118,6 +118,10 @@
 #pragma warning disable CA2211 // ayo! fields aint supposed to be public!
 #endregion
 
+#region Symbols that affect compilation
+#define TEMPASKING // 
+#endregion
+
 #region Imports
 // corlibs
 global using System;
@@ -2444,6 +2448,17 @@ public static class Coco
         /// </summary>
         public static bool DoNotDoCompilation = false;
 
+        public static void VersionSelector(string projectFile)
+        {
+            bool? ver = null;
+            XmlDocument bruh = new();
+
+            try { bruh.LoadXml(projectFile); }
+            catch (XmlException) { ver = false; }
+            finally { if (ver! == true) ; else ; }
+            
+        }
+
         #region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
@@ -2530,7 +2545,8 @@ public static class Coco
         #region Vrai Coco
 
         /// <summary>
-        /// Preprocesses the file.
+        /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
+        /// If the file is primarily in Coco (i.e., no dot delimiter), this will think that all lines are normal Lilian.
         /// </summary>
         /// <param name="file">The raw file.</param>
         public static void Preprocess(string[] file /*, ref int progress*/)
@@ -2793,7 +2809,7 @@ public static class Coco
 
             if (!File.Exists(temp))
             {
-                if (path == "core.lgd") throw new Lamentation(0x3e);
+                if (path == "core.lgf") throw new Lamentation(0x3e);
                 else throw new Lamentation(0x2, temp);
             }
 
