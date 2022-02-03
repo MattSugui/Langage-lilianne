@@ -2448,6 +2448,13 @@ public static class Coco
         /// </summary>
         public static bool DoNotDoCompilation = false;
 
+        /// <summary>
+        /// Determines the project version to use.
+        /// </summary>
+        /// <param name="projectFile">
+        /// The entire file itself. If it is parsable XML, the older XML method
+        /// will be used; otherwise, this will be sent to Coco.
+        /// </param>
         public static void VersionSelector(string projectFile)
         {
             bool? ver = null;
