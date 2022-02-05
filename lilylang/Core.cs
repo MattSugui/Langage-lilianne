@@ -116,6 +116,7 @@
 
 // rants by the quality checker
 #pragma warning disable CA1416 // platformist scum
+#pragma warning disable CA1806 // unused methods (for funky user32 manipulations)
 #pragma warning disable CA2211 // ayo! fields aint supposed to be public!
 #endregion
 
@@ -138,7 +139,7 @@ global using System.IO;
 global using System.Diagnostics;
 global using System.Xml;
 global using System.Xml.Serialization;
-
+global using System.Runtime.InteropServices;
 // nugets
 global using ShellProgressBar;
 
@@ -152,6 +153,7 @@ global using static fonder.Lilian.New.UserInterface;
 global using static fonder.Lilian.New.ObjectModel;
 global using static System.Threading.Thread;
 global using static System.Console;
+
 #endregion
 
 namespace fonder.Lilian.New;
@@ -166,6 +168,32 @@ namespace fonder.Lilian.New;
 public static class Programme
 {
     /// <summary>
+    /// Deletes a menu.
+    /// </summary>
+    /// <param name="hMenu">The menu of the window.</param>
+    /// <param name="nPosition">The position of the menu item.</param>
+    /// <param name="wFlag">Some flags i guess.</param>
+    /// <returns>The HRESULT of the operation.</returns>
+    [DllImport("user32.dll")]
+    internal static extern int DeleteMenu(IntPtr hMenu, int nPosition, int wFlag);
+
+    /// <summary>
+    /// Gets the menu of the window.
+    /// </summary>
+    /// <param name="hWnd">The window.</param>
+    /// <param name="bRevert">I dunno.</param>
+    /// <returns>The menu of the current window.</returns>
+    [DllImport("user32.dll")]
+    internal static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+    /// <summary>
+    /// Gets the current window.
+    /// </summary>
+    /// <returns>The current window.</returns>
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    internal static extern IntPtr GetConsoleWindow();
+
+    /// <summary>
     /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
     /// </summary>
     public static bool ConserveMemory = false;
@@ -176,6 +204,16 @@ public static class Programme
     /// <param name="args">The command-line arguments.</param>
     public static void Main(string[] args)
     {
+        #region funky user32
+        IntPtr handle = GetConsoleWindow();
+        IntPtr SystemMenu = GetSystemMenu(handle, false);
+
+        if (handle != IntPtr.Zero)
+        {
+            DeleteMenu(SystemMenu, 0xf030, 0x00000000);
+            DeleteMenu(SystemMenu, 0xf000, 0x00000000);
+        }
+        #endregion
         SetWindowSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
@@ -2479,11 +2517,14 @@ public static class ObjectModel
 /// </remarks>
 public static class UserInterface
 {
+
+
     /// <summary>
     /// ayo pull up the MSDOS
     /// </summary>
     public static void LaunchUI()
     {
+
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
