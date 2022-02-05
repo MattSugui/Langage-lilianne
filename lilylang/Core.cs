@@ -148,6 +148,7 @@ global using static fonder.Lilian.New.Interpreter.Spellbook;
 global using static fonder.Lilian.New.Interpreter.Actualiser;
 global using static fonder.Lilian.New.Coco.Preprocessor;
 global using static fonder.Lilian.New.Coco.Grammar;
+global using static fonder.Lilian.New.UserInterface;
 global using static fonder.Lilian.New.ObjectModel;
 global using static System.Threading.Thread;
 global using static System.Console;
@@ -188,6 +189,7 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         ReadKey(true);
+        LaunchUI();
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2464,6 +2466,53 @@ public static class ObjectModel
     public struct FELIntegralType
     {
 
+    }
+}
+#endregion
+
+#region User interface
+/// <summary>
+/// The main class for the user interface that appears in Lilian.
+/// </summary>
+/// <remarks>
+/// The user interface resembles that of MSDOS/Windows setup.
+/// </remarks>
+public static class UserInterface
+{
+    /// <summary>
+    /// ayo pull up the MSDOS
+    /// </summary>
+    public static void LaunchUI()
+    {
+        Clear();
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+        WriteLine("                                                                                ");
+        WriteLine(" Microsoft MS-DOS 6.22 Setup                                                    ");
+        WriteLine(" ═══════════════════════════                                                    ");
+        WriteLine("                                                                                ");
+        WriteLine("          Welcome to Setup.                                                     ");
+        WriteLine("                                                                                ");
+        WriteLine("          The Setup program prepares MS-DOS 6.22 to run on your                 ");
+        WriteLine("          computer.                                                             ");
+        WriteLine("                                                                                ");
+        WriteLine("            · To set up MS-DOS now, press ENTER.                                ");
+        WriteLine("                                                                                ");
+        WriteLine("            · To learn more about Setup before continuing, press F1.            ");
+        WriteLine("                                                                                ");
+        WriteLine("            · To exit Setup without installing MS-DOS, press F3.                ");
+        WriteLine("                                                                                ");
+        WriteLine("          Note: If you have not backed up your files recently, you              ");
+        WriteLine("                might want to do so before installing MS-DOS. To back           ");
+        WriteLine("                up your files, press F3 to quit Setup now. Then, back           ");
+        WriteLine("                up your files by using a backup program.                        ");
+        WriteLine("                                                                                ");
+        WriteLine("          To continue Setup, press ENTER.                                       ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
+        WriteLine("ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk  ");
+        SetCursorPosition(0, 0); ReadKey(true);
     }
 }
 #endregion
