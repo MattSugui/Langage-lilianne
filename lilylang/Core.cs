@@ -179,8 +179,10 @@ public static class Programme
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
+
         Sleep(1000);
         Clear();
+        SetWindowSize(80, 25);
 #if TEMPHALTNORMALOPS
         WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         ReadKey(true);
