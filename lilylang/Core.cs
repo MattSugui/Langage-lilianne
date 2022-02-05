@@ -214,7 +214,7 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        SetBufferSize(80, 25);
+        SetBufferSize(80, 26);
         SetWindowSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
