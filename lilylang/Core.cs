@@ -214,8 +214,8 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        SetWindowSize(80, 25);
         SetBufferSize(80, 25);
+        SetWindowSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -2528,6 +2528,7 @@ public static class UserInterface
 
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+        WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine(" Microsoft MS-DOS 6.22 Setup                                                    ");
         WriteLine(" ═══════════════════════════                                                    ");
