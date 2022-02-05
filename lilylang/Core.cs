@@ -115,6 +115,7 @@
 #pragma warning disable CS8600 // waaa, possible null literal!
 
 // rants by the quality checker
+#pragma warning disable CA1416 // platformist scum
 #pragma warning disable CA2211 // ayo! fields aint supposed to be public!
 #endregion
 
@@ -174,6 +175,7 @@ public static class Programme
     /// <param name="args">The command-line arguments.</param>
     public static void Main(string[] args)
     {
+        SetWindowSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -182,7 +184,7 @@ public static class Programme
 
         Sleep(1000);
         Clear();
-        SetWindowSize(80, 25);
+
 #if TEMPHALTNORMALOPS
         WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         ReadKey(true);
