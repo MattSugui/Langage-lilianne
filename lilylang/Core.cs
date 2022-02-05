@@ -120,6 +120,7 @@
 
 #region Symbols that affect compilation
 #define TEMPASKING // 
+#define TEMPHALTNORMALOPS // remove the interpretation ability for a while
 #endregion
 
 #region Imports
@@ -147,6 +148,7 @@ global using static fonder.Lilian.New.Interpreter.Actualiser;
 global using static fonder.Lilian.New.Coco.Preprocessor;
 global using static fonder.Lilian.New.Coco.Grammar;
 global using static fonder.Lilian.New.ObjectModel;
+global using static System.Threading.Thread;
 global using static System.Console;
 #endregion
 
@@ -177,8 +179,15 @@ public static class Programme
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
-
+        Sleep(1000);
+        Clear();
+#if TEMPHALTNORMALOPS
+        WriteLine("Interim Graphix Stage.\nPress any key to continue.");
+        ReadKey(true);
+        Environment.Exit(0);
+#else
         if (args.Length == 0) goto REPLLoop;
+
 
         string filepath = args[0].Trim('"');
         string outpath = string.Empty;
@@ -307,16 +316,19 @@ public static class Programme
 #endif
         WriteLine("Press any key to continue.");
         ReadKey(true);
+#endif
+
         Environment.Exit(0);
     }
 }
-#endregion
 
-#region Interpreter
-/// <summary>
-/// The main class for the interpeter.
-/// </summary>
-public static class Interpreter
+    #endregion
+
+    #region Interpreter
+    /// <summary>
+    /// The main class for the interpeter.
+    /// </summary>
+    public static class Interpreter
 {
     #region Static-field flags and data
     #region Execution
@@ -332,11 +344,16 @@ public static class Interpreter
     public static XmlDocument tempCurrFile;
 
     /// <summary>
+    /// The unprocessed and unchecked project file.
+    /// </summary>
+    public static string preProcessFile;
+
+    /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
     /// </summary>
     public static List<string> CurrentFile = new();
-    #endregion
-    #region End-user debug services
+#endregion
+#region End-user debug services
     /// <summary>
     /// The current line number.
     /// </summary>
@@ -356,8 +373,8 @@ public static class Interpreter
     /// The current line column. Uses <c>CurrentLine</c> for the column.
     /// </summary>
     public static int CurrentColumn => CurrentLine.Length;
-    #endregion
-    #region Operation
+#endregion
+#region Operation
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
@@ -412,16 +429,16 @@ public static class Interpreter
     /// The current accumulator.
     /// </summary>
     public static int CurrentObjectA;
-    #endregion
-    #endregion
+#endregion
+#endregion
 
-    #region Interpretation
+#region Interpretation
     /// <summary>
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
 
-    #region File operations
+#region File operations
     /// <summary>
     /// Reads from a path.
     /// </summary>
@@ -440,7 +457,7 @@ public static class Interpreter
     {
         foreach (string line in lines) CurrentFile.Add(line);
     }
-    #endregion
+#endregion
 
     /// <summary>
     /// Do the whole thing.
@@ -558,7 +575,7 @@ public static class Interpreter
                 ProjectCompilation:
                 using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
                 {
-                    ReadProjectFile(tempCurrFile);
+                    VersionSelector(preProcessFile);
                     pbg.Tick();
                 }
                 if (!DoNotDoCompilation) goto Start; else return;
@@ -647,8 +664,30 @@ public static class Interpreter
         }
     }
 
-    #endregion
-    #region Spellbook
+    /// <summary>
+    /// Do the whole thing. (Doesn't use the progress bars for a cleaner output.)
+    /// </summary>
+    /// <param name="outfile">The path to the output file.</param>
+    /// <param name="projfile">If true, the intepretation starts at the "Initialising the compilation process" stage. False by default.</param>
+    public static void InterpretNonGUI(string outfile = "", bool projfile = false)
+    {
+        /*
+         * Stages
+         * 1. Checking the project file legibility - checking which version of the Coco preprocessor to use
+         * 2. Passing to Coco                      - passing Coco preprocessor-compatible project file
+         * 3. 
+         */
+
+    ProjectCompilation:
+        WriteLine("");
+        ;
+
+    SingleFileCompilation:
+        ;
+    }
+
+#endregion
+#region Spellbook
     /// <summary>
     /// The lexer and parser components of the interpreter.
     /// </summary>
@@ -1139,8 +1178,8 @@ public static class Interpreter
             else currentEffect = 0; // reset
         }
     }
-    #endregion
-    #region Execution
+#endregion
+#region Execution
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>
@@ -1152,8 +1191,8 @@ public static class Interpreter
 
         while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
-    #endregion
-    #region Lamentation
+#endregion
+#region Lamentation
     /// <summary>
     /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
@@ -1329,8 +1368,8 @@ public static class Interpreter
         }
     }
 
-    #endregion
-    #region Operation
+#endregion
+#region Operation
     /// <summary>
     /// The main opcode interpretation class.
     /// </summary>
@@ -2400,9 +2439,9 @@ public static class Interpreter
          * pop;
          */
     }
-    #endregion
+#endregion
 }
-#endregion     
+#endregion
 
 #region Object model
 /// <summary>
@@ -2431,7 +2470,7 @@ public static class ObjectModel
 /// </summary>
 public static class Coco
 {
-    #region Coco preprocessor
+#region Coco preprocessor
     /// <summary>
     /// The main class for the preprocessor.
     /// </summary>
@@ -2449,6 +2488,12 @@ public static class Coco
         public static bool DoNotDoCompilation = false;
 
         /// <summary>
+        /// If true, the compiler will use the individual Coco interpreter for the project. Otherwise,
+        /// the compiler will use the previous build system from version 1.1.
+        /// </summary>
+        public static bool VersionOfCompilation = false;
+
+        /// <summary>
         /// Determines the project version to use.
         /// </summary>
         /// <param name="projectFile">
@@ -2462,11 +2507,10 @@ public static class Coco
 
             try { bruh.LoadXml(projectFile); }
             catch (XmlException) { ver = false; }
-            finally { if (ver! == true) ; else ; }
-            
+            finally { if (ver! == true) VersionOfCompilation = true; else VersionOfCompilation = false; }
         }
 
-        #region Faux Coco
+#region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
         /// </summary>
@@ -2521,7 +2565,7 @@ public static class Coco
             else
                 RegulateCompilation = false;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// The resulting consummate or arranged source file.
@@ -2549,7 +2593,7 @@ public static class Coco
         /// </summary>
         public static string Outgoing = "";
 
-        #region Vrai Coco
+#region Vrai Coco
 
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
@@ -2786,11 +2830,11 @@ public static class Coco
             }
         }
 
-        #endregion
+#endregion
     }
-    #endregion
+#endregion
 
-    #region Coco comprehension
+#region Coco comprehension
     /// <summary>
     /// All grammar implementation processes.
     /// </summary>
@@ -2915,7 +2959,7 @@ public static class Coco
         public record struct NewSentence(string AssociatedSentence, string[] Value);
 
     }
-    #endregion
+#endregion
 }
 #endregion
 

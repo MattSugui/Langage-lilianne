@@ -50,7 +50,7 @@ try
     $filecont = ""
     $pathpart = get-location -Verbose
     $miscpath = ""
-    if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName }
+    if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName } else { throw [System.IO.FileNotFoundException]::new("")}
 
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
     
