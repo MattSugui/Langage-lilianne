@@ -2630,9 +2630,9 @@ public static class UserInterface
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine(new string('═', ApplicationTitle.Length + 1).PadRight(80));
         WrapContent(content, false);
-        for (int i = 0; i < 21; i++)
+        for (int i = 0; i < 20; i++)
         {
-            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(79));
+            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
