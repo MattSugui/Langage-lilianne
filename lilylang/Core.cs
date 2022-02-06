@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (151/175 kB)                                                              ║
+║ Size goal: Memorex 650 (155/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -2534,7 +2534,7 @@ public static class UserInterface
     /// <summary>
     /// The absolute-white piece of text on top of the content on-screen.
     /// </summary>
-    public static string? HeaderText { get; set; }
+    public static string HeaderText { get; set; }
 
     /// <summary>
     /// The text in the grey box at the bottom of the screen.
@@ -2646,7 +2646,7 @@ public static class UserInterface
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine(" " + FooterText.PadRight(79));
+        WriteLine(" " + (FooterText ?? "").PadRight(79));
         SetCursorPosition(0, 0); ReadKey(true);
     }
 }
