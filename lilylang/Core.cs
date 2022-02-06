@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (149/175 kB)                                                              ║
+║ Size goal: Memorex 650 (151/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -2571,6 +2571,9 @@ public static class UserInterface
         WriteLine("         up your files by using a backup program.                             ");
         WriteLine("                                                                              ");
         WriteLine("   To continue Setup, press ENTER.                                            ");
+        WriteLine("                                                                              ");
+        WriteLine("                                                                              ");
+        WriteLine("                                                                              ");
         WriteLine("                                                                              ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         WriteLine("ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk");
