@@ -2711,6 +2711,7 @@ public static class UserInterface
             {
                 ForegroundColor = ConsoleColor.White;
                 WriteLine("   " + HeaderText.PadRight(77));
+                continue;
             }
             else if (i == 1 && head)
             {
