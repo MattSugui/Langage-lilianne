@@ -2707,12 +2707,11 @@ public static class UserInterface
             {
                 ForegroundColor = ConsoleColor.White;
                 WriteLine("   " + HeaderText.PadRight(77));
-                continue;
             }
             else if (i == 1 && !string.IsNullOrEmpty(HeaderText))
             {
                 WriteLine("                                                                                ");
-                continue;
+                i = 0;
             }
             else if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
