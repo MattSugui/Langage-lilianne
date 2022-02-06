@@ -215,7 +215,7 @@ public static class Programme
         }
         #endregion
         SetWindowSize(82, 33);
-        SetBufferSize(82, 33);
+        SetBufferSize(82, 34);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -2550,41 +2550,40 @@ public static class UserInterface
 
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine(" Windows XP Professional Setup                                                  ");
-        WriteLine(" ══════════════════════════════                                                 ");
-        WriteLine("                                                                                ");
-        WriteLine("   Welcome to Setup.                                                            ");
-        WriteLine("                                                                                ");
-        WriteLine("   The Setup program prepares MS-DOS 6.22 to run on your                        ");
-        WriteLine("   computer.                                                                    ");
-        WriteLine("                                                                                ");
-        WriteLine("     · To set up MS-DOS now, press ENTER.                                       ");
-        WriteLine("                                                                                ");
-        WriteLine("     · To learn more about Setup before continuing, press F1.                   ");
-        WriteLine("                                                                                ");
-        WriteLine("     · To exit Setup without installing MS-DOS, press F3.                       ");
-        WriteLine("                                                                                ");
-        WriteLine("   Note: If you have not backed up your files recently, you                     ");
-        WriteLine("         might want to do so before installing MS-DOS. To back                  ");
-        WriteLine("         up your files, press F3 to quit Setup now. Then, back                  ");
-        WriteLine("         up your files by using a backup program.                               ");
-        WriteLine("                                                                                ");
-        WriteLine("   To continue Setup, press ENTER.                                              ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
-        WriteLine("                                                                                ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine(" Windows XP Professional Setup                                                 ");
+        WriteLine(" ══════════════════════════════                                                ");
+        WriteLine("                                                                               ");
+        WriteLine("   Welcome to Setup.                                                           ");
+        WriteLine("                                                                               ");
+        WriteLine("   The Setup program prepares MS-DOS 6.22 to run on your                       ");
+        WriteLine("   computer.                                                                   ");
+        WriteLine("                                                                               ");
+        WriteLine("     · To set up MS-DOS now, press ENTER.                                      ");
+        WriteLine("                                                                               ");
+        WriteLine("     · To learn more about Setup before continuing, press F1.                  ");
+        WriteLine("                                                                               ");
+        WriteLine("     · To exit Setup without installing MS-DOS, press F3.                      ");
+        WriteLine("                                                                               ");
+        WriteLine("   Note: If you have not backed up your files recently, you                    ");
+        WriteLine("         might want to do so before installing MS-DOS. To back                 ");
+        WriteLine("         up your files, press F3 to quit Setup now. Then, back                 ");
+        WriteLine("         up your files by using a backup program.                              ");
+        WriteLine("                                                                               ");
+        WriteLine("   To continue Setup, press ENTER.                                             ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
+        WriteLine("                                                                               ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine(" ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk ");
+        WriteLine(" ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk");
         SetCursorPosition(0, 0); ReadKey(true);
     }
 }
