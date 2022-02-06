@@ -231,7 +231,8 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        PlainTextScreen("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.");
+        PlainTextScreen("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+            new FELUIAction(ConsoleKey.Enter, () => Environment.Exit(0), "okay"));
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2539,7 +2540,55 @@ public static class UserInterface
     /// <summary>
     /// The text in the grey box at the bottom of the screen.
     /// </summary>
-    public static string FooterText { get; set; }
+    private static string footer;
+
+    /// <summary>
+    /// The text in the grey box at the bottom of the screen.
+    /// </summary>
+    public static string FooterText
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(footer))
+            {
+                StringBuilder str = new();
+                foreach (FELUIAction act in Actions)
+                {
+                    string item = act.ToString();
+                    if (str.Length + (item.Length + 1) <= 72)
+                    {
+                        str.Append(item + " ");
+                    }
+                    else Actions.Remove(act); // gtfo
+                }
+                return str.ToString();
+            }
+            else return footer;
+        }
+        set => footer = value;
+    }
+
+    /// <summary>
+    /// The list of possible key combinations. By default, if there are such combinations,
+    /// the footer will display the available actions instead of what was set in its
+    /// backing field.
+    /// </summary>
+    public static List<FELUIAction> Actions = new();
+
+    /// <summary>
+    /// A key-bound event.
+    /// </summary>
+    /// <param name="Key">The key.</param>
+    /// <param name="Action">The associated method to invoke.</param>
+    /// <param name="Description">The text that will be displayed in the footer to describe the action.</param>
+    public record struct FELUIAction(ConsoleKey Key, Delegate Action, string Description)
+    {
+        /// <summary>
+        /// Returns the info about this action.
+        /// </summary>
+        /// <returns>The key-description pair in the format &lt;key&gt;=&lt;description&gt;.</returns>
+        public override string ToString() => $"{Key}={Description}";
+    }
 
     /// <summary>
     /// Fits the text into the screen and places it into <see cref="ScreenBody"/>.
@@ -2626,13 +2675,15 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;                 
         WriteLine(" Please wait while the application loads.                                       ");
         SetCursorPosition(0, 0); //ReadKey(true);
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
 
     /// <summary>
     /// Launches a screen with only text on it.
     /// </summary>
     /// <param name="content">The content.</param>
-    public static void PlainTextScreen(string content)
+    /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
+    public static void PlainTextScreen(string content, params FELUIAction[] actions)
     {
         Clear(); WrapContent(content, false);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
@@ -2648,6 +2699,7 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         WriteLine(" " + (FooterText ?? "").PadRight(79));
         SetCursorPosition(0, 0); ReadKey(true);
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
 }
 #endregion
