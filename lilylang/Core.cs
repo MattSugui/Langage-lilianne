@@ -215,7 +215,7 @@ public static class Programme
         }
         #endregion
         SetWindowSize(80, 25);
-        SetBufferSize(80, 25);
+        SetBufferSize(80, 26);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -2571,7 +2571,6 @@ public static class UserInterface
         WriteLine("         up your files by using a backup program.                               ");
         WriteLine("                                                                                ");
         WriteLine("   To continue Setup, press ENTER.                                              ");
-        WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
