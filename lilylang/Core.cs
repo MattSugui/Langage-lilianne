@@ -2556,10 +2556,13 @@ public static class UserInterface
 
         string[] whole = input.Split(' ');
 
+        string reserve = "";
+
         for (int i = 0; i < whole.Length; i++)
         {
             if (currentLine.Length + (whole[i].Length + 1) <= width)
             {
+                reserve = i + 1 < whole.Length ? whole[i + 1]:string.Empty;
                 currentLine.Append(whole[i] + ' ');
                 if (i == whole.Length - 1)
                 {
@@ -2574,6 +2577,7 @@ public static class UserInterface
                 {
                     content.Add(currentLine.ToString());
                     currentLine.Clear();
+                    currentLine.Append(reserve);
                 }
                 else break;
             }
