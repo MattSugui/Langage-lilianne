@@ -2540,32 +2540,21 @@ public static class UserInterface
     /// <summary>
     /// The text in the grey box at the bottom of the screen.
     /// </summary>
-    private static string footer;
+    public static string FooterText { get; set; }
 
     /// <summary>
-    /// The text in the grey box at the bottom of the screen.
+    /// Returns the functions in a neat way.
     /// </summary>
-    public static string FooterText
+    /// <returns>uhh</returns>
+    public static string DisplayShortcuts()
     {
-        get
+        StringBuilder str = new();
+        foreach (FELUIAction act in Actions)
         {
-            if (string.IsNullOrEmpty(footer))
-            {
-                StringBuilder str = new();
-                foreach (FELUIAction act in Actions)
-                {
-                    string item = act.ToString();
-                    if (str.Length + (item.Length + 1) <= 72)
-                    {
-                        str.Append(item + " ");
-                    }
-                    else Actions.Remove(act); // gtfo
-                }
-                return str.ToString();
-            }
-            else return footer;
+            string item = act.ToString();
+            str.Append(item + " ");
         }
-        set => footer = value;
+        return str.ToString();
     }
 
     /// <summary>
@@ -2697,7 +2686,7 @@ public static class UserInterface
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine(" " + (FooterText ?? "").PadRight(79));
+        WriteLine(" " + (string.IsNullOrEmpty(FooterText)? DisplayShortcuts():FooterText).PadRight(79));
         SetCursorPosition(0, 0); ReadKey(true);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
