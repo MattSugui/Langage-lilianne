@@ -2540,21 +2540,28 @@ public static class UserInterface
     /// <summary>
     /// The text in the grey box at the bottom of the screen.
     /// </summary>
-    public static string FooterText { get; set; }
+    private static string footer;
 
     /// <summary>
-    /// Returns the functions in a neat way.
+    /// The text in the grey box at the bottom of the screen.
     /// </summary>
-    /// <returns>uhh</returns>
-    public static string DisplayShortcuts()
+    public static string FooterText
     {
-        StringBuilder str = new();
-        foreach (FELUIAction act in Actions)
+        get
         {
-            string item = act.ToString();
-            str.Append(item + " ");
+            if (string.IsNullOrEmpty(footer))
+            {
+                StringBuilder str = new();
+                foreach (FELUIAction act in Actions)
+                {
+                    string item = act.ToString();
+                    str.Append(item + " ");
+                }
+                return str.ToString();
+            }
+            else return footer;
         }
-        return str.ToString();
+        set => footer = value;
     }
 
     /// <summary>
@@ -2675,6 +2682,7 @@ public static class UserInterface
     public static void PlainTextScreen(string content, params FELUIAction[] actions)
     {
         Clear(); WrapContent(content, false);
+        foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
@@ -2686,7 +2694,7 @@ public static class UserInterface
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine(" " + (string.IsNullOrEmpty(FooterText)? DisplayShortcuts():FooterText).PadRight(79));
+        WriteLine(" " + (FooterText ?? "").PadRight(79));
         SetCursorPosition(0, 0); ReadKey(true);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
