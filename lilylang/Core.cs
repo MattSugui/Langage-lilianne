@@ -231,7 +231,7 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        PlainTextScreen("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+        PlainTextScreen("Please", "Welcome to the Lilian environment.",
             new FELUIAction(ConsoleKey.Enter, () => Environment.Exit(0), "okay"),
             new FELUIAction(ConsoleKey.C, () =>
             {
@@ -2690,10 +2690,11 @@ public static class UserInterface
     /// Launches a screen with only text on it.
     /// </summary>
     /// <param name="content">The content.</param>
+    /// <param name="header">The header.</param>
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
-    public static void PlainTextScreen(string content, params FELUIAction[] actions)
+    public static void PlainTextScreen(string content, string header = "", params FELUIAction[] actions)
     {
-        Clear(); WrapContent(content, false);
+        Clear(); WrapContent(content, false); HeaderText = header;
         foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
@@ -2702,6 +2703,17 @@ public static class UserInterface
         WriteLine("                                                                                ");
         for (int i = 0; i < 20; i++)
         {
+            if (i == 0 && !string.IsNullOrEmpty(HeaderText))
+            {
+                ForegroundColor = ConsoleColor.White;
+                WriteLine("   " + HeaderText.PadRight(77));
+                continue;
+            }
+            if (i == 1 && !string.IsNullOrEmpty(HeaderText))
+            {
+                WriteLine("                                                                                ");
+                continue;
+            }
             if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
