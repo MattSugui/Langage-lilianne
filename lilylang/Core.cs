@@ -232,7 +232,14 @@ public static class Programme
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
         PlainTextScreen("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
-            new FELUIAction(ConsoleKey.Enter, () => Environment.Exit(0), "okay"));
+            new FELUIAction(ConsoleKey.Enter, () => Environment.Exit(0), "okay"),
+            new FELUIAction(ConsoleKey.C, () =>
+            {
+                Clear();
+                WriteLine("bruh");
+                Sleep(5000);
+                Environment.Exit(0);
+            }, "Die"));
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2584,6 +2591,11 @@ public static class UserInterface
         /// </summary>
         /// <returns>The key-description pair in the format &lt;key&gt;=&lt;description&gt;.</returns>
         public override string ToString() => $"{Key}={Description}";
+
+        /// <summary>
+        /// Invokes the associated method.
+        /// </summary>
+        public void Invoke() => Action.DynamicInvoke();
     }
 
     /// <summary>
@@ -2695,8 +2707,19 @@ public static class UserInterface
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         WriteLine(" " + (FooterText ?? "").PadRight(79));
-        SetCursorPosition(0, 0); ReadKey(true);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
+        SetCursorPosition(0, 0);
+        while (true)
+        {
+            SetCursorPosition(0, 0);
+            ConsoleKey pressed = ReadKey(true).Key;
+            if (Actions.Exists(x => x.Key == pressed))
+            {
+                Actions.Find(x => x.Key == pressed).Invoke();
+                return;
+            }
+            else continue;
+        }
     }
 }
 #endregion
