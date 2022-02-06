@@ -214,8 +214,8 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        SetBufferSize(82, 34);
         SetWindowSize(82, 33);
+        SetBufferSize(82, 34);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
