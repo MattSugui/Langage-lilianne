@@ -2694,7 +2694,9 @@ public static class UserInterface
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
     public static void PlainTextScreen(string content, string header = "", params FELUIAction[] actions)
     {
-        Clear(); WrapContent(content, false); HeaderText = header;
+        Clear();
+        bool head = !string.IsNullOrEmpty(HeaderText);
+        WrapContent(content, false); HeaderText = header;
         foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
@@ -2703,15 +2705,15 @@ public static class UserInterface
         WriteLine("                                                                                ");
         for (int i = 0; i < 20; i++)
         {
-            if (i == 0 && !string.IsNullOrEmpty(HeaderText))
+            if (i == 0 && head)
             {
                 ForegroundColor = ConsoleColor.White;
                 WriteLine("   " + HeaderText.PadRight(77));
             }
-            else if (i == 1 && !string.IsNullOrEmpty(HeaderText))
+            else if (i == 1 && head)
             {
                 WriteLine("                                                                                ");
-                i = 0;
+                i = 0; head = false;
             }
             else if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
