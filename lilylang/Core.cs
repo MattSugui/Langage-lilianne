@@ -2554,9 +2554,20 @@ public static class UserInterface
         int width = Fill ? 72 : 59;
         int limit = HeaderText is not null || string.IsNullOrEmpty(HeaderText) ? 17 : 19;
 
-        foreach (string word in input.Split(' '))
+        string[] whole = input.Split(' ');
+
+        for (int i = 0; i < whole.Length; i++)
         {
-            if (currentLine.Length + (word.Length + 1) <= width) currentLine.Append(word + ' ');
+            if (currentLine.Length + (whole[i].Length + 1) <= width)
+            {
+                currentLine.Append(whole[i] + ' ');
+                if (i == whole.Length - 1)
+                {
+                    content.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    break;
+                }
+            }
             else
             {
                 if (content.Count + 1 <= limit)
@@ -2617,11 +2628,11 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
-        WriteLine(new string('═', ApplicationTitle.Length + 1)                                      );
+        WriteLine(new string('═', ApplicationTitle.Length + 1).PadRight(80));
         WrapContent(content, false);
-        for (int i = 0; i < 19; i++)
+        for (int i = 0; i < 21; i++)
         {
-            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadLeft(79));
+            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(79));
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
