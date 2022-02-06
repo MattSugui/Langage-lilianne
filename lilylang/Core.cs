@@ -215,7 +215,7 @@ public static class Programme
         }
         #endregion
         SetWindowSize(80, 25);
-        SetBufferSize(80, 26);
+        SetBufferSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -2681,7 +2681,7 @@ public static class UserInterface
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;                 
-        WriteLine(" Please wait while the application loads.                                       ");
+        Write    (" Please wait while the application loads.                                       ");
         SetCursorPosition(0, 0); //ReadKey(true);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
@@ -2718,7 +2718,7 @@ public static class UserInterface
             else if (i == 1 && head)
             {
                 WriteLine("                                                                                ");
-                i = -1; head = false; limit -= 2;
+                i = -1; head = false; limit -= 2; ForegroundColor = ConsoleColor.Gray;
                 continue;
             }
 
@@ -2726,7 +2726,7 @@ public static class UserInterface
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine(" " + (FooterText ?? "").PadRight(79));
+        Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
         while (true)
