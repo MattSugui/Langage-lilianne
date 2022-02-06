@@ -215,7 +215,7 @@ public static class Programme
         }
         #endregion
         SetWindowSize(82, 33);
-        SetBufferSize(82, 34);
+        SetBufferSize(82, 33);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
