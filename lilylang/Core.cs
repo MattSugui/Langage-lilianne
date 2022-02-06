@@ -215,7 +215,7 @@ public static class Programme
         }
         #endregion
         SetWindowSize(80, 25);
-        SetBufferSize(80, 25);
+        SetBufferSize(80, 26);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -229,6 +229,8 @@ public static class Programme
         WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         ReadKey(true);
         LaunchUI();
+        ApplicationTitle = "Fonder Lilian Language Environment";
+        PlainTextScreen("Interim Graphix Stage.");
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2529,17 +2531,44 @@ public static class UserInterface
     public static string[] ScreenBody { get; set; }
 
     /// <summary>
-    /// Fits the text into the screen.
+    /// The absolute-white piece of text on top of the content on-screen.
+    /// </summary>
+    public static string? HeaderText { get; set; }
+
+    /// <summary>
+    /// Fits the text into the screen and places it into <see cref="ScreenBody"/>.
     /// </summary>
     /// <param name="input">The input text.</param>
     /// <param name="Fill">
-    ///     If true, the text will be stretched across the screen, starting from column 4.
-    ///     Otherwise, the text will be wrapped at around columns 11 to 70.
+    ///     If true, the text will be stretched across the screen, until column 76.
+    ///     Otherwise, the text will be wrapped at around columns 4 to 63.
+    ///     
+    ///     As for vertical wrapping, if the resulting lines are more than 19 lines,
+    ///     or 17 if there's a heading, the text will be cut.
     /// </param>
     /// <returns></returns>
-    internal static string[] WrapContent(string input, bool Fill)
+    internal static void WrapContent(string input, bool Fill)
     {
-        return null;
+        StringBuilder currentLine = new();
+        List<string> content = new();
+        int width = Fill ? 72 : 59;
+        int limit = HeaderText is not null || string.IsNullOrEmpty(HeaderText) ? 17 : 19;
+
+        foreach (string word in input.Split(' '))
+        {
+            if (currentLine.Length + (word.Length + 1) <= width) currentLine.Append(word + ' ');
+            else
+            {
+                if (content.Count + 1 <= limit)
+                {
+                    content.Add(currentLine.ToString());
+                    currentLine.Clear();
+                }
+                else break;
+            }
+        }
+
+        ScreenBody = content.ToArray();
     }
 
     /// <summary>
@@ -2547,10 +2576,8 @@ public static class UserInterface
     /// </summary>
     public static void LaunchUI()
     {
-
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine(" Windows XP Professional Setup                                                  ");
         WriteLine("═══════════════════════════════                                                 ");
@@ -2577,6 +2604,28 @@ public static class UserInterface
         WriteLine("                                                                                ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;                 
         WriteLine("ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk  ");
+        SetCursorPosition(0, 0); ReadKey(true);
+    }
+
+    /// <summary>
+    /// Launches a screen with only text on it.
+    /// </summary>
+    /// <param name="content">The content.</param>
+    public static void PlainTextScreen(string content)
+    {
+        Clear();
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+        WriteLine("                                                                                ");
+        WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
+        WriteLine(new string('═', ApplicationTitle.Length + 1)                                      );
+        WrapContent(content, false);
+        for (int i = 0; i < 19; i++)
+        {
+            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadLeft(79));
+            else WriteLine("                                                                                ");
+        }
+        ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
+        WriteLine("                                                                                ");
         SetCursorPosition(0, 0); ReadKey(true);
     }
 }
