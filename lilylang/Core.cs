@@ -214,8 +214,8 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        SetBufferSize(80, 26);
-        SetWindowSize(80, 25);
+        SetBufferSize(82, 34);
+        SetWindowSize(82, 33);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
@@ -2518,7 +2518,29 @@ public static class ObjectModel
 /// </remarks>
 public static class UserInterface
 {
+    /// <summary>
+    /// The title that is displayed on the upper-left of the screen, usually with a bar underneath it.
+    /// </summary>
+    public static string ApplicationTitle { get; set; }
 
+    /// <summary>
+    /// The body of text displayed on the screen.
+    /// </summary>
+    public static string[] ScreenBody { get; set; }
+
+    /// <summary>
+    /// Fits the text into the screen.
+    /// </summary>
+    /// <param name="input">The input text.</param>
+    /// <param name="Fill">
+    ///     If true, the text will be stretched across the screen, starting from column 4.
+    ///     Otherwise, the text will be wrapped at around columns 11 to 70.
+    /// </param>
+    /// <returns></returns>
+    internal static string[] WrapContent(string input, bool Fill)
+    {
+        return null;
+    }
 
     /// <summary>
     /// ayo pull up the MSDOS
@@ -2530,31 +2552,39 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
-        WriteLine(" Microsoft MS-DOS 6.22 Setup                                                    ");
-        WriteLine(" ═══════════════════════════                                                    ");
+        WriteLine(" Windows XP Professional Setup                                                  ");
+        WriteLine(" ══════════════════════════════                                                 ");
         WriteLine("                                                                                ");
-        WriteLine("          Welcome to Setup.                                                     ");
+        WriteLine("   Welcome to Setup.                                                            ");
         WriteLine("                                                                                ");
-        WriteLine("          The Setup program prepares MS-DOS 6.22 to run on your                 ");
-        WriteLine("          computer.                                                             ");
+        WriteLine("   The Setup program prepares MS-DOS 6.22 to run on your                        ");
+        WriteLine("   computer.                                                                    ");
         WriteLine("                                                                                ");
-        WriteLine("            · To set up MS-DOS now, press ENTER.                                ");
+        WriteLine("     · To set up MS-DOS now, press ENTER.                                       ");
         WriteLine("                                                                                ");
-        WriteLine("            · To learn more about Setup before continuing, press F1.            ");
+        WriteLine("     · To learn more about Setup before continuing, press F1.                   ");
         WriteLine("                                                                                ");
-        WriteLine("            · To exit Setup without installing MS-DOS, press F3.                ");
+        WriteLine("     · To exit Setup without installing MS-DOS, press F3.                       ");
         WriteLine("                                                                                ");
-        WriteLine("          Note: If you have not backed up your files recently, you              ");
-        WriteLine("                might want to do so before installing MS-DOS. To back           ");
-        WriteLine("                up your files, press F3 to quit Setup now. Then, back           ");
-        WriteLine("                up your files by using a backup program.                        ");
+        WriteLine("   Note: If you have not backed up your files recently, you                     ");
+        WriteLine("         might want to do so before installing MS-DOS. To back                  ");
+        WriteLine("         up your files, press F3 to quit Setup now. Then, back                  ");
+        WriteLine("         up your files by using a backup program.                               ");
         WriteLine("                                                                                ");
-        WriteLine("          To continue Setup, press ENTER.                                       ");
+        WriteLine("   To continue Setup, press ENTER.                                              ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine("ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk  ");
+        WriteLine(" ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk ");
         SetCursorPosition(0, 0); ReadKey(true);
     }
 }
