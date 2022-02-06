@@ -225,11 +225,12 @@ public static class Programme
         Sleep(1000);
         Clear();
 
-#if TEMPHALTNORMALOPS
-        WriteLine("Interim Graphix Stage.\nPress any key to continue.");
-        ReadKey(true);
-        LaunchUI();
         ApplicationTitle = "Fonder Lilian Language Environment";
+        LaunchUI();
+
+#if TEMPHALTNORMALOPS
+        //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
+        //ReadKey(true);
         PlainTextScreen("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.");
         Environment.Exit(0);
 #else
@@ -2536,6 +2537,11 @@ public static class UserInterface
     public static string? HeaderText { get; set; }
 
     /// <summary>
+    /// The text in the grey box at the bottom of the screen.
+    /// </summary>
+    public static string FooterText { get; set; }
+
+    /// <summary>
     /// Fits the text into the screen and places it into <see cref="ScreenBody"/>.
     /// </summary>
     /// <param name="input">The input text.</param>
@@ -2577,7 +2583,7 @@ public static class UserInterface
                 {
                     content.Add(currentLine.ToString());
                     currentLine.Clear();
-                    currentLine.Append(reserve);
+                    currentLine.Append(reserve + ' ');
                 }
                 else break;
             }
@@ -2594,32 +2600,32 @@ public static class UserInterface
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
-        WriteLine(" Windows XP Professional Setup                                                  ");
+        WriteLine(" " + ApplicationTitle.PadRight(79));
         WriteLine("═══════════════════════════════                                                 ");
         WriteLine("                                                                                ");
-        WriteLine("   Welcome to Setup.                                                            ");
         WriteLine("                                                                                ");
-        WriteLine("   The Setup program prepares MS-DOS 6.22 to run on your                        ");
-        WriteLine("   computer.                                                                    ");
         WriteLine("                                                                                ");
-        WriteLine("     · To set up MS-DOS now, press ENTER.                                       ");
         WriteLine("                                                                                ");
-        WriteLine("     · To learn more about Setup before continuing, press F1.                   ");
         WriteLine("                                                                                ");
-        WriteLine("     · To exit Setup without installing MS-DOS, press F3.                       ");
         WriteLine("                                                                                ");
-        WriteLine("   Note: If you have not backed up your files recently, you                     ");
-        WriteLine("         might want to do so before installing MS-DOS. To back                  ");
-        WriteLine("         up your files, press F3 to quit Setup now. Then, back                  ");
-        WriteLine("         up your files by using a backup program.                               ");
         WriteLine("                                                                                ");
-        WriteLine("   To continue Setup, press ENTER.                                              ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
+        WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;                 
-        WriteLine("ENTER=Continue  F1=Help  F3=Exit  F5=Remove Color  F7=Install to a Floppy Disk  ");
-        SetCursorPosition(0, 0); ReadKey(true);
+        WriteLine(" Please wait while the application loads.                                       ");
+        SetCursorPosition(0, 0); //ReadKey(true);
     }
 
     /// <summary>
@@ -2640,7 +2646,7 @@ public static class UserInterface
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        WriteLine("                                                                                ");
+        WriteLine(" " + FooterText.PadRight(79));
         SetCursorPosition(0, 0); ReadKey(true);
     }
 }
