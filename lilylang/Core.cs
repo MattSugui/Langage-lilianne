@@ -2709,12 +2709,12 @@ public static class UserInterface
                 WriteLine("   " + HeaderText.PadRight(77));
                 continue;
             }
-            if (i == 1 && !string.IsNullOrEmpty(HeaderText))
+            else if (i == 1 && !string.IsNullOrEmpty(HeaderText))
             {
                 WriteLine("                                                                                ");
                 continue;
             }
-            if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
+            else if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
