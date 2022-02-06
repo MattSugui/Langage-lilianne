@@ -2552,7 +2552,7 @@ public static class UserInterface
         StringBuilder currentLine = new();
         List<string> content = new();
         int width = Fill ? 72 : 59;
-        int limit = HeaderText is not null || string.IsNullOrEmpty(HeaderText) ? 17 : 19;
+        int limit = HeaderText is not null || !string.IsNullOrEmpty(HeaderText) ? 17 : 19;
 
         string[] whole = input.Split(' ');
 
@@ -2624,12 +2624,12 @@ public static class UserInterface
     /// <param name="content">The content.</param>
     public static void PlainTextScreen(string content)
     {
-        Clear();
+        Clear(); WrapContent(content, false);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine(new string('═', ApplicationTitle.Length + 1).PadRight(80));
-        WrapContent(content, false);
+        WriteLine("                                                                                ");
         for (int i = 0; i < 20; i++)
         {
             if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
