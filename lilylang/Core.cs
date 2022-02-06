@@ -2698,6 +2698,8 @@ public static class UserInterface
          
         bool head = !string.IsNullOrEmpty(HeaderText);
 
+        int limit = 20;
+
         WrapContent(content, head);
         foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
@@ -2705,7 +2707,7 @@ public static class UserInterface
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine(new string('═', ApplicationTitle.Length + 1).PadRight(80));
         WriteLine("                                                                                ");
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < limit; i++)
         {
             if (i == 0 && head)
             {
@@ -2716,7 +2718,7 @@ public static class UserInterface
             else if (i == 1 && head)
             {
                 WriteLine("                                                                                ");
-                i = 0; head = false;
+                i = -1; head = false; limit -= 2;
                 continue;
             }
 
