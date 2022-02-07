@@ -248,13 +248,13 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.", false,
+        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.",
             new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
             new FELUIAction(ConsoleKey.F3, () =>
             {
                 Environment.Exit(0);
             }, "Exit"));
-        DisplayScreen("Type anything here!", null, true, null);
+        AskingFileScreen("Type the title bar!");
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2716,15 +2716,13 @@ public static class UserInterface
     /// Any keystrokes are disabled.
     /// </param>
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
-    public static void DisplayScreen(string content, string header, bool textbox, params FELUIAction[] actions)
+    public static void DisplayScreen(string content, string header, params FELUIAction[] actions)
     {
         Clear(); HeaderText = header;
          
         bool head = !string.IsNullOrEmpty(HeaderText);
 
         int limit = 20;
-
-        if (textbox) limit -= 3;
 
         WrapContent(content, head);
         if (actions is not null) foreach (FELUIAction act in actions) Actions.Add(act);
@@ -2751,35 +2749,9 @@ public static class UserInterface
             if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
-        if (textbox)
-        {
-            WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════╗ ");
-            Write(" ║ ");
-            ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-            Write("                                                                         ");
-            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-            WriteLine(" ║ ");
-            WriteLine(" ╚═══════════════════════════════════════════════════════════════════════════╝ ");
-            // cursor position should be at 3, 22
-
-            // remove every other keystroke and hard-wire the footer to say "Enter to submit"
-            Actions.Clear();
-            FooterText = "Enter to submit";
-        }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
-
-        if (textbox)
-        {
-            SetCursorPosition(3, 22);
-            ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-            string input = ReadLine();
-            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
-            Clear();
-            WriteLine(input);
-            return;
-        }
         SetCursorPosition(0, 0);
         while (true)
         {
@@ -2792,6 +2764,48 @@ public static class UserInterface
                 return;
             }
             else continue;
+        }
+    }
+
+    /// <summary>
+    /// Presents a screen wherein user input is needed. (Text)
+    /// </summary>
+    /// <param name="Description">The text to be displayed before the prompt.</param>
+    /// <param name="Required">If true, the screen will not move until it is satisfied with an input.</param>
+    /// <returns>The input.</returns>
+    public static string? AskingScreen(string Description, bool Required = false)
+    {
+        Start:
+        Clear();
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+        WriteLine(Description);
+        Write("> ");
+        string input = ReadLine();
+        if (Required) { if (!string.IsNullOrEmpty(input)) return input; else goto Start; } else return input;
+    }
+
+    /// <summary>
+    /// Presents a screen wherein user input is needed. (Text that validates if inputted path exists)
+    /// </summary>
+    /// <param name="Description">The text to be displayed before the prompt.</param>
+    /// <returns>The input.</returns>
+    public static string? AskingFileScreen(string Description)
+    {
+        Start:
+        Clear();
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+        WriteLine(Description + "\n");
+        WriteLine("This programme is asking for a file.");
+        Write("> ");
+        string input = ReadLine();
+        if (File.Exists(input)) return input; else
+        {
+            Clear();
+            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
+            WriteLine("File does not exist!\n");
+            WriteLine("Press any key to continue.\n");
+            ReadKey(true);
+            goto Start;
         }
     }
 }
