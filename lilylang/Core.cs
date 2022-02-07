@@ -113,6 +113,7 @@
 #pragma warning disable CS8601 // waaa, it could be null!!!!
 #pragma warning disable CS8602 // waaa, 'as' can return null!!!!
 #pragma warning disable CS8600 // waaa, possible null literal!
+#pragma warning disable CS8625 // waaa, possible null argument!
 
 // rants by the quality checker
 #pragma warning disable CA1416 // platformist scum
@@ -167,6 +168,7 @@ namespace fonder.Lilian.New;
 /// </summary>
 public static class Programme
 {
+    #region look, stuff
     /// <summary>
     /// Deletes a menu.
     /// </summary>
@@ -193,6 +195,8 @@ public static class Programme
     [DllImport("kernel32.dll", ExactSpelling = true)]
     internal static extern IntPtr GetConsoleWindow();
 
+    #endregion
+    
     /// <summary>
     /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
     /// </summary>
@@ -214,7 +218,8 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        SetWindowSize(80, 25);
+        
+        SetWindowSize(81, 25);
         SetBufferSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
@@ -232,12 +237,12 @@ public static class Programme
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
         DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.", false,
-            new FELUIAction(ConsoleKey.Enter, () => DisplayScreen("lol test", null, true, null), "Continue"),
+            new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
             new FELUIAction(ConsoleKey.F3, () =>
             {
                 Environment.Exit(0);
             }, "Exit"));
-        DisplayScreen("lol test", null, true, null);
+        DisplayScreen("Type anything here!", null, true, null);
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2656,7 +2661,7 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79));
-        WriteLine("═══════════════════════════════                                                 ");
+        WriteLine("════════════════════════════════                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
