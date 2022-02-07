@@ -2758,7 +2758,7 @@ public static class UserInterface
             ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
             Write("                                                                         ");
             ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-            Write(" ║ ");
+            WriteLine(" ║ ");
             WriteLine(" ╚═══════════════════════════════════════════════════════════════════════════╝ ");
             // cursor position should be at 3, 22
 
