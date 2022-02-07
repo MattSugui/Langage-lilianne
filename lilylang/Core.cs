@@ -2676,7 +2676,7 @@ public static class UserInterface
     {
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine(Programme.ReleaseMode? new string(' ', 80): ("Dev" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadRight(79));
+        WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79));
         WriteLine("════════════════════════════════                                                ");
         WriteLine("                                                                                ");
@@ -2729,7 +2729,7 @@ public static class UserInterface
         WrapContent(content, head);
         if (actions is not null) foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadRight(79));
+        WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadLeft(79));
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine((new string('═', ApplicationTitle.Length + 1)+ '═').PadRight(80));
         WriteLine("                                                                                ");
