@@ -2776,8 +2776,9 @@ public static class UserInterface
     public static string? AskingScreen(string Description, bool Required = false)
     {
         Start:
-        Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+
+        Clear();
         WriteLine(Description);
         Write("> ");
         string input = ReadLine();
@@ -2792,16 +2793,18 @@ public static class UserInterface
     public static string? AskingFileScreen(string Description)
     {
         Start:
-        Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+
+        Clear();
         WriteLine(Description + "\n");
         WriteLine("This programme is asking for a file.");
         Write("> ");
         string input = ReadLine();
         if (File.Exists(input)) return input; else
         {
-            Clear();
             ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
+
+            Clear();
             WriteLine("File does not exist!\n");
             WriteLine("Press any key to continue.\n");
             ReadKey(true);
