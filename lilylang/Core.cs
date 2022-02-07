@@ -2731,9 +2731,9 @@ public static class UserInterface
         }
         if (textbox)
         {
-            WriteLine(" ╔════════════════════════════════════════════════════════════════════════════╗ ");
-            WriteLine(" ║                                                                            ║ ");
-            WriteLine(" ╚════════════════════════════════════════════════════════════════════════════╝ ");
+            WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════╗ ");
+            WriteLine(" ║                                                                           ║ ");
+            WriteLine(" ╚═══════════════════════════════════════════════════════════════════════════╝ ");
             // cursor position should be at 3, 22
 
             // remove every other keystroke and hard-wire the footer to say "Enter to submit"
@@ -2745,7 +2745,10 @@ public static class UserInterface
 
         if (textbox)
         {
-            SetCursorPosition(0, 0);
+            SetCursorPosition(3, 22);
+            string input = ReadLine();
+            Clear();
+            WriteLine(input);
             return;
         }
         SetCursorPosition(0, 0);
