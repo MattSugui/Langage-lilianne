@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (159/175 kB)                                                              ║
+║ Size goal: Memorex 650 (160/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -2705,7 +2705,7 @@ public static class UserInterface
         if (textbox) limit -= 3;
 
         WrapContent(content, head);
-        foreach (FELUIAction act in actions) Actions.Add(act);
+        if (actions is not null) foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
