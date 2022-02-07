@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (160/175 kB)                                                              ║
+║ Size goal: Memorex 650 (162/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -216,9 +216,7 @@ public static class Programme
     {
         #region cock check1
         if ((Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Contains("releaseman"))
-        {
             ReleaseMode = true;
-        }
         #endregion
 
 
@@ -2678,7 +2676,7 @@ public static class UserInterface
     {
         Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine("                                                                                ");
+        WriteLine(Programme.ReleaseMode? new string(' ', 80): ("Dev" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadRight(79));
         WriteLine(" " + ApplicationTitle.PadRight(79));
         WriteLine("════════════════════════════════                                                ");
         WriteLine("                                                                                ");
@@ -2731,7 +2729,7 @@ public static class UserInterface
         WrapContent(content, head);
         if (actions is not null) foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine("                                                                                ");
+        WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadRight(79));
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine((new string('═', ApplicationTitle.Length + 1)+ '═').PadRight(80));
         WriteLine("                                                                                ");
