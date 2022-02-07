@@ -203,12 +203,26 @@ public static class Programme
     public static bool ConserveMemory = false;
 
     /// <summary>
+    /// If true, Lilian will omit every detailed version reference and replaces them with simply the X.X version number.
+    /// To invoke release mode, the build string must contain "releaseman" (release to manufacturing in short).
+    /// </summary>
+    public static bool ReleaseMode = false;
+
+    /// <summary>
     /// The main entry point.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
     public static void Main(string[] args)
     {
-        #region funky user32
+        #region cock check1
+        if ((Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Contains("releaseman"))
+        {
+            ReleaseMode = true;
+        }
+        #endregion
+
+
+            #region funky user32
         IntPtr handle = GetConsoleWindow();
         IntPtr SystemMenu = GetSystemMenu(handle, false);
 
@@ -219,11 +233,11 @@ public static class Programme
         }
         #endregion
         
-        SetWindowSize(81, 25);
+        SetWindowSize(80, 25);
         SetBufferSize(80, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
-            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", string.Empty) + "\n" +
+            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
@@ -2533,6 +2547,11 @@ public static class ObjectModel
 public static class UserInterface
 {
     /// <summary>
+    /// The most recent textbox value during execution.
+    /// </summary>
+    public static string CurrentTextboxValue { get; set; }
+
+    /// <summary>
     /// The title that is displayed on the upper-left of the screen, usually with a bar underneath it.
     /// </summary>
     public static string ApplicationTitle { get; set; }
@@ -2737,11 +2756,16 @@ public static class UserInterface
         if (textbox)
         {
             WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════╗ ");
-            WriteLine(" ║                                                                           ║ ");
+            Write(" ║ ");
+            ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
+            Write("                                                                         ");
+            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
+            Write(" ║ ");
             WriteLine(" ╚═══════════════════════════════════════════════════════════════════════════╝ ");
             // cursor position should be at 3, 22
 
             // remove every other keystroke and hard-wire the footer to say "Enter to submit"
+            Actions.Clear();
             FooterText = "Enter to submit";
         }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
@@ -2751,7 +2775,9 @@ public static class UserInterface
         if (textbox)
         {
             SetCursorPosition(3, 22);
+            ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
             string input = ReadLine();
+            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
             Clear();
             WriteLine(input);
             return;
