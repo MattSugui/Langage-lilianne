@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (155/175 kB)                                                              ║
+║ Size goal: Memorex 650 (159/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -231,15 +231,13 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        PlainTextScreen("Please", "Welcome to the Lilian environment.",
-            new FELUIAction(ConsoleKey.Enter, () => Environment.Exit(0), "okay"),
-            new FELUIAction(ConsoleKey.C, () =>
+        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.", false,
+            new FELUIAction(ConsoleKey.Enter, () => DisplayScreen("lol test", null, true, null), "Continue"),
+            new FELUIAction(ConsoleKey.F3, () =>
             {
-                Clear();
-                WriteLine("bruh");
-                Sleep(5000);
                 Environment.Exit(0);
-            }, "Die"));
+            }, "Exit"));
+        DisplayScreen("lol test", null, true, null);
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -2687,12 +2685,16 @@ public static class UserInterface
     }
 
     /// <summary>
-    /// Launches a screen with only text on it.
+    /// Launches a screen.
     /// </summary>
     /// <param name="content">The content.</param>
     /// <param name="header">The header.</param>
+    /// <param name="textbox">
+    /// If true, a textbox will be displayed on the screen and the cursor is redirected to it.
+    /// Any keystrokes are disabled.
+    /// </param>
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
-    public static void PlainTextScreen(string content, string header = "", params FELUIAction[] actions)
+    public static void DisplayScreen(string content, string header, bool textbox, params FELUIAction[] actions)
     {
         Clear(); HeaderText = header;
          
@@ -2700,12 +2702,14 @@ public static class UserInterface
 
         int limit = 20;
 
+        if (textbox) limit -= 3;
+
         WrapContent(content, head);
         foreach (FELUIAction act in actions) Actions.Add(act);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine("                                                                                ");
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
-        WriteLine(new string('═', ApplicationTitle.Length + 1).PadRight(80));
+        WriteLine((new string('═', ApplicationTitle.Length + 1)+ '═').PadRight(80));
         WriteLine("                                                                                ");
         for (int i = 0; i < limit; i++)
         {
@@ -2725,13 +2729,30 @@ public static class UserInterface
             if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
+        if (textbox)
+        {
+            WriteLine(" ╔════════════════════════════════════════════════════════════════════════════╗ ");
+            WriteLine(" ║                                                                            ║ ");
+            WriteLine(" ╚════════════════════════════════════════════════════════════════════════════╝ ");
+            // cursor position should be at 3, 22
+
+            // remove every other keystroke and hard-wire the footer to say "Enter to submit"
+            FooterText = "Enter to submit";
+        }
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
+
+        if (textbox)
+        {
+            SetCursorPosition(0, 0);
+            return;
+        }
         SetCursorPosition(0, 0);
         while (true)
         {
             SetCursorPosition(0, 0);
+
             ConsoleKey pressed = ReadKey(true).Key;
             if (Actions.Exists(x => x.Key == pressed))
             {
