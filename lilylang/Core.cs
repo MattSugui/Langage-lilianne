@@ -2777,7 +2777,7 @@ public static class UserInterface
             dispprog = true;
         }
 
-        if (actions is not null)
+        if (actions is not null || actions.Length > 0)
         {
             activate = true;
             foreach (FELUIAction act in actions) Actions.Add(act);
