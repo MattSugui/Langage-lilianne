@@ -781,11 +781,11 @@ public static class Programme
         stopwatch.Start();
         for (int i = 1; i < int.MaxValue; i++)
         {
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (100000 - i));
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (int.MaxValue - i));
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
                 $"{(dur.Days > 360 ? (dur.Days / 360).ToString() + " years" : "")} {(dur.Days > 30 ? (dur.Days / 30).ToString() + " months" : "")} {(dur.Days > 0 ? dur.Days.ToString() + " days" : "")} {(dur.Hours > 0? dur.Hours.ToString() + " hours" : "")} {(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes" : "")} {(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds" : "")} remaining.",
-                $"Tokenisation in progress. ({i} of 100000)", i / 1000);
+                $"Tokenisation in progress. ({i} of {int.MaxValue})", i / 100);
 #if INTERPRETSIM
             Sleep(1);
 #endif
