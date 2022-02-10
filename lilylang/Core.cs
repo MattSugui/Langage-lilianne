@@ -33,8 +33,8 @@
 ║ │ toasters. This is for portability and easy redistribution of this open-source project.       │ ║
 ║ │                                                                                              │ ║
 ║ │     This project is named after the famous Animal Crossing™ bunny character named, well,     │ ║
-║ │ Bunnie. Well, her Japanese name, at least (Ririan, or Lilian in proper English). And this    │ ║
-║ │ 'Markup Language' part. Ayo, Nintendo, I'm not stealing that name! In fact, it is a common   │ ║
+║ │ Bunnie. Well, her Japanese name, at least (Ririan, or Lilian in proper English). --------    │ ║
+║ │ ----------------------- Ayo, Nintendo, I'm not stealing that name! In fact, it is a common   │ ║
 ║ │ name, so essentially putting a trademark on it is ridiculous anyway lmao.                    │ ║
 ║ │                                                                                              │ ║
 ║ │     The way it interprets stuff is in the LILYHELP PDF in the final product. Or, if you do   │ ║
@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (162/175 kB)                                                              ║
+║ Size goal: Memorex 650 (164/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -123,7 +123,19 @@
 
 #region Symbols that affect compilation
 #define TEMPASKING // 
-#define TEMPHALTNORMALOPS // remove the interpretation ability for a while
+
+#define TEMPHALTNORMALOPS
+// remove the interpretation ability for a while. i mean that old interpretation process gon die anyway so.
+
+#define INTERPRETSIM
+// simulate the interpretation process. this assumes that you're compiling a sizeable project.
+// 50 seconds for translation, 100 seconds for IR interpretation, 2 seconds for instruction loading
+// and 5 seconds for writing the bytecode to file. All in all, it will take 3 minutes and 2 seconds
+// for the fausse compilation to run. This seemingly long compile time is according to tests
+// during the Coco Performance Task cycle for 1.1, which resulted in about 33 minutes total for 7 MB of code.
+// (or about 4 mins per 1 MB of code. Hence, this test kinda assumes about 750-900 kB of code, comments included.)
+// Translation doesnt exist yet obviously hence it's assumed that it would take about slightly less than
+// actual interpretation due to less tokens but using an equally-inefficient interpretation method.
 #endregion
 
 #region Imports
@@ -200,13 +212,13 @@ public static class Programme
     /// <summary>
     /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
     /// </summary>
-    public static bool ConserveMemory = false;
+    public static bool ConserveMemory { get; set; }
 
     /// <summary>
     /// If true, Lilian will omit every detailed version reference and replaces them with simply the X.X version number.
     /// To invoke release mode, the build string must contain "releaseman" (release to manufacturing in short).
     /// </summary>
-    public static bool ReleaseMode = false;
+    public static bool ReleaseMode { get; set; }
 
     /// <summary>
     /// The main entry point.
@@ -750,8 +762,31 @@ public static class Programme
          */
 
         DisplayScreen("Please wait while Lilian loads some information.", null, "Reading " + Path.GetFullPath(infile));
+#if INTERPRETSIM
         Sleep(1000);
-        DisplayScreen("Please wait while Lilian");
+#endif
+        DisplayScreen("Please wait while Lilian loads some information.", null, "Coco");
+#if INTERPRETSIM
+        Sleep(1000);
+#endif
+        DisplayScreen("Please wait while Lilian examines your code. This may take several minutes depending on the grammar and the size of the code.", null, "Translating code to intermediate representation...");
+#if INTERPRETSIM
+        Sleep(50000);
+#endif
+        DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, "Tokenisation in progress...");
+#if INTERPRETSIM
+        Sleep(100000);
+#endif
+        DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
+#if INTERPRETSIM
+        Sleep(2000);
+#endif
+        DisplayScreen("Please wait while Lilian finalises the program.", null, "Writing program to file...");
+#if INTERPRETSIM
+        Sleep(5000);
+#endif
+        DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Exit");
+        ReadKey(true);
     }
 
     #endregion
