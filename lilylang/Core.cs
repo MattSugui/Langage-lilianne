@@ -775,11 +775,11 @@ public static class Programme
 #endif
         DisplayScreen("Please wait while Lilian examines your code. This may take several minutes depending on the grammar and the size of the code.", null, "Translating code to intermediate representation...");
 #if INTERPRETSIM
-        Sleep(50000);
+        Sleep(5000);
 #endif
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        for (int i = 0; i < 100000; i++)
+        for (int i = 1; i < 100001; i++)
         {
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
