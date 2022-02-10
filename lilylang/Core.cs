@@ -777,13 +777,19 @@ public static class Programme
 #if INTERPRETSIM
         Sleep(50000);
 #endif
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
         for (int i = 0; i < 100000; i++)
         {
-            DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, $"Tokenisation in progress... ({i} of 100000)", i / 1000);
+            DisplayScreen(
+                "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
+                null,
+                $"Tokenisation in progress. {TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i)*(100000 - i))} remaining. ({i} of 100000)", i / 1000);
 #if INTERPRETSIM
             Sleep(1);
 #endif
         }
+        stopwatch.Stop();
         DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
 #if INTERPRETSIM
         Sleep(2000);
