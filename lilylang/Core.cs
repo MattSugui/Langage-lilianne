@@ -781,7 +781,7 @@ public static class Programme
         {
             DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, "Tokenisation in progress...", i / 1000);
 #if INTERPRETSIM
-            Sleep(1);
+            //Sleep(1);
 #endif
         }
         DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
