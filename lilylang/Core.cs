@@ -779,9 +779,9 @@ public static class Programme
 #endif
         for (int i = 0; i < 100000; i++)
         {
-            DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, "Tokenisation in progress...", i / 1000);
+            DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, $"Tokenisation in progress... ({i} of 100000)", i / 1000);
 #if INTERPRETSIM
-            Sleep(0);
+            Sleep(1);
 #endif
         }
         DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
