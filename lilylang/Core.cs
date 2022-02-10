@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (164/175 kB)                                                              ║
+║ Size goal: Memorex 650 (166/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -785,8 +785,8 @@ public static class Programme
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
-                $"{(dur.Days > 0 ? dur.Days.ToString() + " days" : "")} {(dur.Hours > 0? dur.Hours.ToString() + " hours" : "")} {(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes" : "")} {(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds" : "")} remaining.",
-                $"Tokenisation in progress. ({i} of {int.MaxValue})", i / j);
+                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
+                $"Tokenisation in progress. ({i} of {j})", (i / j) * 100);
 #if INTERPRETSIM
             Sleep(1);
 #endif
