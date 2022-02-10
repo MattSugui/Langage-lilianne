@@ -779,13 +779,14 @@ public static class Programme
 #endif
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        for (int i = 1; i < int.MaxValue; i++)
+        int j = short.MaxValue;
+        for (int i = 1; i < j; i++)
         {
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (int.MaxValue - i));
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
-                $"{(dur.Days > 360 ? (dur.Days / 360).ToString() + " years" : "")} {(dur.Days > 30 ? (dur.Days / 30).ToString() + " months" : "")} {(dur.Days > 0 ? dur.Days.ToString() + " days" : "")} {(dur.Hours > 0? dur.Hours.ToString() + " hours" : "")} {(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes" : "")} {(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds" : "")} remaining.",
-                $"Tokenisation in progress. ({i} of {int.MaxValue})", i / 100);
+                $"{(dur.Days > 0 ? dur.Days.ToString() + " days" : "")} {(dur.Hours > 0? dur.Hours.ToString() + " hours" : "")} {(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes" : "")} {(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds" : "")} remaining.",
+                $"Tokenisation in progress. ({i} of {int.MaxValue})", i / j);
 #if INTERPRETSIM
             Sleep(1);
 #endif
