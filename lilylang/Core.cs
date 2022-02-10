@@ -783,8 +783,8 @@ public static class Programme
         {
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
-                null,
-                $"Tokenisation in progress. {TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i)*(100000 - i))} remaining. ({i} of 100000)", i / 1000);
+                $"{TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (100000 - i)).Minutes} minutes remaining.",
+                $"Tokenisation in progress. ({i} of 100000)", i / 1000);
 #if INTERPRETSIM
             Sleep(1);
 #endif
