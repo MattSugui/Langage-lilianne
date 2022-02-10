@@ -219,8 +219,7 @@ public static class Programme
             ReleaseMode = true;
         #endregion
 
-
-            #region funky user32
+        #region funky user32
         IntPtr handle = GetConsoleWindow();
         IntPtr SystemMenu = GetSystemMenu(handle, false);
 
@@ -248,13 +247,14 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.",
+        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.", null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
             new FELUIAction(ConsoleKey.F3, () =>
             {
                 Environment.Exit(0);
             }, "Exit"));
-        AskingFileScreen("Type the title bar!");
+        string filepath = AskingFileScreen("Type the title bar!");
+        InterpretNewGUI(filepath);
         Environment.Exit(0);
 #else
         if (args.Length == 0) goto REPLLoop;
@@ -393,9 +393,9 @@ public static class Programme
     }
 }
 
-    #endregion
+#endregion
 
-    #region Interpreter
+#region Interpreter
     /// <summary>
     /// The main class for the interpeter.
     /// </summary>
@@ -406,7 +406,7 @@ public static class Programme
     /// <summary>
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
-    public static bool ErrorRaised = false;
+    public static bool ErrorRaised { get; set; }
     #endregion
     #region Compilation
     /// <summary>
@@ -417,14 +417,14 @@ public static class Programme
     /// <summary>
     /// The unprocessed and unchecked project file.
     /// </summary>
-    public static string preProcessFile;
+    public static string preProcessFile { get; set; }
 
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
     /// </summary>
     public static List<string> CurrentFile = new();
-#endregion
-#region End-user debug services
+    #endregion
+    #region End-user debug services
     /// <summary>
     /// The current line number.
     /// </summary>
@@ -444,8 +444,8 @@ public static class Programme
     /// The current line column. Uses <c>CurrentLine</c> for the column.
     /// </summary>
     public static int CurrentColumn => CurrentLine.Length;
-#endregion
-#region Operation
+    #endregion
+    #region Operation
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
@@ -464,22 +464,22 @@ public static class Programme
     /// <summary>
     /// The current frame being pointed to.
     /// </summary>
-    public static int CurrentFrameIndex;
+    public static int CurrentFrameIndex { get; set; }
 
     /// <summary>
     /// The stack pointer.
     /// </summary>
-    public static int CurrentPointedObject;
+    public static int CurrentPointedObject { get; set; }
 
     /// <summary>
     /// The current instruction.
     /// </summary>
-    public static int CurrentPointedEffect;
+    public static int CurrentPointedEffect { get; set; }
 
     /// <summary>
     /// The current instruction relative to the current subroutine.
     /// </summary>
-    public static int CurrentPointedSubEffect;
+    public static int CurrentPointedSubEffect { get; set; }
 
     /// <summary>
     /// The current list of locations where the Call has left its footprint for returning.
@@ -489,27 +489,27 @@ public static class Programme
     /// <summary>
     /// The current X register.
     /// </summary>
-    public static int CurrentObjectX;
+    public static int CurrentObjectX { get; set; }
 
     /// <summary>
     /// The current Y register.
     /// </summary>
-    public static int CurrentObjectY;
+    public static int CurrentObjectY { get; set; }
 
     /// <summary>
     /// The current accumulator.
     /// </summary>
-    public static int CurrentObjectA;
-#endregion
-#endregion
+    public static int CurrentObjectA { get; set; }
+    #endregion
+    #endregion
 
-#region Interpretation
+    #region Interpretation
     /// <summary>
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
 
-#region File operations
+    #region File operations
     /// <summary>
     /// Reads from a path.
     /// </summary>
@@ -528,7 +528,7 @@ public static class Programme
     {
         foreach (string line in lines) CurrentFile.Add(line);
     }
-#endregion
+    #endregion
 
     /// <summary>
     /// Do the whole thing.
@@ -736,11 +736,11 @@ public static class Programme
     }
 
     /// <summary>
-    /// Do the whole thing. (Doesn't use the progress bars for a cleaner output.)
+    /// Do the whole thing. (Doesn't use the progress bars but instead uses the newer GUI system.)
     /// </summary>
+    /// <param name="infile">The path to the input file.</param>
     /// <param name="outfile">The path to the output file.</param>
-    /// <param name="projfile">If true, the intepretation starts at the "Initialising the compilation process" stage. False by default.</param>
-    public static void InterpretNonGUI(string outfile = "", bool projfile = false)
+    public static void InterpretNewGUI(string infile, string outfile = "")
     {
         /*
          * Stages
@@ -749,16 +749,13 @@ public static class Programme
          * 3. 
          */
 
-    ProjectCompilation:
-        WriteLine("");
-        ;
-
-    SingleFileCompilation:
-        ;
+        DisplayScreen("Please wait while Lilian loads some information.", null, "Reading " + Path.GetFullPath(infile));
+        Sleep(1000);
+        DisplayScreen("Please wait while Lilian");
     }
 
-#endregion
-#region Spellbook
+    #endregion
+    #region Spellbook
     /// <summary>
     /// The lexer and parser components of the interpreter.
     /// </summary>
@@ -1250,7 +1247,7 @@ public static class Programme
         }
     }
 #endregion
-#region Execution
+    #region Execution
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>
@@ -1262,8 +1259,8 @@ public static class Programme
 
         while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
-#endregion
-#region Lamentation
+    #endregion
+    #region Lamentation
     /// <summary>
     /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
@@ -1440,7 +1437,7 @@ public static class Programme
     }
 
 #endregion
-#region Operation
+    #region Operation
     /// <summary>
     /// The main opcode interpretation class.
     /// </summary>
@@ -2711,23 +2708,27 @@ public static class UserInterface
     /// </summary>
     /// <param name="content">The content.</param>
     /// <param name="header">The header.</param>
-    /// <param name="textbox">
-    /// If true, a textbox will be displayed on the screen and the cursor is redirected to it.
-    /// Any keystrokes are disabled.
-    /// </param>
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
-    public static void DisplayScreen(string content, string header, params FELUIAction[] actions)
+    public static void DisplayScreen(string content, string header = "", string footer = "", params FELUIAction[] actions)
     {
-        Clear(); HeaderText = header;
-         
+        Clear();
+        
+        HeaderText = header; FooterText = footer;
         bool head = !string.IsNullOrEmpty(HeaderText);
+        bool foot = !string.IsNullOrEmpty(FooterText);
+
+        bool activate = false;
 
         int limit = 20;
 
         WrapContent(content, head);
-        if (actions is not null) foreach (FELUIAction act in actions) Actions.Add(act);
+        if (actions is not null)
+        {
+            activate = true;
+            foreach (FELUIAction act in actions) Actions.Add(act);
+        }
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
-        WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadLeft(79));
+        WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadLeft(80));
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
         WriteLine((new string('═', ApplicationTitle.Length + 1)+ '═').PadRight(80));
         WriteLine("                                                                                ");
@@ -2753,7 +2754,7 @@ public static class UserInterface
         Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
-        while (true)
+        if (activate) while (true)
         {
             SetCursorPosition(0, 0);
 
@@ -2820,7 +2821,7 @@ public static class UserInterface
 /// </summary>
 public static class Coco
 {
-#region Coco preprocessor
+    #region Coco preprocessor
     /// <summary>
     /// The main class for the preprocessor.
     /// </summary>
@@ -3184,7 +3185,7 @@ public static class Coco
     }
 #endregion
 
-#region Coco comprehension
+    #region Coco comprehension
     /// <summary>
     /// All grammar implementation processes.
     /// </summary>
