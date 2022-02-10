@@ -786,7 +786,7 @@ public static class Programme
             DisplayScreen(
                 "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Tokenisation in progress. ({i} of {j})", (i / j) * 100);
+                $"Tokenisation in progress. ({i} of {j})", (int)((i / j) * 100m));
 #if INTERPRETSIM
             Sleep(1);
 #endif
