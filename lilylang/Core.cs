@@ -259,7 +259,11 @@ public static class Programme
 #if TEMPHALTNORMALOPS
         //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
         //ReadKey(true);
-        DisplayScreen("This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.", "Welcome to the Lilian environment.", null,
+        DisplayScreen(
+            "This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.",
+            "Welcome to the Lilian environment.",
+            null,
+            null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
             new FELUIAction(ConsoleKey.F3, () =>
             {
@@ -773,10 +777,13 @@ public static class Programme
 #if INTERPRETSIM
         Sleep(50000);
 #endif
-        DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, "Tokenisation in progress...");
+        for (int i = 0; i < 100000; i++)
+        {
+            DisplayScreen("Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.", null, "Tokenisation in progress...", i / 1000);
 #if INTERPRETSIM
-        Sleep(100000);
+            Sleep(1);
 #endif
+        }
         DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
 #if INTERPRETSIM
         Sleep(2000);
@@ -2743,25 +2750,39 @@ public static class UserInterface
     /// </summary>
     /// <param name="content">The content.</param>
     /// <param name="header">The header.</param>
+    /// <param name="footer">The footer./param>
+    /// <param name="progress">
+    ///     If not null, a progress bar will be displayed at the bottom with the progress as
+    ///     stated in the parameter. 100 steps.
+    /// </param>
     /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
-    public static void DisplayScreen(string content, string header = "", string footer = "", params FELUIAction[] actions)
+    public static void DisplayScreen(string content, string header = "", string footer = "", int? progress = null, params FELUIAction[] actions)
     {
         Clear();
-        
+
         HeaderText = header; FooterText = footer;
         bool head = !string.IsNullOrEmpty(HeaderText);
         bool foot = !string.IsNullOrEmpty(FooterText);
 
+        WrapContent(content, head);
+
         bool activate = false;
+        bool dispprog = false;
 
         int limit = 20;
 
-        WrapContent(content, head);
+        if (progress is not null)
+        {
+            limit -= 6;
+            dispprog = true;
+        }
+
         if (actions is not null)
         {
             activate = true;
             foreach (FELUIAction act in actions) Actions.Add(act);
         }
+
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadLeft(80));
         WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
@@ -2785,22 +2806,37 @@ public static class UserInterface
             if (i < ScreenBody.Length) WriteLine("   " + ScreenBody[i].PadRight(77));
             else WriteLine("                                                                                ");
         }
+
+        if (dispprog)
+        {
+            WriteLine(" ╔════════════════════════════════════════════════════════════════════════════╗ ");
+            WriteLine(" ║ " + (progress.ToString() + "%").PadRight(74) +                           " ║ ");
+            WriteLine(" ║ ┌────────────────────────────────────────────────────────────────────────┐ ║ ");
+            WriteLine(" ║ │                                                                        │ ║ ");
+            WriteLine(" ║ └────────────────────────────────────────────────────────────────────────┘ ║ ");
+            WriteLine(" ╚════════════════════════════════════════════════════════════════════════════╝ ");
+        }
+
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
         Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
-        if (activate) while (true)
+        if (activate)
         {
-            SetCursorPosition(0, 0);
-
-            ConsoleKey pressed = ReadKey(true).Key;
-            if (Actions.Exists(x => x.Key == pressed))
+            while (true)
             {
-                Actions.Find(x => x.Key == pressed).Invoke();
-                return;
+                SetCursorPosition(0, 0);
+
+                ConsoleKey pressed = ReadKey(true).Key;
+                if (Actions.Exists(x => x.Key == pressed))
+                {
+                    Actions.Find(x => x.Key == pressed).Invoke();
+                    return;
+                }
+                else continue;
             }
-            else continue;
         }
+        else return;
     }
 
     /// <summary>
