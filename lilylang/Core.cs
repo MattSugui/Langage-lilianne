@@ -764,11 +764,18 @@ public static class Programme
          * 2. Passing to Coco                      - passing Coco preprocessor-compatible project file
          * 3. 
          */
-
-        DisplayScreen("Please wait while Lilian loads some information.", null, "Reading " + Path.GetFullPath(infile));
-#if INTERPRETSIM
-        Sleep(1000);
-#endif
+        Stopwatch stopwatch = new();
+        int j;
+        j = File.ReadAllLines(infile).Length + 1;
+        for (int i = 1; i < j; i++)
+        {
+            CurrentFile.Add(File.ReadAllLines(infile)[i - 1]);
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            DisplayScreen(
+                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
+                $"Reading {infile} ...", (int)(((decimal)i / (decimal)j) * 100m));
+        }
         DisplayScreen("Please wait while Lilian loads some information.", null, "Coco");
 #if INTERPRETSIM
         Sleep(1000);
@@ -777,25 +784,48 @@ public static class Programme
 #if INTERPRETSIM
         Sleep(5000);
 #endif
-        Stopwatch stopwatch = new();
+        stopwatch.Reset();
         stopwatch.Start();
-        int j = short.MaxValue;
+        int k; // save to increm
+        j = CurrentFile.Count + 1;
         for (int i = 1; i < j; i++)
         {
+            ScanTokens(CurrentFile[i - 1]);
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
             DisplayScreen(
-                "Please wait while Lilian tokenises the entire code. This might take several minutes to complete. During this time, you may do something else; just leave this console open.",
+                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Tokenisation in progress. ({i} of {j})", (int)(((decimal)i / (decimal)j) * 100m));
-#if INTERPRETSIM
-            Sleep(1);
-#endif
+                $"Tokenisation.", (int)(((decimal)i / (decimal)j) * 100m));
+        }
+        k = j;
+        j = k + CurrentWordPacks.Count + 1;
+        int l = 0;
+        for (int i = k; i < j; i++)
+        {
+            ArrangeTokens(CurrentWordPacks[l]);
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            DisplayScreen(
+                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
+                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
+                $"Syntax comprehension.", (int)(((decimal)i / (decimal)j) * 100m));
+            l++;
+        }
+        k = j;
+
+        j = k + CurrentSentences.Count + 1;
+        CurrentPointedEffect = 0; l = 0;
+        for (int i = k; i < j; i++)
+        {
+            PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            DisplayScreen(
+                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
+                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
+                $"Bytecode conversion.", (int)(((decimal)i / (decimal)j) * 100m));
+            l++;
         }
         stopwatch.Stop();
-        DisplayScreen("Please wait while Lilian finalises the program.", null, "Sorting into sentences...");
-#if INTERPRETSIM
-        Sleep(2000);
-#endif
+
         DisplayScreen("Please wait while Lilian finalises the program.", null, "Writing program to file...");
 #if INTERPRETSIM
         Sleep(5000);
