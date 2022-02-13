@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (169/175 kB)                                                              ║
+║ Size goal: Memorex 650 (156/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -256,154 +256,32 @@ public static class Programme
         ApplicationTitle = "Fonder Lilian Language Environment";
         LaunchUI();
 
-#if TEMPHALTNORMALOPS
-        //WriteLine("Interim Graphix Stage.\nPress any key to continue.");
-        //ReadKey(true);
+        // Welcome screen
         DisplayScreen(
-            "This is the interim graphix stage. Press Enter to continue to next page. Press F3 to exit.",
+            "This program will compile a project or script into an executable. Press Enter to continue to next page. Press F3 to exit.",
             "Welcome to the Lilian environment.",
             null,
             null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
-            new FELUIAction(ConsoleKey.F3, () =>
-            {
-                Environment.Exit(0);
-            }, "Exit"));
-        string filepath = AskingFileScreen("Type the title bar!");
-        InterpretNewGUI(filepath);
-        Environment.Exit(0);
-#else
-        if (args.Length == 0) goto REPLLoop;
-
-
-        string filepath = args[0].Trim('"');
-        string outpath = string.Empty;
-        bool err = false;
-        try
-        {
-            try
-            {
-                if (filepath.EndsWith(".lps"))
-                {
-                    WriteLine("TIP: Submit a Lilian project to compile several files into one executable!");
-                    if (args.Length == 1)
-                    {
-                        WriteLine("Build: " + Path.GetFullPath(filepath));
-                        WriteLine("Output: ...where?");
-                        WriteLine("You must supply two arguments for individual scripts: the first one for the input, then the second one for the output, if you are going to supply a script file.");
-                        WriteLine("Press any key to continue.");
-                        ReadKey(true);
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        outpath = args[1].Trim('"');
-                        WriteLine("Build: " + Path.GetFullPath(filepath));
-                        WriteLine("Output: " + Path.GetFullPath(outpath));
-                        ReadFile(Path.GetFullPath(filepath));
-                        if (args.Contains("-f")) ConserveMemory = true;
-                        Interpret(true, false, string.Empty, Path.GetFullPath(outpath));
-                        CurrentSentences = new();
-                        CurrentWordPacks = new();
-                        CurrentEffects = new();
-                    }
-                }
-                else if (filepath.EndsWith(".lilianproj"))
-                {
-                    if (File.Exists(Path.GetFullPath(filepath)))
-                    {
-                        WriteLine("Build project: " + Path.GetFullPath(filepath));
-                        tempCurrFile = new XmlDocument();
-                        tempCurrFile.Load(Path.GetFullPath(filepath));
-                        Interpret(true, false, string.Empty, string.Empty, true);
-                        if (DoNotDoCompilation) goto CompilationCancelled;
-                        CurrentSentences = new();
-                        CurrentWordPacks = new();
-                        CurrentEffects = new();
-                    }
-                    else
-                    {
-                        WriteLine("File does not exist! Press any key to continue.");
-                        ReadKey(true);
-                        Environment.Exit(0);
-                    }
-                }
-                else if (filepath.EndsWith(".lsa"))
-                {
-                    WriteLine("Run: " + Path.GetFullPath(filepath));
-                    LoadBinary(Path.GetFullPath(filepath));
-                    WriteLine("Load complete!");
-                    Clear();
-                    Execute();
-                    Environment.Exit(0);
-                }
-            }
-            catch (OutOfMemoryException)
-            {
-                throw new Lamentation(0x3a);
-            }
-        }
-        catch (Lamentation cry)
-        {
-            WriteLine(cry.ToString());
-            err = true;
-        }
-
-        if (err)
-        {
-            WriteLine("Compilation failed because of the above error. There could be more errors, but this is the one that ended it.\nPress any key to continue.");
-            ReadKey(true);
-            Environment.Exit(1);
-        }
-
-        Write($"Compilation finished.\nPress any key to {(args.Contains("-d") ? "run this application" : "continue")}.");
-        ReadKey(true);
-
-        if (args.Contains("-d"))
-        {
-            Clear();
-            LoadBinary(Path.GetFullPath(Outgoing));
-            Execute();
-            Environment.Exit(0);
-        }
-        else Environment.Exit(0);
-
-        REPLLoop:
-        WriteLine(
-            "Hey! Restart the program and supply these arguments:\n" +
-            "<input> [<output>] [-d] [-f]\n" +
-            "\n" +
-            "<input>\n" +
-            "\tThe path to the file.\n" +
-            "\t\n" +
-            "\tFiles that end in LPS (Lilian Program Script) and LILIANPROJ (Lilian Project) will be loaded and compiled accordingly." +
-            " Files that end in LSA (Lilian Script Application/Archive) will be run immediately and ignore all other arguments.\n" +
-            "\n" +
-            "[<output>]\n" +
-            "\tThe path to the output of the compilation process for LPS and LILIANPROJ files.\n" +
-            "\n" +
-            "[-d]\n" +
-            "\tAfter compilation, the program will be run after compilation.\n" +
-            "[-f]\n" +
-            "\tDuring compilation, the program will delete some of her data to conserve memory, since it has been proven that she will" +
-            " inflate unbelievably large especially for codefiles or projects with a consummate size of more than 2.5 MB. If you're" +
-            " building this application, enabling the -f switch will be less helpful for debugging as it deletes useful interpretation" +
-            " data."
+            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
             );
 
-    CompilationCancelled:
-        WriteLine("Project did not include any files.");
-#if DEBUG
-        WriteLine(
-            "Hello, mate. This is a debug build, so you will be fed some information through here in case your debugger does not or is inactive.\n" +
-            "\n");
-        WriteLine("Grammar contents");
-        foreach (var token in Tokens) WriteLine(token.ToString());
-        foreach (var sentence in Sentences) WriteLine(sentence.ToString());
-#endif
-        WriteLine("Press any key to continue.");
+        // Choice screen
+        DisplayScreen(
+            "Lilian will either compile a single script or an entire project. Press P to use a project file, or press S to use a single file.",
+            null,
+            null,
+            null,
+            new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, "Use a project file"),
+            new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
+            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
+            );
+        string filepath = AskingFileScreen($"Where is the {(SingleOrProj? "project" : "code")} file?"); string outpath;
+        if (SingleOrProj) outpath = AskingFileScreen("Where should be the output?"); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
+        InterpretNewGUI(filepath, outpath);
+
+        DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Exit");
         ReadKey(true);
-#endif
 
         Environment.Exit(0);
     }
@@ -412,10 +290,10 @@ public static class Programme
 #endregion
 
 #region Interpreter
-    /// <summary>
-    /// The main class for the interpeter.
-    /// </summary>
-    public static class Interpreter
+/// <summary>
+/// The main class for the interpeter.
+/// </summary>
+public static class Interpreter
 {
     #region Static-field flags and data
     #region Execution
@@ -439,6 +317,12 @@ public static class Programme
     /// The current file. Not exactly a single file, but a merger of all source files.
     /// </summary>
     public static List<string> CurrentFile = new();
+
+    /// <summary>
+    /// If <see langword="false"/>, the compiler will assume that everything is in one file.
+    /// If <see langword="true"/>, the compiler will assume that a project file will be used.
+    /// </summary>
+    public static bool SingleOrProj { get; set; }
     #endregion
     #region End-user debug services
     /// <summary>
@@ -547,211 +431,6 @@ public static class Programme
     #endregion
 
     /// <summary>
-    /// Do the whole thing.
-    /// </summary>
-    /// <param name="GUI">If true, the progress bars will be enabled. True by default. Somehow also controls whether the REPL mode is activated.</param>
-    /// <param name="REPL">If true, a single line will be interpreted. False by default.</param>
-    /// <param name="line">The individual line to be parsed. If empty, the entire currently-loaded file will be parsed.</param>
-    /// <param name="outfile">The path to the output file.</param>
-    /// <param name="projfile">If true, the intepretation starts at the "Initialising the compilation process" stage. False by default.</param>
-    public static void Interpret(bool GUI = true, bool REPL = false, string line = "", string outfile = "", bool projfile = false)
-    {
-        //foreach (string line in CurrentFile) ScanTokens(line);
-        Stopwatch watch = new();
-        //ProgressRecord timerem = new(0, "Interpretation", "Interpreting");
-        //PowerShell ps = PowerShell.Create();
-
-        Outgoing = !string.IsNullOrWhiteSpace(outfile) ? outfile : Outgoing;
-
-        if (GUI)
-        {
-            ProgressBarOptions opt = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ForegroundColor, // what
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt1 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Red,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt2 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Yellow,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt3 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Green,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt4 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Blue,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt5 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.DarkGray,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt6 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Cyan,
-                DisplayTimeInRealTime = true,
-            };
-
-            ProgressBarOptions opt7 = new()
-            {
-                ProgressBarOnBottom = false,
-                //DenseProgressBar = true,
-                ProgressCharacter = '\u2588',
-                BackgroundCharacter = '\u2590',
-                CollapseWhenFinished = false,
-                ForegroundColor = ConsoleColor.Gray,
-                DisplayTimeInRealTime = true,
-            };
-
-
-            watch.Start();
-            using (var pbm = new ProgressBar(5, "Compilation process", opt))
-            {
-                if (projfile) goto ProjectCompilation; else goto SingleFileCompilation;
-
-                ProjectCompilation:
-                using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
-                {
-                    VersionSelector(preProcessFile);
-                    pbg.Tick();
-                }
-                if (!DoNotDoCompilation) goto Start; else return;
-
-                SingleFileCompilation:
-                using (var pbg = pbm.Spawn(1, "Initialising the compilation process", opt5))
-                {
-                    ConsummateSource = CurrentFile;
-                    pbg.Tick();
-                }
-            Start:
-                using (var pbh = pbm.Spawn(1, "Calling Coco for help", opt7))
-                {
-                    Preprocess(ConsummateSource.ToArray());
-                    pbh.Tick();
-                }
-
-                using (var pba = pbm.Spawn(CurrentFile.Count, "Scanning tokens", opt1))
-                {
-                    if (Programme.ConserveMemory) ConsummateSource = new();
-                    for (int i = 1; i < CurrentFile.Count + 1; i++)
-                    {
-                        ScanTokens(CurrentFile[i - 1]);
-                        pba.Tick();
-                    }
-                    pbm.Tick();
-                }
-                using (var pbb = pbm.Spawn(CurrentWordPacks.Count, "Parsing tokens", opt2))
-                {
-                    foreach (List<TokenFruit> fruits in CurrentWordPacks)
-                    {
-                        ArrangeTokens(fruits);
-                        pbb.Tick();
-                    }
-                    pbm.Tick();
-                }
-                using (var pbc = pbm.Spawn(CurrentSentences.Count, "Assigning operations", opt3))
-                {
-                    CurrentPointedEffect = 0;
-                    if (Programme.ConserveMemory) CurrentWordPacks = new();
-                    foreach (SentenceFruit sent in CurrentSentences)
-                    {
-
-                        PlaceEffect(InterpretSentenceNew(sent), CurrentPointedEffect, true);
-                        CurrentPointedEffect++;
-                        pbc.Tick();
-                    }
-                    pbm.Tick();
-                }
-                using (var pbe = pbm.Spawn(1, "Pointing labels to correct places", opt6))
-                {
-                    if (Programme.ConserveMemory) CurrentSentences = new();
-                    CheckForFriendlyNames();
-                    pbe.Tick();
-                    pbm.Tick();
-                }
-                using (var pbd = pbm.Spawn(1, "Writing to file", opt4))
-                {
-                    CreateBinary(Outgoing);
-                    pbd.Tick();
-                    pbm.Tick();
-                }
-            }
-            watch.Stop();
-            WriteLine($"Took {watch.ElapsedMilliseconds} ms.");
-        }
-        else
-        {
-            try
-            {
-                ScanTokens(line);
-                ArrangeTokens(CurrentWordPacks[0]);
-                PlaceEffect(InterpretSentenceNew(CurrentSentences[0]), CurrentPointedEffect, false);
-
-                CurrentWordPacks.Clear();
-                CurrentSentences.Clear();
-            }
-            catch (Exception ex)
-            {
-                throw new Lamentation(
-                    0x2c,
-                    Regex.IsMatch(Lamentation.InterpretExceptionName(ex.InnerException)[0].ToString(), @"[AEIOU]") ? "an" : "a",
-                    Lamentation.InterpretExceptionName(ex.InnerException)
-                    );
-            }
-        }
-    }
-
-    /// <summary>
     /// Do the whole thing. (Doesn't use the progress bars but instead uses the newer GUI system.)
     /// </summary>
     /// <param name="infile">The path to the input file.</param>
@@ -774,16 +453,22 @@ public static class Programme
             DisplayScreen(
                 "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Reading {infile} ...", (int)(((decimal)i / (decimal)j) * 100m));
+                $"Reading {infile} ...", (int)(((decimal)i / (decimal)j) * 100m)
+                );
         }
-        DisplayScreen("Please wait while Lilian loads some information.", null, "Coco");
-#if INTERPRETSIM
-        Sleep(1000);
-#endif
-        DisplayScreen("Please wait while Lilian examines your code. This may take several minutes depending on the grammar and the size of the code.", null, "Translating code to intermediate representation...");
-#if INTERPRETSIM
-        Sleep(5000);
-#endif
+
+        DisplayScreen(
+            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+            null,
+            "Coco preprocessor"
+            );
+
+        DisplayScreen(
+            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+            null,
+            "Translating code to intermediate representation"
+            );
+
         stopwatch.Reset();
         stopwatch.Start();
         int k; // save to increm
@@ -796,7 +481,7 @@ public static class Programme
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Tokenisation.", (int)(((decimal)i / (decimal)p) * 100m));
+               null, (int)(((decimal)i / (decimal)p) * 100m));
             p = j + CurrentWordPacks.Count;
         }
         k = j;
@@ -809,7 +494,7 @@ public static class Programme
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Syntax comprehension.", (int)(((decimal)i / (decimal)p) * 100m));
+                null, (int)(((decimal)i / (decimal)p) * 100m));
             l++; p = j + CurrentSentences.Count;
         }
         k = j;
@@ -823,17 +508,14 @@ public static class Programme
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Bytecode conversion.", (int)(((decimal)i / (decimal)p) * 100m));
+                null, (int)(((decimal)i / (decimal)p) * 100m));
             l++; CurrentPointedEffect++;
         }
         stopwatch.Stop();
 
-        DisplayScreen("Please wait while Lilian finalises the program.", null, "Writing program to file...");
-#if INTERPRETSIM
-        Sleep(5000);
-#endif
-        DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Exit");
-        ReadKey(true);
+        DisplayScreen("Please wait while Lilian finalises the program.", null, "Linking named references");
+        CheckForFriendlyNames();
+        CreateBinary(outfile);
     }
 
     #endregion
