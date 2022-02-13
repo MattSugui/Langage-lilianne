@@ -798,11 +798,11 @@ public static class Programme
                 $"Tokenisation.", (int)(((decimal)i / (decimal)j) * 100m));
         }
         k = j;
-        j = k + CurrentWordPacks.Count + 1;
+        j = k + CurrentWordPacks.Count;
         int l = 0;
         for (int i = k; i < j; i++)
         {
-            ArrangeTokens(CurrentWordPacks[l]);
+            ArrangeTokens(CurrentWordPacks[l ]);
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
@@ -812,7 +812,7 @@ public static class Programme
         }
         k = j;
 
-        j = k + CurrentSentences.Count + 1;
+        j = k + CurrentSentences.Count;
         CurrentPointedEffect = 0; l = 0;
         for (int i = k; i < j; i++)
         {
