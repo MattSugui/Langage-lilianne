@@ -787,41 +787,43 @@ public static class Programme
         stopwatch.Reset();
         stopwatch.Start();
         int k; // save to increm
-        j = CurrentFile.Count + 1;
+        int p; // reserved for progress visualisation
+        j = CurrentFile.Count + 1; p = j;
         for (int i = 1; i < j; i++)
         {
             ScanTokens(CurrentFile[i - 1]);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Tokenisation.", (int)(((decimal)i / (decimal)j) * 100m));
+                $"Tokenisation.", (int)(((decimal)i / (decimal)p) * 100m));
+            p = j + CurrentWordPacks.Count;
         }
         k = j;
-        j = k + CurrentWordPacks.Count;
+        j = k + CurrentWordPacks.Count; p = j;
         int l = 0;
         for (int i = k; i < j; i++)
         {
             ArrangeTokens(CurrentWordPacks[l ]);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Syntax comprehension.", (int)(((decimal)i / (decimal)j) * 100m));
-            l++;
+                $"Syntax comprehension.", (int)(((decimal)i / (decimal)p) * 100m));
+            l++; p = j + CurrentSentences.Count;
         }
         k = j;
 
-        j = k + CurrentSentences.Count;
+        j = k + CurrentSentences.Count; p = j;
         CurrentPointedEffect = 0; l = 0;
         for (int i = k; i < j; i++)
         {
             PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
+            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Bytecode conversion.", (int)(((decimal)i / (decimal)j) * 100m));
+                $"Bytecode conversion.", (int)(((decimal)i / (decimal)p) * 100m));
             l++; CurrentPointedEffect++;
         }
         stopwatch.Stop();
@@ -949,6 +951,12 @@ public static class Programme
             /// The tokens of the sentence for data collection.
             /// </summary>
             public string[] Value;
+
+            /// <summary>
+            /// Returns the string representation of the token.
+            /// </summary>
+            /// <returns>The string representation.</returns>
+            public override string ToString() => $"{AssociatedSentence.Name}.";
         }
     }
 
