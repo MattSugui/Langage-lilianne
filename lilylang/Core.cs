@@ -466,7 +466,7 @@ public static class Interpreter
             null,
             "Translating code to intermediate representation"
             );
-
+        Clear();
         int k; // save to increm
         int p; // reserved for progress visualisation
         j = CurrentFile.Count + 1; p = j;
@@ -2610,13 +2610,18 @@ public static class UserInterface
     {
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
-        if (prog_anim == prog_anim_modules.Length - 1) prog_anim = 0; else prog_anim++;
+        if (prog_dur == 16)
+        {
+            prog_dur = 0;
+            if (prog_anim == prog_anim_modules.Length - 1) prog_anim = 0; else prog_anim++;
+        }
+        else prog_dur++;
         WriteLine(prog_anim_modules[prog_anim]);
         WriteLine((int)((decimal)progress / 100m) + "%");
         WriteLine($"{(remaining.Days > 0 ? remaining.Days.ToString() + " days " : "")}{(remaining.Hours > 0 ? remaining.Hours.ToString() + " hours " : "")}{(remaining.Minutes > 0 ? remaining.Minutes.ToString() + " minutes " : "")}{(remaining.Seconds > 0 ? remaining.Seconds.ToString() + " seconds " : "")}remaining.".PadLeft(80));
     }
 
-    private static int prog_anim = 0;
+    private static int prog_anim = 0; private static int prog_dur = 0;
     private static readonly string[] prog_anim_modules =
     {
         "#                                    Lilian                                    #",
