@@ -2601,7 +2601,7 @@ public static class UserInterface
         WriteLine("This programme is asking for a file.");
         Write("> ");
         string input = ReadLine();
-        if (File.Exists(input)) return input; else
+        if (File.Exists(input.Trim('"'))) return input.Trim('"'); else
         {
             ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
 
