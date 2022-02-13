@@ -540,17 +540,15 @@ public static class Interpreter
                 new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
                 new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
                 );
-            oopsie = false;
+            Programme.ErrorRaised = false;
         }
         catch (Lamentation lam)
         {
             stopwatch.Stop();
             ErrorScreen(lam);
-            oopsie = true;
+            Programme.ErrorRaised = true;
             ReadKey(true);
         }
-
-        if (oopsie) ErrorRaised = true; else ErrorRaised = false;
     }
 
     #endregion
@@ -1080,7 +1078,7 @@ public static class Interpreter
             def.Add(0x0000, "Invalid state for the environment. If you don't know what happened, it's my fault. Contact ininemsn@gmail.com");
             def.Add(0x0001, "Syntax error. A string was never terminated.");
             //
-            def.Add(0x0002, "Syntax error. The pattern {0} does not exist in the current context.");
+            def.Add(0x0002, "Syntax error. The pattern '{0}' does not exist in the current context.");
             //
             def.Add(0x0003, "The file '{0}' does not exist.");
             //
@@ -2723,7 +2721,7 @@ public static class UserInterface
 
         WriteLine("A problem occurred during execution. Meditation out of balance.\n");
 
-        if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}\n\");
+        if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}\n\n");
         else WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred.\n\n");
 
         WriteLine("Oh dear, I've made quite a mess. Press any key to continue.");
