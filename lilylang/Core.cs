@@ -469,6 +469,8 @@ public static class Interpreter
 
         int k; // save to increm
         int p; // reserved for progress visualisation
+        Stopwatch speedcam = new();
+        speedcam.Start();
         j = CurrentFile.Count + 1; p = j;
         for (int i = 1; i < j; i++)
         {
@@ -477,10 +479,11 @@ public static class Interpreter
             DisplayScreen(
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Token {CurrentWordPacks.Count + 1} @ {(CurrentWordPacks.Count + 1) / stopwatch.Elapsed.Seconds} t/s",
+                $"Token {CurrentWordPacks.Count + 1} @ {(int)((decimal)(CurrentWordPacks.Count + 1) / (decimal)speedcam.Elapsed.Seconds)} t/s",
                 (int)(((decimal)i / (decimal)p) * 100m));
             p = j + CurrentWordPacks.Count;
         }
+        speedcam.Stop();
         k = j;
         j = k + CurrentWordPacks.Count; p = j;
         int l = 0;
