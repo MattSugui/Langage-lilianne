@@ -260,6 +260,11 @@ public static class Programme
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
+        if (args.Length != 0)
+        {
+
+        }
+
         Sleep(1000);
         Clear();
 
@@ -297,7 +302,12 @@ public static class Programme
             ReadKey(true);
         }
 
-        Clear();
+        if (RunAfterwards)
+        {
+            Clear();
+            Execute();
+        }
+
         Environment.Exit(0);
     }
 }
@@ -543,12 +553,12 @@ public static class Interpreter
             CreateBinary(outfile);
 
             DisplayScreen(
-                "You can run the compiled program afterwards.",
+                "Do you want to run the program afterwards?",
                 null,
                 null,
                 null,
-                new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, "Use a project file"),
-                new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
+                new FELUIAction(ConsoleKey.Y, () => Programme.RunAfterwards = true, "Yes, please!"),
+                new FELUIAction(ConsoleKey.N, () => Programme.RunAfterwards = false, "No, thanks!"),
                 new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
                 );
             Programme.ErrorRaised = false;
@@ -2398,7 +2408,7 @@ public static class UserInterface
                 foreach (FELUIAction act in Actions)
                 {
                     string item = act.ToString();
-                    str.Append(item + " ");
+                    str.Append(item + "  ");
                 }
                 return str.ToString();
             }
