@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.2.474.0</AssemblyVersion>
-		<FileVersion>1.2.474.0</FileVersion>
-		<InformationalVersion>Scholarly Interim Graphix 220213-2152</InformationalVersion>
+		<AssemblyVersion>1.2.479.0</AssemblyVersion>
+		<FileVersion>1.2.479.0</FileVersion>
+		<InformationalVersion>Scholarly Localisation 220213-2354</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
@@ -25,6 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Properties\CoreContent.fr-FR.resx.bak" />
 	  <None Remove="syntaxes.txt" />
 	</ItemGroup>
 
@@ -43,6 +44,11 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>CoreContent.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Properties\CoreContent.fr-FR.Designer.cs">
+	    <DependentUpon>CoreContent.fr-FR.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
 	  <Compile Update="Properties\CoreContent.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -55,6 +61,10 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>CoreContent.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\CoreContent.fr-FR.resx">
+	    <LastGenOutput>CoreContent.fr-FR.Designer.cs</LastGenOutput>
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
 	  <EmbeddedResource Update="Properties\CoreContent.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>CoreContent.Designer.cs</LastGenOutput>
@@ -62,7 +72,7 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -NevwVerName ''Scholarly Localisation&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
