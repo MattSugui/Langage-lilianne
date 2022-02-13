@@ -460,6 +460,8 @@ public static class Interpreter
          */
         Stopwatch stopwatch = new();
 
+        bool oopsie = false;
+
         try
         {
             stopwatch.Start();
@@ -538,15 +540,17 @@ public static class Interpreter
                 new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
                 new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
                 );
-            ErrorRaised = false;
+            oopsie = false;
         }
         catch (Lamentation lam)
         {
             stopwatch.Stop();
             ErrorScreen(lam);
-            ErrorRaised = true;
+            oopsie = true;
             ReadKey(true);
         }
+
+        if (oopsie) ErrorRaised = true; else ErrorRaised = false;
     }
 
     #endregion
@@ -2712,14 +2716,15 @@ public static class UserInterface
     /// <param name="error">The exception.</param>
     public static void ErrorScreen(Exception error)
     {
-        Clear();
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkMagenta;
+        Clear();
+
         string err = Lamentation.InterpretExceptionName(error);
 
         WriteLine("A problem occurred during execution. Meditation out of balance.\n");
 
-        if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}");
-        else WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred.");
+        if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}\n\");
+        else WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred.\n\n");
 
         WriteLine("Oh dear, I've made quite a mess. Press any key to continue.");
     }
