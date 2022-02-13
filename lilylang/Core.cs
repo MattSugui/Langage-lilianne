@@ -221,6 +221,16 @@ public static class Programme
     public static bool ReleaseMode { get; set; }
 
     /// <summary>
+    /// If true, Lilian will run the compiled program.
+    /// </summary>
+    public static bool RunAfterwards { get; set; }
+
+    /// <summary>
+    /// Checks after execution if an error has been raised. If it does, end immediately.
+    /// </summary>
+    public static bool ErrorRaised { get; set; }
+
+    /// <summary>
     /// The main entry point.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
@@ -278,11 +288,16 @@ public static class Programme
             );
         string filepath = AskingFileScreen($"Where is the {(SingleOrProj? "project" : "code")} file?"); string outpath;
         if (SingleOrProj) outpath = AskingFileScreen("Where should be the output?"); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
+        
         InterpretNewGUI(filepath, outpath);
 
-        DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Exit");
-        ReadKey(true);
+        if (!ErrorRaised)
+        {
+            DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Continue");
+            ReadKey(true);
+        }
 
+        Clear();
         Environment.Exit(0);
     }
 }
@@ -444,65 +459,94 @@ public static class Interpreter
          * 3. 
          */
         Stopwatch stopwatch = new();
-        stopwatch.Start();
 
-        int j;
-        DisplayScreen(
-            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
-            null,
-            $"Reading {infile} ...",
-            null
-            );
-        ReadFile(infile);
-
-        DisplayScreen(
-            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
-            null,
-            "Coco preprocessor"
-            );
-
-        DisplayScreen(
-            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
-            null,
-            "Translating code to intermediate representation"
-            );
-        Clear();
-        int k; // save to increm
-        int p; // reserved for progress visualisation
-        j = CurrentFile.Count + 1; p = j;
-        for (int i = 1; i < j; i++)
+        try
         {
-            ScanTokens(CurrentFile[i - 1]);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-            p = j + CurrentWordPacks.Count;
-        }
-        k = j;
-        j = k + CurrentWordPacks.Count; p = j;
-        int l = 0;
-        for (int i = k; i < j; i++)
-        {
-            ArrangeTokens(CurrentWordPacks[l ]);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-            l++; p = j + CurrentSentences.Count;
-        }
-        k = j;
+            stopwatch.Start();
 
-        j = k + CurrentSentences.Count; p = j;
-        CurrentPointedEffect = 0; l = 0;
-        for (int i = k; i < j; i++)
-        {
-            PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-            l++; CurrentPointedEffect++;
-        }
-        stopwatch.Stop();
+            int j;
 
-        DisplayScreen("Please wait while Lilian finalises the program.", null, "Linking named references");
-        CheckForFriendlyNames();
-        CreateBinary(outfile);
+            DisplayScreen(
+                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                null,
+                $"Reading {infile} ...",
+                null
+                );
+
+            if (SingleOrProj)
+            {
+                VersionSelector(infile);
+                if (DoNotDoCompilation) return;
+            }
+            else
+            {
+                ReadFile(infile);
+                ConsummateSource = CurrentFile;
+            }
+
+            DisplayScreen(
+                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                null,
+                "Translating code to intermediate representation"
+                );
+
+            Clear();
+
+            int k; // save to increm
+            int p; // reserved for progress visualisation
+            j = ConsummateSource.Count + 1; p = j;
+            for (int i = 1; i < j; i++)
+            {
+                ScanTokens(ConsummateSource[i - 1]);
+                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
+                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
+                p = j + CurrentWordPacks.Count;
+            }
+            k = j;
+            j = k + CurrentWordPacks.Count; p = j;
+            int l = 0;
+            for (int i = k; i < j; i++)
+            {
+                ArrangeTokens(CurrentWordPacks[l]);
+                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
+                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
+                l++; p = j + CurrentSentences.Count;
+            }
+            k = j;
+
+            j = k + CurrentSentences.Count; p = j;
+            CurrentPointedEffect = 0; l = 0;
+            for (int i = k; i < j; i++)
+            {
+                PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
+                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
+                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
+                l++; CurrentPointedEffect++;
+            }
+            stopwatch.Stop();
+
+            DisplayScreen("Please wait while Lilian finalises the program.", null, "Linking named references");
+            CheckForFriendlyNames();
+            CreateBinary(outfile);
+
+            DisplayScreen(
+                "You can run the compiled program afterwards.",
+                null,
+                null,
+                null,
+                new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, "Use a project file"),
+                new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
+                new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
+                );
+            ErrorRaised = false;
+        }
+        catch (Lamentation lam)
+        {
+            stopwatch.Stop();
+            ErrorScreen(lam);
+            ErrorRaised = true;
+            ReadKey(true);
+        }
     }
 
     #endregion
@@ -1187,9 +1231,14 @@ public static class Interpreter
         /// <returns>A friendly name version of the exception.</returns>
         public static string InterpretExceptionName(Exception e)
         {
-            string[] name = Regex.Split(e.GetType().Name, "[A-Z][a-z]*");
-            for (int i = 0; i < name.Length; i++) name[i] = name[i].ToLower();
-            return string.Join(' ', name);
+            var mtc = Regex.Matches(nameof(e), @"[A-Z][a-z]*");
+
+            List<string> conts = new();
+
+            foreach (Match capt in mtc) { conts.Add(capt.Value); }
+            for (int i = 1; i < conts.Count; i++) conts[i] = conts[i].ToLower();
+
+            return string.Join(" ", conts.ToArray());
         }
     }
 
@@ -2610,7 +2659,7 @@ public static class UserInterface
     {
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
-        if (prog_dur == 64)
+        if (prog_dur == 48)
         {
             prog_dur = 0;
             if (prog_anim == prog_anim_modules.Length - 1) prog_anim = 0; else prog_anim++;
@@ -2656,6 +2705,23 @@ public static class UserInterface
         "                                                                            ####",
         "                                                                                ",
     };
+
+    /// <summary>
+    /// Brings up a purple screen of death (because why not) that displays an error.
+    /// </summary>
+    /// <param name="error">The exception.</param>
+    public static void ErrorScreen(Exception error)
+    {
+        Clear();
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkMagenta;
+        string err = Lamentation.InterpretExceptionName(error);
+
+        WriteLine("A problem occurred during execution.\n");
+
+        WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred. ({(error is Lamentation? $"LP{(error as Lamentation).ErrorCode:0000}" : $"0x{error.HResult:XXXXXXXX}")})");
+
+        WriteLine("Oh dear, I've made quite a mess. Press any key to continue.");
+    }
 }
 #endregion
 
@@ -2705,7 +2771,7 @@ public static class Coco
             finally { if (ver! == true) VersionOfCompilation = true; else VersionOfCompilation = false; }
         }
 
-#region Faux Coco
+        #region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
         /// </summary>
