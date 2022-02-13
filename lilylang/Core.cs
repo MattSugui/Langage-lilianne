@@ -444,18 +444,16 @@ public static class Interpreter
          * 3. 
          */
         Stopwatch stopwatch = new();
+        stopwatch.Start();
+
         int j;
-        j = File.ReadAllLines(infile).Length + 1;
-        for (int i = 1; i < j; i++)
-        {
-            CurrentFile.Add(File.ReadAllLines(infile)[i - 1]);
-            TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (j - i));
-            DisplayScreen(
-                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
-                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Reading {infile} ...", (int)(((decimal)i / (decimal)j) * 100m)
-                );
-        }
+        DisplayScreen(
+            "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+            null,
+            $"Reading {infile} ...",
+            null
+            );
+        ReadFile(infile);
 
         DisplayScreen(
             "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
@@ -469,8 +467,6 @@ public static class Interpreter
             "Translating code to intermediate representation"
             );
 
-        stopwatch.Reset();
-        stopwatch.Start();
         int k; // save to increm
         int p; // reserved for progress visualisation
         j = CurrentFile.Count + 1; p = j;
