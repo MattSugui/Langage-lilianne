@@ -2716,9 +2716,10 @@ public static class UserInterface
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkMagenta;
         string err = Lamentation.InterpretExceptionName(error);
 
-        WriteLine("A problem occurred during execution.\n");
+        WriteLine("A problem occurred during execution. Meditation out of balance.\n");
 
-        WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred. ({(error is Lamentation? $"LP{(error as Lamentation).ErrorCode:0000}" : $"0x{error.HResult:XXXXXXXX}")})");
+        if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}");
+        else WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred.");
 
         WriteLine("Oh dear, I've made quite a mess. Press any key to continue.");
     }
