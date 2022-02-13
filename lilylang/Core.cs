@@ -2545,6 +2545,7 @@ public static class UserInterface
         Write    (" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
+        Sleep(1);
         if (activate)
         {
             while (true)
