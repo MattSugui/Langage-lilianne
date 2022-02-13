@@ -2869,7 +2869,7 @@ public static class Coco
         /// </summary>
         public static string Outgoing = "";
 
-#region Vrai Coco
+        #region Vrai Coco
 
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
@@ -3106,9 +3106,9 @@ public static class Coco
             }
         }
 
-#endregion
+        #endregion
     }
-#endregion
+    #endregion
 
     #region Coco comprehension
     /// <summary>
@@ -3301,12 +3301,16 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "TITL", Value = @"^title$" });
         CurrentTokens.Add(new() { Name = "PAUS", Value = @"^pause$" });
         CurrentTokens.Add(new() { Name = "WAIT", Value = @"^wait$" });
+        CurrentTokens.Add(new() { Name = "TRUE", Value = @"^true$" });
+        CurrentTokens.Add(new() { Name = "FAUX", Value = @"^false$" });
 
         //----------------------------------- Name                      TokenStruct ----------------                            -----
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", TokenStruct = new string[] { "PRPR", "COLN" } });
         CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", TokenStruct = new string[] { "STRT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushString", TokenStruct = new string[] { "PUSH", "QUOT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushIntegral", TokenStruct = new string[] { "PUSH", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushTrueBoolean", TokenStruct = new string[] { "PUSH", "TRUE", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushFalseBoolean", TokenStruct = new string[] { "PUSH", "FAUX", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Pop", TokenStruct = new string[] { "POP", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Print", TokenStruct = new string[] { "PRNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Add", TokenStruct = new string[] { "ADDO", "SMCL" } });
