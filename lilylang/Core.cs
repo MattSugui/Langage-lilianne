@@ -251,11 +251,13 @@ public static class Programme
             DeleteMenu(SystemMenu, 0xf000, 0x00000000);
         }
         #endregion
-        
+
+        CurrentThread.CurrentUICulture = CurrentThread.CurrentCulture;
+
         SetWindowSize(81, 25);
         SetBufferSize(81, 25);
         WriteLine(
-            "Fonder Lilian Language Environment\n" +
+            $"{Properties.CoreContent.ProgramName}\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
@@ -268,37 +270,40 @@ public static class Programme
         Sleep(1000);
         Clear();
 
-        ApplicationTitle = "Fonder Lilian Language Environment";
+        ApplicationTitle = Properties.CoreContent.ProgramName;
         LaunchUI();
 
         // Welcome screen
         DisplayScreen(
-            "This program will compile a project or script into an executable. Press Enter to continue to next page. Press F3 to exit.",
-            "Welcome to the Lilian environment.",
+            Properties.CoreContent.WelcomeScreenBody,
+            Properties.CoreContent.WelcomeScreenHeader,
             null,
             null,
-            new FELUIAction(ConsoleKey.Enter, () => {; }, "Continue"),
-            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
+            new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
+            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
 
         // Choice screen
         DisplayScreen(
-            "Lilian will either compile a single script or an entire project. Press P to use a project file, or press S to use a single file.",
+            Properties.CoreContent.ChoiceScreenBody,
             null,
             null,
             null,
-            new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, "Use a project file"),
-            new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, "Use a single file"),
-            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
+            new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, Properties.CoreContent.ChoiceScreenChoice1),
+            new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, Properties.CoreContent.ChoiceScreenChoice2),
+            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
-        string filepath = AskingFileScreen($"Where is the {(SingleOrProj? "project" : "code")} file?"); string outpath;
-        if (SingleOrProj) outpath = AskingScreen("Where should be the output?"); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
+        string filepath = AskingFileScreen(SingleOrProj? Properties.CoreContent.InputAskVer1: Properties.CoreContent.InputAskVer2); string outpath;
+        if (SingleOrProj) outpath = AskingScreen(Properties.CoreContent.OutputAsk); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
         
         InterpretNewGUI(filepath, outpath.Trim('"'));
 
         if (!ErrorRaised)
         {
-            DisplayScreen("Lilian has successfully compiled your program. Press any key to continue.", null, "[]=Continue");
+            DisplayScreen(
+                Properties.CoreContent.Hurrah,
+                null,
+                Properties.CoreContent.HurrahAny);
             ReadKey(true);
         }
 
@@ -477,9 +482,9 @@ public static class Interpreter
             int j;
 
             DisplayScreen(
-                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                Properties.CoreContent.PleaseWait,
                 null,
-                $"Reading {infile} ...",
+                $"{Properties.CoreContent.ReadingStatus} {infile}",
                 null
                 );
 
@@ -499,18 +504,18 @@ public static class Interpreter
                 ConsummateSource = CurrentFile;
             }
             DisplayScreen(
-                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                Properties.CoreContent.PleaseWait,
                 null,
-                $"Preprocessing the project...",
+                Properties.CoreContent.PreprocessStatus,
                 null
                 );
             Preprocess(ConsummateSource.ToArray());
 
 
             DisplayScreen(
-                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                Properties.CoreContent.PleaseWait,
                 null,
-                "Translating code to intermediate representation"
+                Properties.CoreContent.TranslationStatus
                 );
 
             Clear();
@@ -548,18 +553,22 @@ public static class Interpreter
             }
             stopwatch.Stop();
 
-            DisplayScreen("Please wait while Lilian finalises the program.", null, "Linking named references");
+            DisplayScreen(
+                Properties.CoreContent.PleaseWaitFinal,
+                null,
+                Properties.CoreContent.LinkingStatus
+                );
             CheckForFriendlyNames();
             CreateBinary(outfile);
 
             DisplayScreen(
-                "Do you want to run the program afterwards?",
+                Properties.CoreContent.WannaRun,
                 null,
                 null,
                 null,
-                new FELUIAction(ConsoleKey.Y, () => Programme.RunAfterwards = true, "Yes, please!"),
-                new FELUIAction(ConsoleKey.N, () => Programme.RunAfterwards = false, "No, thanks!"),
-                new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
+                new FELUIAction(ConsoleKey.Y, () => Programme.RunAfterwards = true, Properties.CoreContent.Yes),
+                new FELUIAction(ConsoleKey.N, () => Programme.RunAfterwards = false, Properties.CoreContent.No),
+                new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
                 );
             Programme.ErrorRaised = false;
         }
@@ -1096,72 +1105,63 @@ public static class Interpreter
         static Lamentation()
         {
             def = new();
-            def.Add(0x0000, "Invalid state for the environment. If you don't know what happened, it's my fault. Contact ininemsn@gmail.com");
-            def.Add(0x0001, "Syntax error. A string was never terminated.");
-            //
-            def.Add(0x0002, "Syntax error. The pattern '{0}' does not exist in the current context.");
-            //
-            def.Add(0x0003, "The file '{0}' does not exist.");
-            //
-            def.Add(0x0004, "Implementation error. The token '{0}' does not exist. Did you forget to add the token first before using it?");
-            def.Add(0x0005, "Implementation error. The predefined token '{0}' does not exist. Please reinstall Lilian, or send a bug report.");
-            def.Add(0x0006, "Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.");
-            def.Add(0x0007, "Implementation error. Some tokens of the {0} sentence have already been specified.");
-            def.Add(0x0008, "Syntax error. The token '{0}' cannot exist in its current position of the {1} sentence.");
-            //
-            def.Add(0x0009, "Implementation error. The token '{0}' has an invalid predefined UUID. Leave the UUID field blank for a random one, or reformat your UUID.");
-            //
-            def.Add(0x000A, "Implementation error. Something happened.");
-            def.Add(0x000B, "Implementation error. The opcode '{0}' does not exist. Did you forget to add the opcode first before using it?");
-            def.Add(0x000C, "Implementation error. The predefined opcode '{0}' does not exist. Please reinstall Lilian, or send a bug report.");
-            //
-            def.Add(0x000D, "Implementation error. Right bracket {0} for left bracket {1} does not exist. Did you forget to add the token first before using it?");
-            //
-            def.Add(0x000E, "Implementation error. The opcode {0} does not exist. Did you forget to assign the operation to there?");
-            def.Add(0x000F, "Implementation error. Sentence {0} has more pointers than the allocated parameters for the associated opcode {1} '{2}'.");
-            def.Add(0x0010, "File operation error. {0}");
-            def.Add(0x0011, "File operation error. The archive '{0}' does not exist.");
-            def.Add(0x0012, "File operation error. Cannot export to an archive. This is not your fault; it's ours. Contact us lmao. ({0})");
-            def.Add(0x0013, "File operation error. Cannot import from an archive. Either that you're a dumbarse and imported something not in an LPS format or it's our fault. If so, contact us. lMAO. ({0})");
-            def.Add(0x0014, "Implementation error. The sentence structure {0} does not correspond with any of the available statements.");
-            //
-            def.Add(0x0015, "Handshake with Coco failed. {0}");
-            //
-            def.Add(0x0016, "{0} is an undefined feature in this version. Use a newer version of Lilian.");
-            def.Add(0x0017, "Stack error. {0}");
-            def.Add(0x0018, "{0} does not exist in the current context.");
-            def.Add(0x0019, "{0} is not a valid Int32 value.");
-            def.Add(0x0020, "Index {0} goes beyond the current stream.");
-            def.Add(0x0021, "Index {0} is in an incorrect format.");
-            def.Add(0x0022, "'{0}': cannot be shrunk further.");
-            def.Add(0x0023, "'{0}': cannot be grown further.");
-            def.Add(0x0024, "'{0}': cannot shrink a string!");
-            def.Add(0x0025, "'{0}': cannot grow a string!");
-            def.Add(0x0026, "'{0}': cannot shrink a character!");
-            def.Add(0x0027, "'{0}': cannot grow a character!");
-            def.Add(0x0028, "'{0}': cannot shrink whatever this is!");
-            def.Add(0x0029, "'{0}': cannot grow whatever this is!");
-            def.Add(0x002A, "'{0}': cannot realise this string into an integral value.");
-            def.Add(0x002B, "The following call doesn't lead to anywhere: '{0}'.");
-            def.Add(0x002C, "Internal error: {0} {1}");
-            def.Add(0x002D, "I've just got a letter. '{0}'");
-            def.Add(0x002E, "aYO wat the fuk! Lamentation no. {0} does not exist!!!");
-            def.Add(0x002F, "Hi!");
-            def.Add(0x0030, "Preprocessing error. Invalid build number.");
-            def.Add(0x0031, "Preprocessing error. The project does not use this build of Lilian. Use at least build {0}.");
-            def.Add(0x0032, "Preprocessing error. Unknown directive.");
-            def.Add(0x0033, "Preprocessing error. Unknown symbol '{0}'.");
-            def.Add(0x0034, "Preprocessing error. Cannot redefine the previous 'if' statement.");
-            def.Add(0x0035, "Preprocessing error. There was no 'if' statement to attach this 'else' statement to.");
-            def.Add(0x0036, "Preprocessing error. There was no 'if' statement to attach this 'elseif' statement to.");
-            def.Add(0x0037, "Preprocessing error. There was no 'if' statement to terminate.");
-            def.Add(0x0038, "Preprocessing error. '{0}' already exists. Use 'defifn' if needed.");
-            def.Add(0x0039, "Preprocessing error. '{0}' does not exist. Use 'undefife' if needed.");
-            def.Add(0x003A, "Internal error. There is no more memory to work with on this compilation.");
-            def.Add(0x003B, "Preprocessing error. '{0}' does not exist.");
-            def.Add(0x003C, "Preprocessing error. There are references to the following inexistent symbols: {0}.");
-            def.Add(0x003D, "Internal error. For this version of Lilian, you cannot declare types other than the standard 15 .NET types.");
-            def.Add(0x003E, "Implementation error. The core grammar does not exist. Fall back to assembly syntax, or reinstall Lilian.");
+            def.Add(0x0000, Properties.CoreContent.Lamentation1);
+            def.Add(0x0001, Properties.CoreContent.Lamentation2);
+            def.Add(0x0002, Properties.CoreContent.Lamentation3);
+            def.Add(0x0003, Properties.CoreContent.Lamentation4);
+            def.Add(0x0004, Properties.CoreContent.Lamentation5);
+            def.Add(0x0005, Properties.CoreContent.Lamentation6);
+            def.Add(0x0006, Properties.CoreContent.Lamentation7);
+            def.Add(0x0007, Properties.CoreContent.Lamentation8);
+            def.Add(0x0008, Properties.CoreContent.Lamentation9);
+            def.Add(0x0009, Properties.CoreContent.Lamentation10);
+            def.Add(0x000A, Properties.CoreContent.Lamentation11);
+            def.Add(0x000B, Properties.CoreContent.Lamentation12);
+            def.Add(0x000C, Properties.CoreContent.Lamentation13);
+            def.Add(0x000D, Properties.CoreContent.Lamentation14);
+            def.Add(0x000E, Properties.CoreContent.Lamentation15);
+            def.Add(0x000F, Properties.CoreContent.Lamentation16);
+            def.Add(0x0010, Properties.CoreContent.Lamentation17);
+            def.Add(0x0011, Properties.CoreContent.Lamentation18);
+            def.Add(0x0012, Properties.CoreContent.Lamentation19);
+            def.Add(0x0013, Properties.CoreContent.Lamentation20);
+            def.Add(0x0014, Properties.CoreContent.Lamentation21);
+            def.Add(0x0015, Properties.CoreContent.Lamentation22);
+            def.Add(0x0016, Properties.CoreContent.Lamentation23);
+            def.Add(0x0017, Properties.CoreContent.Lamentation24);
+            def.Add(0x0018, Properties.CoreContent.Lamentation25);
+            def.Add(0x0019, Properties.CoreContent.Lamentation26);
+            def.Add(0x0020, Properties.CoreContent.Lamentation27);
+            def.Add(0x0021, Properties.CoreContent.Lamentation28);
+            def.Add(0x0022, Properties.CoreContent.Lamentation29);
+            def.Add(0x0023, Properties.CoreContent.Lamentation30);
+            def.Add(0x0024, Properties.CoreContent.Lamentation31);
+            def.Add(0x0025, Properties.CoreContent.Lamentation32);
+            def.Add(0x0026, Properties.CoreContent.Lamentation33);
+            def.Add(0x0027, Properties.CoreContent.Lamentation34);
+            def.Add(0x0028, Properties.CoreContent.Lamentation35);
+            def.Add(0x0029, Properties.CoreContent.Lamentation36);
+            def.Add(0x002A, Properties.CoreContent.Lamentation37);
+            def.Add(0x002B, Properties.CoreContent.Lamentation38);
+            def.Add(0x002C, Properties.CoreContent.Lamentation39);
+            def.Add(0x002D, Properties.CoreContent.Lamentation40);
+            def.Add(0x002E, Properties.CoreContent.Lamentation41);
+            def.Add(0x002F, Properties.CoreContent.Lamentation42);
+            def.Add(0x0030, Properties.CoreContent.Lamentation43);
+            def.Add(0x0031, Properties.CoreContent.Lamentation44);
+            def.Add(0x0032, Properties.CoreContent.Lamentation45);
+            def.Add(0x0033, Properties.CoreContent.Lamentation46);
+            def.Add(0x0034, Properties.CoreContent.Lamentation47);
+            def.Add(0x0035, Properties.CoreContent.Lamentation48);
+            def.Add(0x0036, Properties.CoreContent.Lamentation49);
+            def.Add(0x0037, Properties.CoreContent.Lamentation50);
+            def.Add(0x0038, Properties.CoreContent.Lamentation51);
+            def.Add(0x0039, Properties.CoreContent.Lamentation52);
+            def.Add(0x003A, Properties.CoreContent.Lamentation53);
+            def.Add(0x003B, Properties.CoreContent.Lamentation54);
+            def.Add(0x003C, Properties.CoreContent.Lamentation55);
+            def.Add(0x003D, Properties.CoreContent.Lamentation56);
+            def.Add(0x003E, Properties.CoreContent.Lamentation57);
         }
 
         /// <summary>
@@ -2658,7 +2658,7 @@ public static class UserInterface
 
         Clear();
         WriteLine(Description + "\n");
-        WriteLine("This programme is asking for a file.");
+        WriteLine(Properties.CoreContent.ThisProgIsAsk);
         Write("> ");
         string input = ReadLine();
         if (File.Exists(input.Trim('"'))) return input.Trim('"'); else
@@ -2666,8 +2666,8 @@ public static class UserInterface
             ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
 
             Clear();
-            WriteLine("File does not exist!\n");
-            WriteLine("Press any key to continue.\n");
+            WriteLine($"{Properties.CoreContent.FileDoesNotExist}\n");
+            WriteLine($"{Properties.CoreContent.PressAny}\n");
             ReadKey(true);
             goto Start;
         }
@@ -2690,7 +2690,7 @@ public static class UserInterface
         else prog_dur++;
         WriteLine(prog_anim_modules[prog_anim]);
         WriteLine((int)((decimal)progress / 100m) + "%");
-        WriteLine($"{(remaining.Days > 0 ? remaining.Days.ToString() + " days " : "")}{(remaining.Hours > 0 ? remaining.Hours.ToString() + " hours " : "")}{(remaining.Minutes > 0 ? remaining.Minutes.ToString() + " minutes " : "")}{(remaining.Seconds > 0 ? remaining.Seconds.ToString() + " seconds " : "")}remaining.".PadLeft(80));
+        WriteLine(($"{(remaining.Days > 0 ? remaining.Days.ToString() + Properties.CoreContent.Days : "")}{(remaining.Hours > 0 ? remaining.Hours.ToString() + Properties.CoreContent.Hours : "")}{(remaining.Minutes > 0 ? remaining.Minutes.ToString() + Properties.CoreContent.Minutes : "")}{(remaining.Seconds > 0 ? remaining.Seconds.ToString() + Properties.CoreContent.Seconds : "")}" + Properties.CoreContent.Remaining).PadLeft(80));
     }
 
     private static int prog_anim = 0; private static int prog_dur = 0;
@@ -2740,12 +2740,12 @@ public static class UserInterface
 
         string err = Lamentation.InterpretExceptionName(error);
 
-        WriteLine("A problem occurred during execution. Meditation out of balance.\n");
+        WriteLine($"{Properties.CoreContent.PSODHead}\n");
 
         if (error is Lamentation) WriteLine($"LP{(error as Lamentation).ErrorCode:0000}: {(error as Lamentation).Message}\n\n");
-        else WriteLine($"{(Regex.IsMatch(err, @"[AEIOUaeiou].*") ? "An" : "A")} {err} has occurred.\n\n");
+        else WriteLine(error.Message);
 
-        WriteLine("Oh dear, I've made quite a mess. Press any key to continue.");
+        WriteLine(Properties.CoreContent.PSODFoot);
     }
 }
 #endregion

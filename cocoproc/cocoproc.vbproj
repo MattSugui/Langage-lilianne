@@ -8,8 +8,8 @@
 		<Deterministic>False</Deterministic>
 
 		<AssemblyTitle>Coco Preprocessor Language</AssemblyTitle>
-		<AssemblyVersion>1.2.356.0</AssemblyVersion>
-		<FileVersion>1.2.356.0</FileVersion>
+		<AssemblyVersion>1.2.474.0</AssemblyVersion>
+		<FileVersion>1.2.474.0</FileVersion>
 		<InformationalVersion>Scholarly Interim Graphix 220206-0037</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright>
@@ -35,7 +35,7 @@
   </ItemGroup>-->
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoproc' -ProjectType 1 -IsRelease $false -Platform 0&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'cocoproc' -ProjectType 1 -IsRelease $false -Platform 0 -NewVerName 'Scholarly Localisation'&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
