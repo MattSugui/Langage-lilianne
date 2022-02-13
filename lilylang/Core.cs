@@ -287,9 +287,9 @@ public static class Programme
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), "Exit")
             );
         string filepath = AskingFileScreen($"Where is the {(SingleOrProj? "project" : "code")} file?"); string outpath;
-        if (SingleOrProj) outpath = AskingFileScreen("Where should be the output?"); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
+        if (SingleOrProj) outpath = AskingScreen("Where should be the output?"); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
         
-        InterpretNewGUI(filepath, outpath);
+        InterpretNewGUI(filepath, outpath.Trim('"'));
 
         if (!ErrorRaised)
         {
@@ -460,8 +460,6 @@ public static class Interpreter
          */
         Stopwatch stopwatch = new();
 
-        bool oopsie = false;
-
         try
         {
             stopwatch.Start();
@@ -478,6 +476,11 @@ public static class Interpreter
             if (SingleOrProj)
             {
                 VersionSelector(infile);
+                if (!VersionOfCompilation)
+                {
+                    XmlDocument doc = new(); doc.Load(infile);
+                    ReadProjectFile(doc);
+                }
                 if (DoNotDoCompilation) return;
             }
             else
@@ -485,6 +488,14 @@ public static class Interpreter
                 ReadFile(infile);
                 ConsummateSource = CurrentFile;
             }
+            DisplayScreen(
+                "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
+                null,
+                $"Preprocessing the project...",
+                null
+                );
+            Preprocess(ConsummateSource.ToArray());
+
 
             DisplayScreen(
                 "Please wait while Lilian examines your code. This may take several minutes depending on the size of the code.",
@@ -496,10 +507,10 @@ public static class Interpreter
 
             int k; // save to increm
             int p; // reserved for progress visualisation
-            j = ConsummateSource.Count + 1; p = j;
+            j = CurrentFile.Count + 1; p = j;
             for (int i = 1; i < j; i++)
             {
-                ScanTokens(ConsummateSource[i - 1]);
+                ScanTokens(CurrentFile[i - 1]);
                 TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
                 ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
                 p = j + CurrentWordPacks.Count;
