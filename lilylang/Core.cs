@@ -2559,6 +2559,7 @@ public static class UserInterface
                 if (Actions.Exists(x => x.Key == pressed))
                 {
                     Actions.Find(x => x.Key == pressed).Invoke();
+                    Actions.Clear();
                     return;
                 }
                 else continue;
