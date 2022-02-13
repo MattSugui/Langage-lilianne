@@ -822,7 +822,7 @@ public static class Programme
                 "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
                 $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
                 $"Bytecode conversion.", (int)(((decimal)i / (decimal)j) * 100m));
-            l++;
+            l++; CurrentPointedEffect++;
         }
         stopwatch.Stop();
 
