@@ -242,8 +242,8 @@ public static class Programme
         }
         #endregion
         
-        SetWindowSize(80, 25);
-        SetBufferSize(80, 25);
+        SetWindowSize(81, 25);
+        SetBufferSize(81, 25);
         WriteLine(
             "Fonder Lilian Language Environment\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
@@ -469,21 +469,14 @@ public static class Interpreter
 
         int k; // save to increm
         int p; // reserved for progress visualisation
-        Stopwatch speedcam = new();
-        speedcam.Start();
         j = CurrentFile.Count + 1; p = j;
         for (int i = 1; i < j; i++)
         {
             ScanTokens(CurrentFile[i - 1]);
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            DisplayScreen(
-                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
-                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Token {CurrentWordPacks.Count + 1} @ {(speedcam.Elapsed.Seconds > 0 ? (int)((decimal)(CurrentWordPacks.Count + 1) / (decimal)speedcam.Elapsed.Seconds) : "(calibrating)")} t/s",
-                (int)(((decimal)i / (decimal)p) * 100m));
+            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
             p = j + CurrentWordPacks.Count;
         }
-        speedcam.Stop();
         k = j;
         j = k + CurrentWordPacks.Count; p = j;
         int l = 0;
@@ -491,11 +484,7 @@ public static class Interpreter
         {
             ArrangeTokens(CurrentWordPacks[l ]);
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            DisplayScreen(
-                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
-                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Token {l} of {CurrentWordPacks.Count}, sentence {CurrentSentences.Count + 1}",
-                (int)(((decimal)i / (decimal)p) * 100m));
+            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
             l++; p = j + CurrentSentences.Count;
         }
         k = j;
@@ -506,11 +495,7 @@ public static class Interpreter
         {
             PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
             TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-            DisplayScreen(
-                "Please wait while Lilian compiles the code. This might take several minutes to complete. During this time, you may do something else; just leave this console open. Due to the GUI rendering system, the console might flicker as it is trying to catch up with itself.",
-                $"{(dur.Days > 0 ? dur.Days.ToString() + " days " : "")}{(dur.Hours > 0 ? dur.Hours.ToString() + " hours " : "")}{(dur.Minutes > 0 ? dur.Minutes.ToString() + " minutes " : "")}{(dur.Seconds > 0 ? dur.Seconds.ToString() + " seconds " : "")}remaining.",
-                $"Sentence {l} of {CurrentSentences.Count}",
-                (int)(((decimal)i / (decimal)p) * 100m));
+            ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
             l++; CurrentPointedEffect++;
         }
         stopwatch.Stop();
@@ -2615,6 +2600,40 @@ public static class UserInterface
             goto Start;
         }
     }
+
+    /// <summary>
+    /// Displays a progress bar with some strange animations and a time remaining parameter.
+    /// </summary>
+    /// <param name="progress">The amount of progress made.</param>
+    /// <param name="remaining">The time remaining.</param>
+    public static void ProgressScreen(int progress, TimeSpan remaining)
+    {
+        ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
+        SetCursorPosition(0, 0);
+        if (prog_anim == prog_anim_modules.Length - 1) prog_anim = 0; else prog_anim++;
+        WriteLine(prog_anim_modules[prog_anim]);
+        WriteLine((int)((decimal)progress / 100m) + "%");
+        WriteLine($"{(remaining.Days > 0 ? remaining.Days.ToString() + " days " : "")}{(remaining.Hours > 0 ? remaining.Hours.ToString() + " hours " : "")}{(remaining.Minutes > 0 ? remaining.Minutes.ToString() + " minutes " : "")}{(remaining.Seconds > 0 ? remaining.Seconds.ToString() + " seconds " : "")}remaining.".PadLeft(80));
+    }
+
+    private static int prog_anim = 0;
+    private static readonly string[] prog_anim_modules =
+    {
+        "#                                    Lilian                                    #",
+        "##                                   Lilian                                   ##",
+        "####                                 Lilian                                 ####",
+        "########                             Lilian                             ########",
+        "################                     Lilian                     ################",
+        "################################     Lilian     ################################",
+        "#################################### Lilian ####################################",
+        " ################################### Lilian ################################### ",
+        "  ################################## Lilian ##################################  ",
+        "    ################################ Lilian ################################    ",
+        "        ############################ Lilian ############################        ",
+        "                #################### Lilian ####################                ",
+        "                                #### Lilian ####                                ",
+        "                                     Lilian                                     ",
+    };
 }
 #endregion
 
