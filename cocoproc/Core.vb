@@ -91,61 +91,14 @@ Public Module Programme
     ''' </summary>
     ''' <param name="args">The command-line arguments.</param>
     Public Sub Main(args As String())
-        If Not (args.Contains("-nobanner") Or args.Contains("-d")) Then
-            Console.WriteLine(
-                "Fonder Lilian Language Environment Coco Preprocessor" & vbCrLf &
-                "Version " & Assembly.GetExecutingAssembly().GetName().Version.ToString() & ", " & CType(Assembly.GetExecutingAssembly().GetCustomAttribute(GetType(AssemblyInformationalVersionAttribute)), AssemblyInformationalVersionAttribute).InformationalVersion.Replace("releaseman ", String.Empty) & vbCrLf &
-                 CType(Assembly.GetExecutingAssembly().GetCustomAttribute(GetType(AssemblyCopyrightAttribute)), AssemblyCopyrightAttribute).Copyright & vbCrLf
-            )
+        If File.Exists(args(0)) Then ' assumes that the 0th argument is a filepath
+            ReadFile(File.ReadAllLines(args(0)))
+            Interpret(CurrentFile)
+            ExportFile()
+            Environment.Exit(0)
+        Else
+            Console.WriteLine("Please input an actual CCN file.")
         End If
-
-        If args.Length = 0 Then GoTo NoArguments
-
-        Dim Filepath As String = args(0).Trim(""""c)
-        Dim Outpath As String = If(args.Contains("-d"), "cocolook.tmp", String.Empty)
-        Dim [error] As Boolean = False
-
-        Try
-            If File.Exists(Filepath) Then
-                ReadFile(File.ReadAllLines(Path.GetFileName(Filepath)))
-                Console.WriteLine("Reading file...")
-                Interpret(CurrentFile)
-                Console.WriteLine("Processing...")
-            Else
-                Throw New Lamentation(2, Filepath)
-            End If
-        Catch ex As Lamentation
-            Console.WriteLine(ex.ToString())
-            [error] = True
-        End Try
-
-        If [error] Then
-            Console.WriteLine("Processing failed because of the above error. There could be more errors, but this is the one that ended it." & vbCrLf & "Press any key to continue.")
-            Console.ReadKey(True)
-            Exit Sub
-        End If
-
-        Console.WriteLine("")
-        Exit Sub
-
-NoArguments:
-        Console.WriteLine(
-            "Hey! Restart the program and supply these arguments:" & vbCrLf &
-            "<input> [<output>] [-nobanner] [-d]" & vbCrLf &
-            "" & vbCrLf &
-            "<input>" & vbCrLf &
-            vbTab & "The path to the file." & vbCrLf &
-            "" & vbCrLf &
-            "[<output>]" & vbCrLf &
-            vbTab & "The path to the output of the compilation process. If the -d switch is present, this is ignored." & vbCrLf &
-            "" & vbCrLf &
-            "[-d]" & vbCrLf &
-            vbTab & "The preprocessor will think that this is for a Lilian process and will only emit a temporary file." & vbCrLf &
-            "" & vbCrLf &
-            "[-nobanner]" & vbCrLf &
-            vbTab & "Implicitly added with the -d switch. Removes the banner that appears during startup."
-        )
-        Exit Sub
     End Sub
 End Module
 #End Region

@@ -122,20 +122,9 @@
 #endregion
 
 #region Symbols that affect compilation
-#define TEMPASKING // 
-
-#define TEMPHALTNORMALOPS
-// remove the interpretation ability for a while. i mean that old interpretation process gon die anyway so.
-
-#define INTERPRETSIM
-// simulate the interpretation process. this assumes that you're compiling a sizeable project.
-// 50 seconds for translation, 100 seconds for IR interpretation, 2 seconds for instruction loading
-// and 5 seconds for writing the bytecode to file. All in all, it will take 3 minutes and 2 seconds
-// for the fausse compilation to run. This seemingly long compile time is according to tests
-// during the Coco Performance Task cycle for 1.1, which resulted in about 33 minutes total for 7 MB of code.
-// (or about 4 mins per 1 MB of code. Hence, this test kinda assumes about 750-900 kB of code, comments included.)
-// Translation doesnt exist yet obviously hence it's assumed that it would take about slightly less than
-// actual interpretation due to less tokens but using an equally-inefficient interpretation method.
+#define COCOTESTS
+// Runs Coco immediately with the input file without going through the interpretation process.
+// Lilian will also display the output PCP.
 #endregion
 
 #region Imports
@@ -208,7 +197,8 @@ public static class Programme
     internal static extern IntPtr GetConsoleWindow();
 
     #endregion
-    
+
+    #region Switches
     /// <summary>
     /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
     /// </summary>
@@ -229,6 +219,7 @@ public static class Programme
     /// Checks after execution if an error has been raised. If it does, end immediately.
     /// </summary>
     public static bool ErrorRaised { get; set; }
+    #endregion
 
     /// <summary>
     /// The main entry point.
@@ -257,18 +248,18 @@ public static class Programme
         SetWindowSize(81, 25);
         SetBufferSize(81, 25);
         WriteLine(
-            $"{Properties.CoreContent.ProgramName}\n" +
+            $"\n\n\n{Properties.CoreContent.ProgramName}\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
-        if (args.Length != 0)
+        Sleep(1000);
+        Clear();
+
+        if (args.Length != 0 && args.Length == 1)
         {
 
         }
-
-        Sleep(1000);
-        Clear();
 
         ApplicationTitle = Properties.CoreContent.ProgramName;
         LaunchUI();
@@ -283,6 +274,12 @@ public static class Programme
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
 
+#if COCOTESTS
+        string cocopath = AskingFileScreen("Where is the project!");
+        File.WriteAllLines("coco.gift", File.ReadAllLines(cocopath));
+        Process.Start("cocoproc.exe");
+        WriteLine(string.Join(Environment.NewLine, File.ReadAllLines("cocotmp.pcp")));
+#else
         // Choice screen
         DisplayScreen(
             Properties.CoreContent.ChoiceScreenBody,
@@ -312,7 +309,7 @@ public static class Programme
             Clear();
             Execute();
         }
-
+#endif
         Environment.Exit(0);
     }
 }
