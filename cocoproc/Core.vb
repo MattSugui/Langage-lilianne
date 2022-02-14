@@ -93,8 +93,22 @@ Public Module Programme
     Public Sub Main(args As String())
         If File.Exists(args(0)) Then ' assumes that the 0th argument is a filepath
             ReadFile(File.ReadAllLines(args(0)))
+#If DEBUG Then
+            Thread.Sleep(2500)
+            Console.WriteLine("Reading shit")
+#End If
             Interpret(CurrentFile)
+#If DEBUG Then
+            Thread.Sleep(2500)
+            Console.WriteLine(String.Join("'"c, OutputFile.ToArray()))
+#End If
+
             ExportFile()
+#If DEBUG Then
+            Thread.Sleep(2500)
+            Console.WriteLine("Exportation")
+#End If
+            Console.WriteLine(String.Join(Environment.NewLine, File.ReadAllLines("cocotmp.pcp")))
             Environment.Exit(0)
         Else
             Console.WriteLine("Please input an actual CCN file.")
