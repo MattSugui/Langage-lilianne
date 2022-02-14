@@ -277,7 +277,8 @@ public static class Programme
 #if COCOTESTS
         string cocopath = AskingFileScreen("Where is the project!");
         File.WriteAllLines("coco.gift", File.ReadAllLines(cocopath));
-        Process.Start("cocoproc.exe");
+        Process coco = Process.Start("cocoproc.exe");
+        while (!coco.HasExited) {; }
         WriteLine(string.Join(Environment.NewLine, File.ReadAllLines("cocotmp.pcp")));
 #else
         // Choice screen
