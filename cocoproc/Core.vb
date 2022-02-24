@@ -91,8 +91,8 @@ Public Module Programme
     ''' </summary>
     ''' <param name="args">The command-line arguments.</param>
     Public Sub Main(args As String())
-        If File.Exists(args(0)) Then ' assumes that the 0th argument is a filepath
-            ReadFile(File.ReadAllLines(args(0)))
+        If File.Exists("coco.gift") Then ' assumes that the 0th argument is a filepath
+            ReadFile(File.ReadAllLines("coco.gift"))
 #If DEBUG Then
             Thread.Sleep(2500)
             Console.WriteLine("Reading shit")

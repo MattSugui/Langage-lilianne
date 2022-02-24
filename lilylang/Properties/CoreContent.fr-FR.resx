@@ -262,7 +262,7 @@
     <value>Un erreur en traitement avant la compilation. Numéro du build incorrect.</value>
   </data>
   <data name="Lamentation44" xml:space="preserve">
-    <value>Un erreur en traitement avant la compilation. Ceci projet n'utilise pas cette version du Lilian. Utilisez, au minimum, version {0}.</value>
+    <value>Un erreur en traitement avant la compilation. Ceci projet n'utilise pas cette version du Lilian. Utilisez, au minimum, la version {0}.</value>
   </data>
   <data name="Lamentation45" xml:space="preserve">
     <value>Un erreur en traitement avant la compilation. Commande inconnue.</value>
@@ -307,22 +307,34 @@
     <value>Un erreur d'implementation. La grammaire primaire n'existe pas. Utilisez le syntaxe d'assemblage, ou réinstallez Lilian.</value>
   </data>
   <data name="Lamentation58" xml:space="preserve">
-    <value />
+    <value>Un erreur en traitement avant la compilation. Nous n'utilisons pas plus des ordres qui commencent avec un point. Utilisez des ordres qui commencent avec une barre oblique (/) ou retourner au Lilian 1.1.</value>
   </data>
   <data name="Lamentation59" xml:space="preserve">
-    <value />
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer un projet dans d'autre.</value>
   </data>
   <data name="Lamentation6" xml:space="preserve">
     <value>Un erreur d'implementation. Le jeton prédéfini « {0} » n'existe pas. Veuillez réinstaller Lilian, ou envoyez-nous un rapport de bogue.</value>
   </data>
   <data name="Lamentation60" xml:space="preserve">
-    <value />
+    <value>Un erreur en traitement avant la compilation. Un autre projet est déjà déclaré.</value>
   </data>
   <data name="Lamentation61" xml:space="preserve">
-    <value />
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer un ordre d'alteration de code dans une déclaration de projet.</value>
   </data>
   <data name="Lamentation62" xml:space="preserve">
-    <value />
+    <value>Un erreur en traitement avant la compilation. Si vous fûtes croyant que l'ordre 'include' ajoute un fichier de code là, vous êtes incorrect. N'utilisez pas cette ordre à l'extérieur d'une définition de projet.</value>
+  </data>
+  <data name="Lamentation63" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas utiliser cette ordre à l'extérieur d'une déclaration de projet.</value>
+  </data>
+  <data name="Lamentation64" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer une grammaire dans d'autre.</value>
+  </data>
+  <data name="Lamentation65" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Une autre grammaire est déjà déclarée.</value>
+  </data>
+  <data name="Lamentation66" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas déclarer cette ordre dans cette contexte.</value>
   </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Un erreur d'implementation. Il y peut-être rien au jeton {0} en raison que la phrase {1} a seulement {2} jetons.</value>

@@ -262,7 +262,7 @@
     <value>Preprocessing error. Invalid build number.</value>
   </data>
   <data name="Lamentation44" xml:space="preserve">
-    <value>Preprocessing error. The project does not use this build of Lilian. Use at least build {0}.</value>
+    <value>Preprocessing error. The project does not use this version of Lilian. Use at least {0}.</value>
   </data>
   <data name="Lamentation45" xml:space="preserve">
     <value>Preprocessing error. Unknown directive.</value>
@@ -307,22 +307,34 @@
     <value>Implementation error. The core grammar does not exist. Fall back to assembly syntax, or reinstall Lilian.</value>
   </data>
   <data name="Lamentation58" xml:space="preserve">
-    <value />
+    <value>Preprocessing error. We do not use dot-directives anymore. Use slash directives or fall back to Lilian 1.1.</value>
   </data>
   <data name="Lamentation59" xml:space="preserve">
-    <value />
+    <value>Preprocessing error. Cannot declare a project inside of another.</value>
   </data>
   <data name="Lamentation6" xml:space="preserve">
     <value>Implementation error. The predefined token '{0}' does not exist. Please reinstall Lilian, or send a bug report.</value>
   </data>
   <data name="Lamentation60" xml:space="preserve">
-    <value />
+    <value>Preprocessing error. Another project was already defined.</value>
   </data>
   <data name="Lamentation61" xml:space="preserve">
-    <value />
+    <value>Preprocessing error. Cannot declare code macros in a project definition.</value>
   </data>
   <data name="Lamentation62" xml:space="preserve">
-    <value />
+    <value>Preprocessing error. If you were thinking that the 'include' command adds a code file in that location, you were wrong. Do not use this command outside a project definition.</value>
+  </data>
+  <data name="Lamentation63" xml:space="preserve">
+    <value>Preprocessing error. Cannot use this command outside of a project definition.</value>
+  </data>
+  <data name="Lamentation64" xml:space="preserve">
+    <value>Preprocessing error. Cannot declare a grammar inside of another.</value>
+  </data>
+  <data name="Lamentation65" xml:space="preserve">
+    <value>Preprocessing error. Another grammar was already defined.</value>
+  </data>
+  <data name="Lamentation66" xml:space="preserve">
+    <value>Preprocessing error. Cannot put this command in the current context.</value>
   </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.</value>

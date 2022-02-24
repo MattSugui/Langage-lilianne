@@ -493,7 +493,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Preprocessing error. The project does not use this build of Lilian. Use at least build {0}..
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. The project does not use this version of Lilian. Use at least {0}..
         /// </summary>
         internal static string Lamentation44 {
             get {
@@ -628,7 +628,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. We do not use dot-directives anymore. Use slash directives or fall back to Lilian 1.1..
         /// </summary>
         internal static string Lamentation58 {
             get {
@@ -637,7 +637,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot declare a project inside of another..
         /// </summary>
         internal static string Lamentation59 {
             get {
@@ -655,7 +655,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Another project was already defined..
         /// </summary>
         internal static string Lamentation60 {
             get {
@@ -664,7 +664,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot declare code macros in a project definition..
         /// </summary>
         internal static string Lamentation61 {
             get {
@@ -673,11 +673,47 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à .
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. If you were thinking that the &apos;include&apos; command adds a code file in that location, you were wrong. Do not use this command outside a project definition..
         /// </summary>
         internal static string Lamentation62 {
             get {
                 return ResourceManager.GetString("Lamentation62", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot use this command outside of a project definition..
+        /// </summary>
+        internal static string Lamentation63 {
+            get {
+                return ResourceManager.GetString("Lamentation63", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot declare a grammar inside of another..
+        /// </summary>
+        internal static string Lamentation64 {
+            get {
+                return ResourceManager.GetString("Lamentation64", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Another grammar was already defined..
+        /// </summary>
+        internal static string Lamentation65 {
+            get {
+                return ResourceManager.GetString("Lamentation65", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot put this command in the current context..
+        /// </summary>
+        internal static string Lamentation66 {
+            get {
+                return ResourceManager.GetString("Lamentation66", resourceCulture);
             }
         }
         

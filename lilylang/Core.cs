@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (158/175 kB)                                                              ║
+║ Size goal: Memorex 650 (162/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -273,14 +273,18 @@ public static class Programme
             new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
-
 #if COCOTESTS
-        string cocopath = AskingFileScreen("Where is the project!");
-        File.WriteAllLines("coco.gift", File.ReadAllLines(cocopath));
-        Process coco = Process.Start("cocoproc.exe");
-        while (!coco.HasExited) {; }
-        WriteLine(string.Join(Environment.NewLine, File.ReadAllLines("cocotmp.pcp")));
-#else
+        {
+            // hardcode AYO.CCN lol
+            RegulateCompilation = true;
+            string test = @"D:\multitest\ayo.ccn";
+            if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
+            else Preprocess(File.ReadAllLines(test));
+            WriteLine("tests done!!!!!!!!!!!!!");
+            ReadKey(true);
+            return;
+        }
+#endif
         // Choice screen
         DisplayScreen(
             Properties.CoreContent.ChoiceScreenBody,
@@ -310,7 +314,6 @@ public static class Programme
             Clear();
             Execute();
         }
-#endif
         Environment.Exit(0);
     }
 }
@@ -1160,6 +1163,15 @@ public static class Interpreter
             def.Add(0x003C, Properties.CoreContent.Lamentation55);
             def.Add(0x003D, Properties.CoreContent.Lamentation56);
             def.Add(0x003E, Properties.CoreContent.Lamentation57);
+            def.Add(0x003F, Properties.CoreContent.Lamentation58);
+            def.Add(0x0040, Properties.CoreContent.Lamentation59);
+            def.Add(0x0041, Properties.CoreContent.Lamentation60);
+            def.Add(0x0042, Properties.CoreContent.Lamentation61);
+            def.Add(0x0043, Properties.CoreContent.Lamentation62);
+            def.Add(0x0044, Properties.CoreContent.Lamentation63);
+            def.Add(0x0045, Properties.CoreContent.Lamentation64);
+            def.Add(0x0046, Properties.CoreContent.Lamentation65);
+            def.Add(0x0047, Properties.CoreContent.Lamentation66);
         }
 
         /// <summary>
@@ -1252,7 +1264,7 @@ public static class Interpreter
         /// <returns>A friendly name version of the exception.</returns>
         public static string InterpretExceptionName(Exception e)
         {
-            var mtc = Regex.Matches(nameof(e), @"[A-Z][a-z]*");
+            var mtc = Regex.Matches(e.GetBaseException().GetType().Name, @"[A-Z][a-z]*");
 
             List<string> conts = new();
 
@@ -2760,22 +2772,29 @@ public static class Coco
     /// </summary>
     public static class Preprocessor
     {
+        #region Flags
         /// <summary>
         /// If true, enable the preprocessor. If false, all directive lines will be ignored.
         /// </summary>
-        public static bool RegulateCompilation = false;
+        public static bool RegulateCompilation { get; set; }
 
         /// <summary>
         /// If true, the compiler will report that nothing has been added and hence nothing will happen.
         /// The only preserved elements are the grammar and output path, if the build is a debug build.
         /// </summary>
-        public static bool DoNotDoCompilation = false;
+        public static bool DoNotDoCompilation { get; set; }
 
         /// <summary>
         /// If true, the compiler will use the individual Coco interpreter for the project. Otherwise,
         /// the compiler will use the previous build system from version 1.1.
         /// </summary>
-        public static bool VersionOfCompilation = false;
+        public static bool VersionOfCompilation { get; set; }
+
+        /// <summary>
+        /// If true, the compiler will report that there was no output path specified.
+        /// </summary>
+        public static bool NoOutputFound { get; set; }
+        #endregion
 
         /// <summary>
         /// Determines the project version to use.
@@ -2875,7 +2894,7 @@ public static class Coco
         /// <summary>
         /// The path of the output.
         /// </summary>
-        public static string Outgoing = "";
+        public static string Outgoing { get; set; }
 
         #region Vrai Coco
 
@@ -2890,9 +2909,14 @@ public static class Coco
 
             Dictionary<string, string> symbols = new();
             List<(string? symval, List<string> lines)> lignes = new();
+            List<string> IncludeFilepaths = new();
+
+            List<NewToken> GatheredTokens = new();
+            List<NewSentenceStructure> GatheredStructures = new();
 
             string currval = string.Empty;
             string currsym = string.Empty;
+            string OutputPath = string.Empty;
 
             int currindx = -1;
 
@@ -2900,25 +2924,37 @@ public static class Coco
             bool inseq = false;
             bool togglefind = false;
 
-            if (!Array.Exists(file, s => s.TrimStart().StartsWith('.')))
+            bool ProjectSection = false;
+            bool ProjectDefined = false;
+            bool GrammarSection = false;
+            bool GrammarDefined = false;
+
+            bool? OutputPresent = null;
+            bool? InputPresent = null;
+            bool? GrammarPresent = null;
+
+            Version ver = new();
+
+            if (!Array.Exists(file, s => s.TrimStart().StartsWith('/')))
             {
                 CurrentFile = new(file);
                 return;
             }
 
+            if (Array.Exists(file, s => s.TrimStart().StartsWith('.'))) throw new Lamentation(0x3f);
+
             if (!RegulateCompilation)
             {
                 foreach (string line in file)
                 {
-                    if (!line.TrimStart().StartsWith('.')) CurrentFile.Add(line); else continue;
+                    if (!line.TrimStart().StartsWith('/')) CurrentFile.Add(line); else continue;
                 }
-
                 return;
             }
 
             foreach (string line in file)
             {
-                if (!line.TrimStart().StartsWith('.'))
+                if (!line.TrimStart().StartsWith('/'))
                 {
                     if (collect)
                         lignes[currindx].lines.Add(line);
@@ -2927,10 +2963,13 @@ public static class Coco
                     continue;
                 }
 
-                string preprocline = line.TrimStart().TrimStart('.');
+                string preprocline = line.TrimStart().TrimStart('/');
 
+                #region Original macros
                 if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     var mat = Regex.Match(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
@@ -2939,6 +2978,8 @@ public static class Coco
                 }
                 else if (Regex.IsMatch(preprocline, @"defifn\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     var mat = Regex.Match(preprocline, @"defifn\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
@@ -2946,6 +2987,8 @@ public static class Coco
                 }
                 else if (Regex.IsMatch(preprocline, @"undef\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     var mat = Regex.Match(preprocline, @"undef\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
@@ -2954,6 +2997,8 @@ public static class Coco
                 }
                 else if (Regex.IsMatch(preprocline, @"undefife\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     var mat = Regex.Match(preprocline, @"undefife\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
 
@@ -2961,6 +3006,8 @@ public static class Coco
                 }
                 else if (Regex.IsMatch(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     var mat = Regex.Match(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
@@ -2968,9 +3015,11 @@ public static class Coco
                         symbols[symbolname] = val;
                     else throw new Lamentation(0x33, symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
+                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]"))
                 {
-                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
+                    if (ProjectSection) throw new Lamentation(0x42);
+
+                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -2981,9 +3030,11 @@ public static class Coco
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then"))
+                else if (Regex.IsMatch(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then").Groups;
+                    if (ProjectSection) throw new Lamentation(0x42);
+
+                    var mat = Regex.Match(preprocline, @"ifdef\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -2995,9 +3046,11 @@ public static class Coco
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then"))
+                else if (Regex.IsMatch(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
-                    var mat = Regex.Match(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)\s+then").Groups;
+                    if (ProjectSection) throw new Lamentation(0x42);
+
+                    var mat = Regex.Match(preprocline, @"ifndef\s+(?<SymbolName>[0-9A-Za-z]+)").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -3009,11 +3062,11 @@ public static class Coco
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then"))
+                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]"))
                 {
                     if (!inseq) throw new Lamentation(0x36);
 
-                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]\s+then").Groups;
+                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -3024,12 +3077,16 @@ public static class Coco
                 }
                 else if (Regex.IsMatch(preprocline, "else"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     if (!inseq) throw new Lamentation(0x35);
                     lignes.Add((null, new()));
                     currindx++;
                 }
                 else if (Regex.IsMatch(preprocline, "endif"))
                 {
+                    if (ProjectSection) throw new Lamentation(0x42);
+
                     if (!inseq) throw new Lamentation(0x37);
                     inseq = false;
                     collect = false;
@@ -3097,6 +3154,74 @@ public static class Coco
                     lignes = new();
                     currindx = -1;
                 }
+                #endregion
+                #region Project macros
+                else if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
+                {
+                    var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
+
+                    if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)"))
+                        mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)");
+                    if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)"))
+                        mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)");
+
+                    int maj, min, bld, rev;
+                    maj = int.Parse(mat.Groups["Major"].Value);
+                    min = int.Parse(mat.Groups["Minor"].Value);
+                    bld = int.Parse(!string.IsNullOrEmpty(mat.Groups["Build"].Value) ? mat.Groups["Build"].Value: "-1");
+                    rev = int.Parse(!string.IsNullOrEmpty(mat.Groups["Revision"].Value) ? mat.Groups["Revision"].Value : "-1");
+
+                    ver = new(maj, min);
+                    if (bld != -1 && rev != -1) ver = new(maj, min, bld, rev);
+                    else if (bld != -1) ver = new(maj, min, bld);
+
+                    if (Assembly.GetExecutingAssembly().GetName().Version < ver) throw new Lamentation(0x31);
+                }
+                else if (Regex.IsMatch(preprocline, @"project\s+\[(?<SymbolName>.+)\]"))
+                {
+                    if (ProjectSection) throw new Lamentation(0x40);
+                    if (ProjectDefined) throw new Lamentation(0x41);
+#if DEBUG
+                    WriteLine("Project!!!");
+#endif 
+                    ProjectSection = true;
+                }
+                else if (Regex.IsMatch(preprocline, "endproject"))
+                {
+                    if (!ProjectSection) throw new Lamentation(0x42); else ProjectSection = false;
+
+                    if (OutputPresent == false) NoOutputFound = true;
+                    if (InputPresent == false) DoNotDoCompilation = true;
+                }
+                else if (Regex.IsMatch(preprocline, @"include\s+\[(?<FileName>.+)\]"))
+                {
+                    if (!ProjectSection) throw new Lamentation(0x43);
+
+                    var mat = Regex.Match(preprocline, @"include\s+\[(?<FileName>.+)\]").Groups;
+
+                    if (!File.Exists(mat["FileName"].Value)) throw new Lamentation(0x3);
+
+                    IncludeFilepaths.Add(mat["FileName"].Value);
+
+                    InputPresent = true;
+                }
+                else if (Regex.IsMatch(preprocline, @"output\s+\[(?<FileName>.+)\]"))
+                {
+                    if (!ProjectSection) throw new Lamentation(0x44);
+
+                    var mat = Regex.Match(preprocline, @"output\s+\[(?<FileName>.+)\]").Groups;
+
+                    Outgoing = mat["FileName"].Name;
+
+                    OutputPresent = true;
+                }
+                #endregion
+                #region Grammar definition macros
+                else if (Regex.IsMatch(preprocline, "grammar"))
+                {
+                    if (GrammarSection) throw new Lamentation();
+                }
+                #endregion
                 else throw new Lamentation(0x32);
             }
 
@@ -3112,6 +3237,13 @@ public static class Coco
                         avail.Add(bruh.Value.TrimStart('%'));
                 throw new Lamentation(0x3c, string.Join(", ", avail.ToArray()));
             }
+
+#if COCOTESTS && DEBUG
+            WriteLine($"Project requests version: {ver} (currently on {Assembly.GetExecutingAssembly().GetName().Version})");
+            WriteLine($"Project is called: []");
+            WriteLine("Project needs:");
+            foreach (string path in IncludeFilepaths) WriteLine(path);
+#endif 
         }
 
         #endregion
@@ -3132,7 +3264,7 @@ public static class Coco
         /// into the <see cref="TEMP.LOADPATTERNS"/> method and actually still use an older form of the
         /// language's syntax checker. If true, Lilian should use the custom grammar, then use the IR.
         /// </remarks>
-        public static bool GrammarType = false;
+        public static bool GrammarType { get; set; }
 
         /// <summary>
         /// Loads a grammar file.
@@ -3140,49 +3272,7 @@ public static class Coco
         /// <param name="path">The path to the grammar file. By default it should load "core.lgf".</param>
         public static void LoadGrammar(string path = "core.lgf")
         {
-            string temp = path.Trim('"');
 
-            if (!File.Exists(temp))
-            {
-                if (path == "core.lgf") throw new Lamentation(0x3e);
-                else throw new Lamentation(0x2, temp);
-            }
-
-            GrammarType = true;
-
-            XmlDocument gram = new();
-            gram.Load(temp);
-
-            XmlNode root = gram.DocumentElement;
-
-            XmlNodeList tokens = root.SelectNodes("descendant::Tokens/Token");
-            foreach (XmlNode token in tokens) Tokens.Add(
-                    new
-                    (
-                        token.Attributes["Name"].Value,
-                        token.Attributes["Pattern"].Value,
-                        Regex.IsMatch(token.Attributes["Pattern"].Value, @".*\*|.*\+"),
-                        token.Attributes["IsValue"] is not null && bool.TryParse(token.Attributes["IsValue"]!.Value, out _),
-                        token.Attributes["Ignore"] is not null && bool.TryParse(token.Attributes["Ignore"]!.Value, out _)
-                    )
-                );
-
-            XmlNodeList sentences = root.SelectNodes("descendant::SentenceStructures/SentenceStructure");
-            foreach (XmlNode sentence in sentences)
-            {
-                string name = sentence.Attributes["Name"].Value;
-                MatchCollection col = Regex.Matches(sentence.Attributes["Pattern"].Value, @"\[[^\[\]]+\]");
-                List<string> pattemp = new();
-                foreach (Match match in col) pattemp.Add(match.Value);
-                string[] pattern = pattemp.ToArray();
-
-                string logic = sentence.InnerText;
-                Sentences.Add(new(name, pattern, logic));
-            }
-#if DEBUG
-            foreach (var item in Tokens) Debug.WriteLine(item.ToString());
-            foreach (var item in Sentences) Debug.WriteLine(item.ToString());
-#endif
         }
 
         /// <summary>
