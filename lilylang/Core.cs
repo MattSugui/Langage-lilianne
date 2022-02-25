@@ -122,7 +122,7 @@
 #endregion
 
 #region Symbols that affect compilation
-#define COCOTESTS
+//#define COCOTESTS
 // Runs Coco immediately with the input file without going through the interpretation process.
 // Lilian will also display the output PCP.
 #endregion
@@ -517,6 +517,7 @@ public static class Interpreter
                     XmlDocument doc = new(); doc.Load(infile);
                     ReadProjectFile(doc);
                 }
+                else Preprocess(File.ReadAllLines(infile));
                 if (DoNotDoCompilation) return;
             }
             else
@@ -530,7 +531,7 @@ public static class Interpreter
                 Properties.CoreContent.PreprocessStatus,
                 null
                 );
-            Preprocess(ConsummateSource.ToArray());
+            Preprocess(ConsummateSource.ToArray(), true);
 
 
             DisplayScreen(
@@ -2979,10 +2980,11 @@ public static class Coco
 
                 if (!line.TrimStart().StartsWith('/'))
                 {
-                    if (collect)
+                    if ((Pass && !string.IsNullOrWhiteSpace(line)) && collect) // pass GO; collect $200
                         lignes[currindx].lines.Add(line);
-                    else
+                    else if (Pass && !string.IsNullOrWhiteSpace(line)) // just visiting
                         CurrentFile.Add(line);
+                    
                     continue;
                 }
 
@@ -3206,7 +3208,7 @@ public static class Coco
                     {
                         if (ProjectSection) throw new Lamentation(0x40);
                         if (ProjectDefined) throw new Lamentation(0x41);
-#if DEBUG
+#if COCOTESTS
                         WriteLine("Project!!!");
 #endif
 
