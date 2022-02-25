@@ -2965,7 +2965,7 @@ public static class Coco
 
             if (Array.Exists(file, s => s.TrimStart().StartsWith('.'))) throw new Lamentation(0x3f);
 
-            if (!RegulateCompilation)
+            if (!RegulateCompilation && !Pass)
             {
                 foreach (string line in file)
                 {
