@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (162/175 kB)                                                              ║
+║ Size goal: Memorex 650 (165/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -248,7 +248,7 @@ public static class Programme
         SetWindowSize(81, 25);
         SetBufferSize(81, 25);
         WriteLine(
-            $"\n\n\n{Properties.CoreContent.ProgramName}\n" +
+            $"\n\n\n\n\n\n\n\n\n\n{Properties.CoreContent.ProgramName}\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
@@ -256,7 +256,7 @@ public static class Programme
         Sleep(1000);
         Clear();
 
-        if (args.Length != 0 && args.Length == 1)
+        if (args.Contains(""))
         {
 
         }
@@ -278,10 +278,20 @@ public static class Programme
             // hardcode AYO.CCN lol
             RegulateCompilation = true;
             string test = @"D:\multitest\ayo.ccn";
-            if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
-            else Preprocess(File.ReadAllLines(test));
-            WriteLine("tests done!!!!!!!!!!!!!");
-            ReadKey(true);
+            try
+            {
+                WriteLine("First pass on preproc!");
+                if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
+                else Preprocess(File.ReadAllLines(test));
+                WriteLine("tests done!!!!!!!!!!!!!");
+                WriteLine("Second pass on preproc!");
+                Preprocess(ConsummateSource.ToArray(), true);
+                ReadKey(true);
+            }
+            catch (Exception e)
+            {
+                ErrorScreen(e);
+            }
             return;
         }
 #endif
@@ -335,14 +345,14 @@ public static class Interpreter
     #endregion
     #region Compilation
     /// <summary>
-    /// The unprocessed project file.
+    /// The unprocessed project file. (XML version)
     /// </summary>
     public static XmlDocument tempCurrFile;
 
     /// <summary>
-    /// The unprocessed and unchecked project file.
+    /// The unprocessed project file. (Coco version)
     /// </summary>
-    public static string preProcessFile { get; set; }
+    public static string[] PreProcessFile { get; set; }
 
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
@@ -350,10 +360,20 @@ public static class Interpreter
     public static List<string> CurrentFile = new();
 
     /// <summary>
+    /// The files that are coming in through the <c>/include</c> command.
+    /// </summary>
+    public static List<string> IncomingFile = new();
+
+    /// <summary>
     /// If <see langword="false"/>, the compiler will assume that everything is in one file.
     /// If <see langword="true"/>, the compiler will assume that a project file will be used.
     /// </summary>
     public static bool SingleOrProj { get; set; }
+
+    /// <summary>
+    /// The name of the project. Is also the name of the application unless stated otherwise.
+    /// </summary>
+    public static string ProjectTitle { get; set; }
     #endregion
     #region End-user debug services
     /// <summary>
@@ -448,7 +468,7 @@ public static class Interpreter
     /// <exception cref="Lamentation"></exception>
     public static void ReadFile(string path)
     {
-        if (File.Exists(path)) foreach (string line in File.ReadAllLines(path)) CurrentFile.Add(line); else throw new Lamentation(3, path);
+        if (File.Exists(path)) foreach (string line in File.ReadAllLines(path)) ConsummateSource.Add(line); else throw new Lamentation(3, path);
     }
 
     /// <summary>
@@ -457,7 +477,7 @@ public static class Interpreter
     /// <param name="lines">Any amount of lines to be added.</param>
     public static void ReadFile(params string[] lines)
     {
-        foreach (string line in lines) CurrentFile.Add(line);
+        foreach (string line in lines) ConsummateSource.Add(line);
     }
     #endregion
 
@@ -2903,7 +2923,8 @@ public static class Coco
         /// If the file is primarily in Coco (i.e., no dot delimiter), this will think that all lines are normal Lilian.
         /// </summary>
         /// <param name="file">The raw file.</param>
-        public static void Preprocess(string[] file /*, ref int progress*/)
+        /// <param name="Pass">If true, the project macros are not checked. (Second-pass)</param>
+        public static void Preprocess(string[] file /*, ref int progress*/, bool Pass = false)
         {
             //progress = file.Length;
 
@@ -3155,73 +3176,84 @@ public static class Coco
                     currindx = -1;
                 }
                 #endregion
-                #region Project macros
-                else if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
+                else if (!Pass)
                 {
-                    var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
+                    #region Project macros
+                    if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
+                    {
+                        var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
 
-                    if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)"))
-                        mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)");
-                    if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)"))
-                        mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)");
+                        if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)"))
+                            mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)");
+                        if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)"))
+                            mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)\.(?<Build>[0-9]+)\.(?<Revision>[0-9]+)");
 
-                    int maj, min, bld, rev;
-                    maj = int.Parse(mat.Groups["Major"].Value);
-                    min = int.Parse(mat.Groups["Minor"].Value);
-                    bld = int.Parse(!string.IsNullOrEmpty(mat.Groups["Build"].Value) ? mat.Groups["Build"].Value: "-1");
-                    rev = int.Parse(!string.IsNullOrEmpty(mat.Groups["Revision"].Value) ? mat.Groups["Revision"].Value : "-1");
+                        int maj, min, bld, rev;
+                        maj = int.Parse(mat.Groups["Major"].Value);
+                        min = int.Parse(mat.Groups["Minor"].Value);
+                        bld = int.Parse(!string.IsNullOrEmpty(mat.Groups["Build"].Value) ? mat.Groups["Build"].Value : "-1");
+                        rev = int.Parse(!string.IsNullOrEmpty(mat.Groups["Revision"].Value) ? mat.Groups["Revision"].Value : "-1");
 
-                    ver = new(maj, min);
-                    if (bld != -1 && rev != -1) ver = new(maj, min, bld, rev);
-                    else if (bld != -1) ver = new(maj, min, bld);
+                        ver = new(maj, min);
+                        if (bld != -1 && rev != -1) ver = new(maj, min, bld, rev);
+                        else if (bld != -1) ver = new(maj, min, bld);
 
-                    if (Assembly.GetExecutingAssembly().GetName().Version < ver) throw new Lamentation(0x31);
-                }
-                else if (Regex.IsMatch(preprocline, @"project\s+\[(?<SymbolName>.+)\]"))
-                {
-                    if (ProjectSection) throw new Lamentation(0x40);
-                    if (ProjectDefined) throw new Lamentation(0x41);
+                        if (Assembly.GetExecutingAssembly().GetName().Version < ver) throw new Lamentation(0x31);
+                    }
+                    else if (Regex.IsMatch(preprocline, @"project\s+\[(?<SymbolName>.+)\]"))
+                    {
+                        if (ProjectSection) throw new Lamentation(0x40);
+                        if (ProjectDefined) throw new Lamentation(0x41);
 #if DEBUG
-                    WriteLine("Project!!!");
-#endif 
-                    ProjectSection = true;
+                        WriteLine("Project!!!");
+#endif
+
+                        var mat = Regex.Match(preprocline, @"project\s+\[(?<SymbolName>.+)\]").Groups;
+
+                        ProjectTitle = mat["SymbolName"].Value;
+
+                        ProjectSection = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, "endproject"))
+                    {
+                        if (!ProjectSection) throw new Lamentation(0x42); else ProjectSection = false;
+
+                        if (OutputPresent == false) NoOutputFound = true;
+                        if (InputPresent == false) DoNotDoCompilation = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"include\s+\[(?<FileName>.+)\]"))
+                    {
+                        if (!ProjectSection) throw new Lamentation(0x43);
+
+                        var mat = Regex.Match(preprocline, @"include\s+\[(?<FileName>.+)\]").Groups;
+
+                        if (!File.Exists(mat["FileName"].Value)) throw new Lamentation(0x3);
+
+                        ReadFile(mat["FileName"].Value);
+                        IncludeFilepaths.Add(mat["FileName"].Value);
+
+                        InputPresent = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"output\s+\[(?<FileName>.+)\]"))
+                    {
+                        if (!ProjectSection) throw new Lamentation(0x44);
+                        if (OutputPresent == true) throw new Lamentation(); // l8r
+
+                        var mat = Regex.Match(preprocline, @"output\s+\[(?<FileName>.+)\]").Groups;
+
+                        Outgoing = mat["FileName"].Value;
+
+                        OutputPresent = true;
+                    }
+                    #endregion
+                    #region Grammar definition macros
+                    else if (Regex.IsMatch(preprocline, "grammar"))
+                    {
+                        if (GrammarSection) throw new Lamentation();
+                    }
+                    #endregion
+                    else throw new Lamentation(0x32);
                 }
-                else if (Regex.IsMatch(preprocline, "endproject"))
-                {
-                    if (!ProjectSection) throw new Lamentation(0x42); else ProjectSection = false;
-
-                    if (OutputPresent == false) NoOutputFound = true;
-                    if (InputPresent == false) DoNotDoCompilation = true;
-                }
-                else if (Regex.IsMatch(preprocline, @"include\s+\[(?<FileName>.+)\]"))
-                {
-                    if (!ProjectSection) throw new Lamentation(0x43);
-
-                    var mat = Regex.Match(preprocline, @"include\s+\[(?<FileName>.+)\]").Groups;
-
-                    if (!File.Exists(mat["FileName"].Value)) throw new Lamentation(0x3);
-
-                    IncludeFilepaths.Add(mat["FileName"].Value);
-
-                    InputPresent = true;
-                }
-                else if (Regex.IsMatch(preprocline, @"output\s+\[(?<FileName>.+)\]"))
-                {
-                    if (!ProjectSection) throw new Lamentation(0x44);
-
-                    var mat = Regex.Match(preprocline, @"output\s+\[(?<FileName>.+)\]").Groups;
-
-                    Outgoing = mat["FileName"].Name;
-
-                    OutputPresent = true;
-                }
-                #endregion
-                #region Grammar definition macros
-                else if (Regex.IsMatch(preprocline, "grammar"))
-                {
-                    if (GrammarSection) throw new Lamentation();
-                }
-                #endregion
                 else throw new Lamentation(0x32);
             }
 
@@ -3240,9 +3272,24 @@ public static class Coco
 
 #if COCOTESTS && DEBUG
             WriteLine($"Project requests version: {ver} (currently on {Assembly.GetExecutingAssembly().GetName().Version})");
-            WriteLine($"Project is called: []");
+            WriteLine($"Project is called: {ProjectTitle}");
+            WriteLine($"Project is {string.Join('\n', ConsummateSource).Length} bytes long");
             WriteLine("Project needs:");
-            foreach (string path in IncludeFilepaths) WriteLine(path);
+            foreach (string path in IncludeFilepaths) WriteLine($"{path}: {(int)(((decimal)File.ReadAllBytes(path).Length/(decimal)string.Join('\n', ConsummateSource).Length)*100m)}% ({File.ReadAllBytes(path).Length} bytes)");
+            
+            WriteLine($"Project goes into:\n{Outgoing}");
+            WriteLine("Project contents:");
+            for (int i = 0; i < ConsummateSource.Count; i++)
+            {
+                WriteLine($"{i:0000} {ConsummateSource[i]}");
+                Sleep(1000);
+            }
+            WriteLine("Project emissions:");
+            for (int i = 0; i < CurrentFile.Count; i++)
+            {
+                WriteLine($"{i:0000} {CurrentFile[i]}");
+                Sleep(1000);
+            }
 #endif 
         }
 
