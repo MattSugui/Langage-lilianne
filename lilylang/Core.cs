@@ -495,7 +495,7 @@ public static class Interpreter
          * 3. 
          */
         Stopwatch stopwatch = new();
-
+        Outgoing = outfile;
         try
         {
             stopwatch.Start();
@@ -512,7 +512,7 @@ public static class Interpreter
             if (SingleOrProj)
             {
                 VersionSelector(infile);
-                if (!VersionOfCompilation)
+                if (VersionOfCompilation)
                 {
                     XmlDocument doc = new(); doc.Load(infile);
                     ReadProjectFile(doc);
@@ -581,7 +581,7 @@ public static class Interpreter
                 Properties.CoreContent.LinkingStatus
                 );
             CheckForFriendlyNames();
-            CreateBinary(outfile);
+            CreateBinary(Outgoing);
 
             DisplayScreen(
                 Properties.CoreContent.WannaRun,
@@ -3546,6 +3546,5 @@ public static class Extensions
     /// <param name="list">The list.</param>
     /// <returns>true if empty, false if it contains something.</returns>
     public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
-
 }
 #endregion
