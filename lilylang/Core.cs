@@ -2975,6 +2975,8 @@ public static class Coco
 
             foreach (string line in file)
             {
+                if (line.TrimStart().StartsWith("//")) continue; // comment
+
                 if (!line.TrimStart().StartsWith('/'))
                 {
                     if (collect)
@@ -3025,22 +3027,22 @@ public static class Coco
 
                     if (symbols.ContainsKey(symbolname)) symbols.Remove(symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]"))
+                else if (Regex.IsMatch(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]"))
                 {
                     if (ProjectSection) throw new Lamentation(0x42);
 
-                    var mat = Regex.Match(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+be\s+\[(?<Value>.*)\]").Groups;
+                    var mat = Regex.Match(preprocline, @"let\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
                         symbols[symbolname] = val;
                     else throw new Lamentation(0x33, symbolname);
                 }
-                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]"))
+                else if (Regex.IsMatch(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]"))
                 {
                     if (ProjectSection) throw new Lamentation(0x42);
 
-                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]").Groups;
+                    var mat = Regex.Match(preprocline, @"if\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
@@ -3083,11 +3085,11 @@ public static class Coco
 
                     if (!inseq) { inseq = true; collect = true; } else throw new Lamentation(0x34);
                 }
-                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]"))
+                else if (Regex.IsMatch(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]"))
                 {
                     if (!inseq) throw new Lamentation(0x36);
 
-                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+is\s+\[(?<Value>.*)\]").Groups;
+                    var mat = Regex.Match(preprocline, @"elseif\s+(?<SymbolName>[0-9A-Za-z]+)\s+\[(?<Value>.*)\]").Groups;
                     string symbolname = mat["SymbolName"].Value;
                     string val = mat["Value"].Value;
                     if (symbols.ContainsKey(symbolname))
