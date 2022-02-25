@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (165/175 kB)                                                              ║
+║ Size goal: Memorex 650 (166/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -245,6 +245,13 @@ public static class Programme
 
         CurrentThread.CurrentUICulture = CurrentThread.CurrentCulture;
 
+        if (args[0] == "-p" && File.Exists(args[1]))
+        {
+            Clear();
+            Execute();
+            Environment.Exit(0); // gtfo
+        }
+
         SetWindowSize(81, 25);
         SetBufferSize(81, 25);
         WriteLine(
@@ -256,10 +263,6 @@ public static class Programme
         Sleep(1000);
         Clear();
 
-        if (args.Contains(""))
-        {
-
-        }
 
         ApplicationTitle = Properties.CoreContent.ProgramName;
         LaunchUI();
@@ -514,10 +517,15 @@ public static class Interpreter
                 VersionSelector(infile);
                 if (VersionOfCompilation)
                 {
+                    RegulateCompilation = false;
                     XmlDocument doc = new(); doc.Load(infile);
                     ReadProjectFile(doc);
                 }
-                else Preprocess(File.ReadAllLines(infile));
+                else
+                {
+                    RegulateCompilation = true;
+                    Preprocess(File.ReadAllLines(infile));
+                }
                 if (DoNotDoCompilation) return;
             }
             else

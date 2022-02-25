@@ -2,7 +2,7 @@
   "profiles": {
     "lilylang": {
       "commandName": "Project",
-      "commandLineArgs": "\"D:\\multitest\\other.lilianproj\""
+      "commandLineArgs": "-p \"D:\\multitest\\other.lsa\""
     },
     "Profil 1": {
       "commandName": "Project"
