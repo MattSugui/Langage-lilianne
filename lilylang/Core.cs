@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (166/175 kB)                                                              ║
+║ Size goal: Memorex 650 (170/175 kB)                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -245,9 +245,10 @@ public static class Programme
 
         CurrentThread.CurrentUICulture = CurrentThread.CurrentCulture;
 
-        if (args[0] == "-p" && File.Exists(args[1]))
+        if (args.Length > 0 && args[0] == "-p" && File.Exists(args[1]))
         {
             Clear();
+            LoadBinary(args[1]);
             Execute();
             Environment.Exit(0); // gtfo
         }
@@ -262,7 +263,6 @@ public static class Programme
 
         Sleep(1000);
         Clear();
-
 
         ApplicationTitle = Properties.CoreContent.ProgramName;
         LaunchUI();
@@ -879,7 +879,22 @@ public static class Interpreter
                 return new();
             case "push":
                 dynamic val;
-                if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
+                if (sent.Value[1] == "boolean" && bool.TryParse(sent.Value[2], out bool valF)) val = valF;
+                else if (sent.Value[1] == "sbyte" && sbyte.TryParse(sent.Value[2], out sbyte valG)) val = valG;
+                else if (sent.Value[1] == "byte" && byte.TryParse(sent.Value[2], out byte valH)) val = valH;
+                else if (sent.Value[1] == "short" && short.TryParse(sent.Value[2], out short valI)) val = valI;
+                else if (sent.Value[1] == "ushort" && ushort.TryParse(sent.Value[2], out ushort valJ)) val = valJ;
+                else if (sent.Value[1] == "integer" && int.TryParse(sent.Value[2], out int valK)) val = valK;
+                else if (sent.Value[1] == "uinteger" && uint.TryParse(sent.Value[2], out uint valL)) val = valL;
+                else if (sent.Value[1] == "long" && long.TryParse(sent.Value[2], out long valM)) val = valM;
+                else if (sent.Value[1] == "ulong" && ulong.TryParse(sent.Value[2], out ulong valN)) val = valN;
+                else if (sent.Value[1] == "half" && Half.TryParse(sent.Value[2], out Half valO)) val = valO;
+                else if (sent.Value[1] == "float" && float.TryParse(sent.Value[2], out float valP)) val = valP;
+                else if (sent.Value[1] == "double" && double.TryParse(sent.Value[2], out double valQ)) val = valQ;
+                else if (sent.Value[1] == "quadruple" && decimal.TryParse(sent.Value[2], out decimal valR)) val = valR;
+                else if (sent.Value[1] == "character" && char.TryParse(sent.Value[2], out char valS)) val = valS;
+                else if (sent.Value[1] == "string" && sent.Value[2].Contains('"')) val = sent.Value[1].Trim('"');
+                else if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
                 else if (sbyte.TryParse(sent.Value[1], out sbyte val2)) val = val2;
                 else if (byte.TryParse(sent.Value[1], out byte val3)) val = val3;
                 else if (short.TryParse(sent.Value[1], out short val4)) val = val4;
@@ -1039,6 +1054,39 @@ public static class Interpreter
                     );
             case "wait":
                 return new(FELActionType.wait);
+            case "define":
+                return new(
+                    FELActionType.define,
+                    sent.Value[1].TrimStart('&')
+                    );
+            case "furnish":
+                string proposedType = "";
+                if (sent.Value[1] ==    "boolean"
+                    || sent.Value[1] == "sbyte"
+                    || sent.Value[1] == "byte"
+                    || sent.Value[1] == "short"
+                    || sent.Value[1] == "ushort"
+                    || sent.Value[1] == "integer"
+                    || sent.Value[1] == "uinteger"
+                    || sent.Value[1] == "long"
+                    || sent.Value[1] == "ulong"
+                    || sent.Value[1] == "half"
+                    || sent.Value[1] == "float"
+                    || sent.Value[1] == "double"
+                    || sent.Value[1] == "quadruple"
+                    || sent.Value[1] == "character"
+                    || sent.Value[1] == "string") proposedType = sent.Value[1];
+                else throw new Lamentation();
+                return new(
+                    FELActionType.furnish,
+                    new string[]
+                    {
+                        proposedType,
+                        sent.Value[2].TrimStart('#')
+                    }
+                    ); 
+            case "finalise":
+                return new(FELActionType.finalise);
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(
@@ -1201,6 +1249,7 @@ public static class Interpreter
             def.Add(0x0045, Properties.CoreContent.Lamentation64);
             def.Add(0x0046, Properties.CoreContent.Lamentation65);
             def.Add(0x0047, Properties.CoreContent.Lamentation66);
+            def.Add(0x0048, Properties.CoreContent.Lamentation67);
         }
 
         /// <summary>
@@ -1341,17 +1390,24 @@ public static class Interpreter
                 {
                     switch (ActionType)
                     {
+                        #region Default
                         case FELActionType.nop:
                             goto GoForward;
+                        #endregion
+                        #region Stack operations
                         case FELActionType.push:
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
                             if (CurrentFrame[CurrentFrameIndex].Count != 0) CurrentFrame[CurrentFrameIndex].Pop(); // do nothing if the stack is empty
                             goto GoForward;
+                        #endregion
+                        #region Print
                         case FELActionType.print:
                             WriteLine(CurrentFrame[CurrentFrameIndex].Count != 0 ? CurrentFrame[CurrentFrameIndex].Peek() : "There is nothing to print.");
                             goto GoForward;
+                        #endregion
+                        #region Arithmetic operations
                         case FELActionType.add:
                             try
                             {
@@ -1472,6 +1528,8 @@ public static class Interpreter
                                 throw new Lamentation(0x17, ex.Message);
                             }
                             goto GoForward;
+                        #endregion
+                        #region Variable management operations
                         case FELActionType.store:
                             dynamic x = CurrentFrame[CurrentFrameIndex].Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
@@ -1500,6 +1558,8 @@ public static class Interpreter
                                     }
                                 ));
                             goto GoForward;
+                        #endregion
+                        #region Branching operations
                         case FELActionType.beq:
                             dynamic z = Value!;
                             if (z is int index)
@@ -1721,6 +1781,8 @@ public static class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.take:
                             Write("-> ");
                             string? asked = ReadLine();
@@ -1751,6 +1813,8 @@ public static class Interpreter
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
                             CurrentFrame[CurrentFrameIndex].Push(content2);
                             goto GoForward;
+                        #endregion
+                        #region Data manipulation operations
                         case FELActionType.narrow:
                             dynamic narrowand = CurrentFrame[CurrentFrameIndex].Pop();
                             unchecked
@@ -1828,11 +1892,15 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].Push(realisand!);
 
                             goto GoForward;
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@catch:
                             if (!ErrorRaised) goto GoForward;
                             ErrorRaised = false;
                             CurrentPointedEffect = Value!;
                             return;
+                        #endregion
+                        #region Branching operations
                         case FELActionType.call:
                             dynamic zC = Value!;
                             if (zC is int indexC)
@@ -1861,6 +1929,8 @@ public static class Interpreter
                             }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@throw:
                             throw new Lamentation(0x2F);
                         case FELActionType.throwc:
@@ -1868,9 +1938,13 @@ public static class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
+                        #endregion
+                        #region Cosmetics
                         case FELActionType.settitle:
                             Title = Value!;
                             goto GoForward;
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.pause:
                             dynamic pause = Value!;
                             if (pause is int duration) Thread.Sleep(duration);
@@ -1879,6 +1953,42 @@ public static class Interpreter
                         case FELActionType.wait:
                             ReadKey(true);
                             goto GoForward;
+                        #endregion
+                        #region Object model operations
+                        case FELActionType.define:
+                            string Name = Value!;
+                            TypeRegistry.Insert(CurrentType, new(Name, new()));
+                            goto GoForward;
+                        case FELActionType.furnish:
+                            string TypeName = Value![0]!; // lol it's in the form of object?[x]?
+                            string PropName = Value![1]!;
+
+                            TypeRegistry[CurrentType].PropertyList.Add(PropName,
+                                TypeName switch
+                                {
+                                    "string" => typeof(string),
+                                    "boolean" => typeof(bool),
+                                    "sbyte" => typeof(sbyte),
+                                    "byte" => typeof(byte),
+                                    "short" => typeof(short),
+                                    "ushort" => typeof(ushort),
+                                    "integer" => typeof(int),
+                                    "uinteger" => typeof(uint),
+                                    "long" => typeof(long),
+                                    "ulong" => typeof(ulong),
+                                    "half" => typeof(Half),
+                                    "float" => typeof(float),
+                                    "double" => typeof(double),
+                                    "quadruple" => typeof(decimal),
+                                    "character" => typeof(char),
+                                    _ => throw new Lamentation("Custom types are not yet supported for properties at this time.")
+                                }
+                                ) ;
+                            goto GoForward;
+                        case FELActionType.finalise:
+                            CurrentType++;
+                            goto GoForward;
+                        #endregion
                     }
                 }
                 catch (Lamentation cry)
@@ -2364,9 +2474,33 @@ public static class Interpreter
             /// <summary>
             /// <see cref="ReadKey(bool)"/>
             /// </summary>
-            wait
-        }
+            wait,
 
+            /// <summary>
+            /// Starts a definition of a structure type.
+            /// </summary>
+            define,
+
+            /// <summary>
+            /// Declares a property in a structure.
+            /// </summary>
+            furnish,
+
+            /// <summary>
+            /// Finishes a definition of a structure type.
+            /// </summary>
+            finalise,
+
+            /// <summary>
+            /// Instantiation
+            /// </summary>
+            create,
+
+            /// <summary>
+            /// Destantiation?? is that a word?
+            /// </summary>
+            delete
+        }
 
         /* example:
          * push 10;
@@ -2375,7 +2509,7 @@ public static class Interpreter
          * pop;
          */
     }
-#endregion
+    #endregion
 }
 #endregion
 
@@ -2388,7 +2522,10 @@ public static class ObjectModel
     /// <summary>
     /// A classic. This provides an ID on an object and allows manipulation to it.
     /// </summary>
-    public record struct FELObject(int Address, string Name, object Value);
+    /// <param name="Address">The location of the thing in the saved objects list.</param>
+    /// <param name="Name">The name of the object.</param>
+    /// <param name="Value">The value of the object.</param>
+    public record class FELObject(int Address, string Name, object Value);
 
     /// <summary>
     /// later.
@@ -2397,6 +2534,33 @@ public static class ObjectModel
     {
 
     }
+
+    /// <summary>
+    /// A structure type.
+    /// </summary>
+    /// <param name="Name">The name of the value type.</param>
+    /// <param name="PropertyList">The list of properties in the thing.</param>
+    public record class FELStructType(string Name, Dictionary<string, Type> PropertyList);
+
+    /// <summary>
+    /// A structure in Lilian.
+    /// </summary>
+    /// <param name="Address">The location of the thing in the saved objects list.</param>
+    /// <param name="Name">The name of the object.</param>
+    /// <param name="Values">The list of properties of the object.</param>
+    /// <param name="Type">The kind of structure this object is.</param>
+    public record class FELStruct(int Address, string Name, FELStructType Type, List<FELObject> Values) : FELObject(Address, Name, Values);
+
+    /// <summary>
+    /// The currently registered structure types.
+    /// </summary>
+    public static List<FELStructType> TypeRegistry = new();
+
+    /// <summary>
+    /// The currently-pointed registered structure type in <see cref="TypeRegistry"/>.
+    /// </summary>
+    public static int CurrentType { get; set; }
+
 }
 #endregion
 

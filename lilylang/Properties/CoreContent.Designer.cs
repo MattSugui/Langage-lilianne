@@ -718,6 +718,15 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Invalid type entered for this property. Define this type first, or contact me in the case of the default types..
+        /// </summary>
+        internal static string Lamentation67 {
+            get {
+                return ResourceManager.GetString("Lamentation67", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}..
         /// </summary>
         internal static string Lamentation7 {

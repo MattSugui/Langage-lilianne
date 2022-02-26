@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.2.523.0</AssemblyVersion>
-		<FileVersion>1.2.523.0</FileVersion>
-		<InformationalVersion>Scholarly Coco 220225-1905</InformationalVersion>
+		<AssemblyVersion>1.2.528.0</AssemblyVersion>
+		<FileVersion>1.2.528.0</FileVersion>
+		<InformationalVersion>Scholarly Beta 1 220226-1416</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
@@ -39,11 +39,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="CoreContent.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>CoreContent.resx</DependentUpon>
-	  </Compile>
 	  <Compile Update="Properties\CoreContent.fr-FR.Designer.cs">
 	    <DependentUpon>CoreContent.fr-FR.resx</DependentUpon>
 	    <DesignTime>True</DesignTime>
@@ -57,11 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="CoreContent.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>CoreContent.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	  <EmbeddedResource Update="Properties\CoreContent.fr-FR.resx">
+		<EmbeddedResource Update="Properties\CoreContent.fr-FR.resx">
 	    <LastGenOutput>CoreContent.fr-FR.Designer.cs</LastGenOutput>
 	    <Generator>ResXFileCodeGenerator</Generator>
 	  </EmbeddedResource>
