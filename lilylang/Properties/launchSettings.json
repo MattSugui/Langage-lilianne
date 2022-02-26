@@ -1,8 +1,7 @@
 {
   "profiles": {
     "lilylang": {
-      "commandName": "Project",
-      "commandLineArgs": "-p \"D:\\multitest\\other.lsa\""
+      "commandName": "Project"
     },
     "Profil 1": {
       "commandName": "Project"

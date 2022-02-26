@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: Memorex 650 (170/175 kB)                                                              ║
+║ Size goal: IBM 33FD (180/242 kB)                                                                 ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -1060,8 +1060,8 @@ public static class Interpreter
                     sent.Value[1].TrimStart('&')
                     );
             case "furnish":
-                string proposedType = "";
-                if (sent.Value[1] ==    "boolean"
+                string proposedType;
+                if (sent.Value[1] == "boolean"
                     || sent.Value[1] == "sbyte"
                     || sent.Value[1] == "byte"
                     || sent.Value[1] == "short"
@@ -1076,7 +1076,7 @@ public static class Interpreter
                     || sent.Value[1] == "quadruple"
                     || sent.Value[1] == "character"
                     || sent.Value[1] == "string") proposedType = sent.Value[1];
-                else throw new Lamentation();
+                else throw new Lamentation("Custom types are not yet supported for properties at this time.");
                 return new(
                     FELActionType.furnish,
                     new string[]
@@ -2036,7 +2036,8 @@ public static class Interpreter
                     act.ActionType <= FELActionType.gotolabel) ||
                     act.ActionType == FELActionType.throwc ||
                     act.ActionType == FELActionType.settitle ||
-                    act.ActionType == FELActionType.pause
+                    act.ActionType == FELActionType.pause ||
+                    act.ActionType == FELActionType.define
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -2063,6 +2064,15 @@ public static class Interpreter
                     writer.Write(marker);
                     writer.Write(act.Value!);
                     //writer.Write((byte)14);
+                }
+                else if (act.ActionType == FELActionType.furnish) // more shit needed for typename and prop name
+                {
+                    writer.Write((byte)act.ActionType);
+                    writer.Write((byte)11);
+                    writer.Write(act.Value![0]!); // typename
+                    writer.Write((byte)11);
+                    writer.Write(act.Value![1]!); // prop name
+
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
             }
@@ -2099,7 +2109,8 @@ public static class Interpreter
                     opcode <= 55) ||
                     opcode == 57 ||
                     opcode == 58 ||
-                    opcode == 59)
+                    opcode == 59 ||
+                    opcode == 61)
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -2150,6 +2161,14 @@ public static class Interpreter
                             thing = reader.ReadChar();
                             break;
                     }
+                }
+                else if (opcode == 62) // special
+                {
+                    reader.ReadByte(); // byte 11 to mark type name
+                    string TypeName = reader.ReadString();
+                    reader.ReadByte(); // another byte to mark prop name
+                    string PropName = reader.ReadString();
+                    thing = new string[] { TypeName, PropName };
                 }
                 PlaceEffect(new((FELActionType)opcode, thing), CurrentPointedEffect, true);
                 CurrentPointedEffect++;
@@ -3559,7 +3578,7 @@ public static class Coco
 #endregion
 }
 #endregion
-
+   
 #region Preloader
 /// <summary>
 /// Hard-coded structures.
@@ -3573,8 +3592,10 @@ public static class TEMP
     {
         //----------------------- Name              Value                               Look            IgnoreOnRefinement          Terminate
         CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
-        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^"".*""$" });
+        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
+        CurrentTokens.Add(new() { Name = "SQUT", Value = @"^'[^'\n]'$|^'`.'$" });
         CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
+        CurrentTokens.Add(new() { Name = "FPIN", Value = @"^[0-9]+\.[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
         CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
         CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
@@ -3582,6 +3603,7 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
         CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
         CurrentTokens.Add(new() { Name = "PUSH", Value = @"^push$" });
@@ -3624,6 +3646,25 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "WAIT", Value = @"^wait$" });
         CurrentTokens.Add(new() { Name = "TRUE", Value = @"^true$" });
         CurrentTokens.Add(new() { Name = "FAUX", Value = @"^false$" });
+        CurrentTokens.Add(new() { Name = "DEFN", Value = @"^define$" });
+        CurrentTokens.Add(new() { Name = "FRNS", Value = @"^furnish$" });
+        CurrentTokens.Add(new() { Name = "FINS", Value = @"^finalise$" });
+        CurrentTokens.Add(new() { Name = "CREA", Value = @"^create$" });
+        CurrentTokens.Add(new() { Name = "BOOL", Value = @"^boolean$" });
+        CurrentTokens.Add(new() { Name = "BYTE", Value = @"^byte$" });
+        CurrentTokens.Add(new() { Name = "SBYT", Value = @"^sbyte$" });
+        CurrentTokens.Add(new() { Name = "SHRT", Value = @"^short$" });
+        CurrentTokens.Add(new() { Name = "USHT", Value = @"^ushort$" });
+        CurrentTokens.Add(new() { Name = "INTG", Value = @"^integer$" });
+        CurrentTokens.Add(new() { Name = "UINT", Value = @"^uinteger$" });
+        CurrentTokens.Add(new() { Name = "LONG", Value = @"^long$" });
+        CurrentTokens.Add(new() { Name = "ULNG", Value = @"^ulong$" });
+        CurrentTokens.Add(new() { Name = "HALF", Value = @"^half$" });
+        CurrentTokens.Add(new() { Name = "FLOT", Value = @"^float$" });
+        CurrentTokens.Add(new() { Name = "STRG", Value = @"^string$" });
+        CurrentTokens.Add(new() { Name = "CHAR", Value = @"^character$" });
+        CurrentTokens.Add(new() { Name = "DECM", Value = @"^quadruple$" });
+        CurrentTokens.Add(new() { Name = "DOUB", Value = @"^double$" });
 
         //----------------------------------- Name                      TokenStruct ----------------                            -----
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", TokenStruct = new string[] { "PRPR", "COLN" } });
@@ -3675,6 +3716,35 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "SetTitle", TokenStruct = new string[] { "TITL", "QUOT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "ThreadSleep", TokenStruct = new string[] { "PAUS", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Pause", TokenStruct = new string[] { "WAIT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushTrueBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "TRUE", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushFalseBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "FAUX", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushByteExpl", TokenStruct = new string[] { "PUSH", "BYTE", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushSByteExpl", TokenStruct = new string[] { "PUSH", "SBYT", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushIntegerExpl", TokenStruct = new string[] { "PUSH", "INTG", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushUIntegerExpl", TokenStruct = new string[] { "PUSH", "UINT", "INTL", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushLongExpl", TokenStruct = new string[] { "PUSH", "LONG", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushULongExpl", TokenStruct = new string[] { "PUSH", "ULNG", "INTL", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushStringExpl", TokenStruct = new string[] { "PUSH", "STRG", "QUOT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushCharExpl", TokenStruct = new string[] { "PUSH", "CHAR", "SQUT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushHalfExpl", TokenStruct = new string[] { "PUSH", "HALF", "FPIN", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushFloatExpl", TokenStruct = new string[] { "PUSH", "FLOT", "FPIN", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushDoubleExpl", TokenStruct = new string[] { "PUSH", "DOUB", "FPIN", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushDecimalExpl", TokenStruct = new string[] { "PUSH", "DECM", "FPIN", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishBooleanExpl", TokenStruct = new string[] { "FRNS", "BOOL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishByteExpl", TokenStruct = new string[] { "FRNS", "BYTE", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishSByteExpl", TokenStruct = new string[] { "FRNS", "SBYT", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishIntegerExpl", TokenStruct = new string[] { "FRNS", "INTG", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishUIntegerExpl", TokenStruct = new string[] { "FRNS", "UINT", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishLongExpl", TokenStruct = new string[] { "FRNS", "LONG", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishULongExpl", TokenStruct = new string[] { "FRNS", "ULNG", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishStringExpl", TokenStruct = new string[] { "FRNS", "STRG", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishCharExpl", TokenStruct = new string[] { "FRNS", "CHAR", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishHalfExpl", TokenStruct = new string[] { "FRNS", "HALF", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishFloatExpl", TokenStruct = new string[] { "FRNS", "FLOT", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishDoubleExpl", TokenStruct = new string[] { "FRNS", "DOUB", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "DefineStructure", TokenStruct = new string[] { "DEFN", "STRC", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FinaliseStructure", TokenStruct = new string[] { "FINS", "SMCL" } });
     }
 }
 #endregion

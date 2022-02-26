@@ -336,6 +336,9 @@
   <data name="Lamentation66" xml:space="preserve">
     <value>Preprocessing error. Cannot put this command in the current context.</value>
   </data>
+  <data name="Lamentation67" xml:space="preserve">
+    <value>Invalid type entered for this property. Define this type first, or contact me in the case of the default types.</value>
+  </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.</value>
   </data>
