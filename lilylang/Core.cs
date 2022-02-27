@@ -2159,8 +2159,14 @@ public static class Interpreter
             using FileStream stream = File.Exists(path.Trim('"')) ? File.OpenWrite(path.Trim('"')) : File.Create(path.Trim('"'));
             using BinaryWriter writer = new(stream);
 
+#if DEBUG
+            int counter = -1;
+#endif
             foreach (FELAction act in CurrentEffects)
             {
+#if DEBUG
+                counter++;
+#endif
                 if (act.ActionType == FELActionType.push ||
                     act.ActionType == FELActionType.store ||
                     act.ActionType == FELActionType.load ||
