@@ -54,8 +54,8 @@
 ║ │    PP.S. This is also where I try out the dirty C# 10.0 stuff. Thank God for record structs! │ ║
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
-║ More trolls mean more idiots you stupid fucking cunt                                             ║
-║ Size goal: IBM 33FD (180/242 kB)                                                                 ║
+║ Vive l'Ukraine !                                                                                 ║
+║ Size goal: IBM 33FD (184/242 kB)                                                                 ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -276,28 +276,7 @@ public static class Programme
             new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
-#if COCOTESTS
-        {
-            // hardcode AYO.CCN lol
-            RegulateCompilation = true;
-            string test = @"D:\multitest\ayo.ccn";
-            try
-            {
-                WriteLine("First pass on preproc!");
-                if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
-                else Preprocess(File.ReadAllLines(test));
-                WriteLine("tests done!!!!!!!!!!!!!");
-                WriteLine("Second pass on preproc!");
-                Preprocess(ConsummateSource.ToArray(), true);
-                ReadKey(true);
-            }
-            catch (Exception e)
-            {
-                ErrorScreen(e);
-            }
-            return;
-        }
-#endif
+
         // Choice screen
         DisplayScreen(
             Properties.CoreContent.ChoiceScreenBody,
@@ -403,12 +382,17 @@ public static class Interpreter
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
-    public static List<Stack<object>> CurrentFrame = new();
+    public static List<FELFrame> CurrentFrame = new();
 
     /// <summary>
     /// The current consummate collection of objects.
     /// </summary>
     public static Stack<object> CurrentObjects;
+
+    /// <summary>
+    /// The current consummate collections of <see cref="FELStruct"/>s.
+    /// </summary>
+    public static List<FELStruct> CurrentHeap;
 
     /// <summary>
     /// The current saved collection of objects.
@@ -424,6 +408,11 @@ public static class Interpreter
     /// The stack pointer.
     /// </summary>
     public static int CurrentPointedObject { get; set; }
+
+    /// <summary>
+    /// The heap pointer.
+    /// </summary>
+    public static int CurrentPointedStruct { get; set; }
 
     /// <summary>
     /// The current instruction.
@@ -1087,6 +1076,11 @@ public static class Interpreter
                     ); 
             case "finalise":
                 return new(FELActionType.finalise);
+            case "create":
+                return new(
+                    FELActionType.create,
+                    sent.Value[1].TrimStart('&')
+                    );
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(
@@ -1164,7 +1158,7 @@ public static class Interpreter
     /// </summary>
     public static void Execute()
     {
-        CurrentFrame.Add(new());
+        CurrentFrame.Add(new(new(), new()));
         CurrentFrameIndex = 0;
         CurrentPointedEffect = 0;
 
@@ -1250,6 +1244,8 @@ public static class Interpreter
             def.Add(0x0046, Properties.CoreContent.Lamentation65);
             def.Add(0x0047, Properties.CoreContent.Lamentation66);
             def.Add(0x0048, Properties.CoreContent.Lamentation67);
+            def.Add(0x0049, Properties.CoreContent.Lamentation68);
+            def.Add(0x004A, Properties.CoreContent.Lamentation69);
         }
 
         /// <summary>
@@ -1396,24 +1392,24 @@ public static class Interpreter
                         #endregion
                         #region Stack operations
                         case FELActionType.push:
-                            if (Value is not null) CurrentFrame[CurrentFrameIndex].Push(Value); // nah do nothing instead of crying
+                            if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
-                            if (CurrentFrame[CurrentFrameIndex].Count != 0) CurrentFrame[CurrentFrameIndex].Pop(); // do nothing if the stack is empty
+                            if (CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0) CurrentFrame[CurrentFrameIndex].StackFrame.Pop(); // do nothing if the stack is empty
                             goto GoForward;
                         #endregion
                         #region Print
                         case FELActionType.print:
-                            WriteLine(CurrentFrame[CurrentFrameIndex].Count != 0 ? CurrentFrame[CurrentFrameIndex].Peek() : "There is nothing to print.");
+                            WriteLine( CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
                             goto GoForward;
                         #endregion
                         #region Arithmetic operations
                         case FELActionType.add:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a + b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a + b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1423,9 +1419,9 @@ public static class Interpreter
                         case FELActionType.sub:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a - b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a - b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1435,9 +1431,9 @@ public static class Interpreter
                         case FELActionType.mul:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a * b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a * b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1447,9 +1443,9 @@ public static class Interpreter
                         case FELActionType.div:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a / b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a / b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1459,9 +1455,9 @@ public static class Interpreter
                         case FELActionType.mod:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a % b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a % b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1471,9 +1467,9 @@ public static class Interpreter
                         case FELActionType.lst:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a << b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a << b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1483,9 +1479,9 @@ public static class Interpreter
                         case FELActionType.rst:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a >> b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a >> b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1495,9 +1491,9 @@ public static class Interpreter
                         case FELActionType.and:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a & b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a & b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1507,9 +1503,9 @@ public static class Interpreter
                         case FELActionType.or:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a | b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a | b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1519,9 +1515,9 @@ public static class Interpreter
                         case FELActionType.xor:
                             try
                             {
-                                dynamic a = CurrentFrame[CurrentFrameIndex].Pop();
-                                dynamic b = CurrentFrame[CurrentFrameIndex].Pop();
-                                CurrentFrame[CurrentFrameIndex].Push(a ^ b); // rely on implementation...
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(a ^ b); // rely on implementation...
                             }
                             catch (Exception ex)
                             {
@@ -1531,7 +1527,7 @@ public static class Interpreter
                         #endregion
                         #region Variable management operations
                         case FELActionType.store:
-                            dynamic x = CurrentFrame[CurrentFrameIndex].Pop();
+                            dynamic x = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
                             else if (Value is int number) CurrentStore.Add(new(number, "", x));
                             goto GoForward;
@@ -1545,7 +1541,7 @@ public static class Interpreter
                                 FELObject selected = default;
                                 if (name is string strn) selected = CurrentStore.Find(obj => obj.Name == strn);
                                 else if (name is int numa) selected = CurrentStore.Find(obj => obj.Address == numa);
-                                CurrentFrame[CurrentFrameIndex].Push(selected.Value);
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(selected.Value);
                                 //CurrentStore.Remove(selected);
                             }
                             else throw new Lamentation(0x18,
@@ -1568,8 +1564,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1589,8 +1585,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1610,8 +1606,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1631,8 +1627,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1652,8 +1648,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1673,8 +1669,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1694,7 +1690,7 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1) CurrentPointedEffect = index7; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1714,7 +1710,7 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (!var1) CurrentPointedEffect = index8; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1744,8 +1740,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1765,8 +1761,8 @@ public static class Interpreter
                                 {
                                     try
                                     {
-                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].Pop();
-                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].Pop();
+                                        dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
                                     }
                                     catch (Exception ex)
@@ -1804,19 +1800,19 @@ public static class Interpreter
                             else if (double.TryParse(prim, out double valC)) content = valC;
                             else if (decimal.TryParse(prim, out decimal valD)) content = valD;
                             else if (char.TryParse(prim, out char valE)) content = valE;
-                            CurrentFrame[CurrentFrameIndex].Push(content!);
+                            CurrentFrame[CurrentFrameIndex].StackFrame.Push(content!);
                             goto GoForward;
                         case FELActionType.ask:
                             Write("=> ");
                             string? asked2 = ReadLine();
                             string content2 = string.Empty;
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
-                            CurrentFrame[CurrentFrameIndex].Push(content2);
+                            CurrentFrame[CurrentFrameIndex].StackFrame.Push(content2);
                             goto GoForward;
                         #endregion
                         #region Data manipulation operations
                         case FELActionType.narrow:
-                            dynamic narrowand = CurrentFrame[CurrentFrameIndex].Pop();
+                            dynamic narrowand = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             unchecked
                             {
                                 dynamic result1 = narrowand switch
@@ -1838,11 +1834,11 @@ public static class Interpreter
                                     char => throw new Lamentation(0x26, narrowand.ToString()),
                                     _ => throw new Lamentation(0x28, narrowand.ToString()),
                                 };
-                                CurrentFrame[CurrentFrameIndex].Push(result1);
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(result1);
                             }
                             goto GoForward;
                         case FELActionType.widen:
-                            dynamic widand = CurrentFrame[CurrentFrameIndex].Pop();
+                            dynamic widand = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             unchecked
                             {
                                 dynamic result1 = widand switch
@@ -1864,11 +1860,11 @@ public static class Interpreter
                                     char => throw new Lamentation(0x27, widand.ToString()),
                                     _ => throw new Lamentation(0x29, widand.ToString()),
                                 };
-                                CurrentFrame[CurrentFrameIndex].Push(result1);
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(result1);
                             }
                             goto GoForward;
                         case FELActionType.realise:
-                            string rel = (string)CurrentFrame[CurrentFrameIndex].Pop()!;
+                            string rel = (string)CurrentFrame[CurrentFrameIndex].StackFrame.Pop()!;
                             dynamic? realisand = null;
 
                             if (string.IsNullOrEmpty(rel)) goto GoForward;
@@ -1889,7 +1885,7 @@ public static class Interpreter
                             else if (char.TryParse(rel, out char valRE)) realisand = valRE;
                             else throw new Lamentation(0x24, rel);
 
-                            CurrentFrame[CurrentFrameIndex].Push(realisand!);
+                            CurrentFrame[CurrentFrameIndex].StackFrame.Push(realisand!);
 
                             goto GoForward;
                         #endregion
@@ -1909,10 +1905,11 @@ public static class Interpreter
                                 {
                                     LocationHistoryForSubroutines.Push(CurrentPointedEffect);
                                     CurrentPointedEffect = indexC;
-                                    CurrentFrame.Add(new());
+                                    CurrentFrame.Add(new(new(), new()));
                                     CurrentFrameIndex++;
                                     // carry over the variables in the previous context
-                                    foreach (object item in CurrentFrame[CurrentFrameIndex - 1]) CurrentFrame[CurrentFrameIndex].Push(item);
+                                    foreach (object item in CurrentFrame[CurrentFrameIndex - 1].StackFrame) CurrentFrame[CurrentFrameIndex].StackFrame.Push(item);
+                                    foreach (FELStruct item in CurrentFrame[CurrentFrameIndex - 1].HeapFrame) CurrentFrame[CurrentFrameIndex].HeapFrame.Add(item);
                                 }
                                 else throw new Lamentation(0x20, indexC.ToString());
                             }
@@ -1922,8 +1919,9 @@ public static class Interpreter
                             if (LocationHistoryForSubroutines.Count > 0)
                             {
                                 CurrentPointedEffect = LocationHistoryForSubroutines.Pop();
-                                if (CurrentFrame[CurrentFrameIndex].Count > 0) CurrentFrame[CurrentFrameIndex - 1].Push(CurrentFrame[CurrentFrameIndex].Pop()); // carry over
-                                CurrentFrame[CurrentFrameIndex].Clear();
+                                if (CurrentFrame[CurrentFrameIndex].StackFrame.Count > 0) CurrentFrame[CurrentFrameIndex - 1].StackFrame.Push(CurrentFrame[CurrentFrameIndex].StackFrame.Pop()); // carry over
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Clear();
+                                CurrentFrame[CurrentFrameIndex].HeapFrame.Clear();
                                 CurrentFrame.RemoveAt(CurrentFrameIndex); // get rid of frame
                                 CurrentFrameIndex--; // go back
                             }
@@ -1988,10 +1986,29 @@ public static class Interpreter
                         case FELActionType.finalise:
                             CurrentType++;
                             goto GoForward;
+                        case FELActionType.create:
+                            string BruhName = Value!;
+                            FELStructType AssociatedType = TypeRegistry.Find(t => t.Name == BruhName);
+                            if (AssociatedType is null) throw new Lamentation(0x49, BruhName);
+
+                            CurrentFrame[CurrentFrameIndex].HeapFrame.Insert(CurrentPointedStruct, new(default, string.Empty, AssociatedType, new()));
+                            foreach ((string objn, Type bruh1) in AssociatedType.PropertyList)
+                                CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Values.Add(objn, default);
+
+                            List<object> supposedProps = new();
+                            foreach ((string objname, Type type) in CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Type.PropertyList)
+                            {
+                                dynamic supposed = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+
+                                if (supposed.GetType() == type || supposed is null)
+                                    CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Values[objname] = new(-1, objname, supposed);
+                                else throw new Lamentation(0x4A, supposed.GetType().Name, objname, type.Name);
+                            }
+                            goto GoForward;
                         #endregion
                     }
                 }
-                catch (Lamentation cry)
+                catch (Lamentation cry) 
                 {
                     WriteLine(cry.ToString());
                     ErrorRaised = true;
@@ -2034,10 +2051,10 @@ public static class Interpreter
                     act.ActionType == FELActionType.call ||
                     (act.ActionType >= FELActionType.label &&
                     act.ActionType <= FELActionType.gotolabel) ||
-                    act.ActionType == FELActionType.throwc ||
-                    act.ActionType == FELActionType.settitle ||
-                    act.ActionType == FELActionType.pause ||
-                    act.ActionType == FELActionType.define
+                    (act.ActionType >= FELActionType.throwc &&
+                    act.ActionType <= FELActionType.pause) ||
+                    act.ActionType == FELActionType.define ||
+                    act.ActionType == FELActionType.create
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -2107,10 +2124,11 @@ public static class Interpreter
                     opcode == 52 ||
                     (opcode >= 54 &&
                     opcode <= 55) ||
-                    opcode == 57 ||
-                    opcode == 58 ||
-                    opcode == 59 ||
-                    opcode == 61)
+                    (opcode >= 57 &&
+                    opcode <= 59) ||
+                    opcode == 61 ||
+                    opcode == 64
+                    )
                 {
                     byte marker = reader.ReadByte();
                     switch (marker)
@@ -2511,12 +2529,12 @@ public static class Interpreter
             finalise,
 
             /// <summary>
-            /// Instantiation
+            /// Instantiation of a structure type.
             /// </summary>
             create,
 
             /// <summary>
-            /// Destantiation?? is that a word?
+            /// Deinstantiation?? is that a word? Anyways, a structure instance is removed from the heap.
             /// </summary>
             delete
         }
@@ -2547,12 +2565,11 @@ public static class ObjectModel
     public record class FELObject(int Address, string Name, object Value);
 
     /// <summary>
-    /// later.
+    /// A frame.
     /// </summary>
-    public struct FELIntegralType
-    {
-
-    }
+    /// <param name="StackFrame">The current stack.</param>
+    /// <param name="HeapFrame">The current heap (collection of structs).</param>
+    public record class FELFrame(Stack<object> StackFrame, List<FELStruct> HeapFrame);
 
     /// <summary>
     /// A structure type.
@@ -2566,9 +2583,9 @@ public static class ObjectModel
     /// </summary>
     /// <param name="Address">The location of the thing in the saved objects list.</param>
     /// <param name="Name">The name of the object.</param>
-    /// <param name="Values">The list of properties of the object.</param>
+    /// <param name="Values">The list of properties in the thing.</param>
     /// <param name="Type">The kind of structure this object is.</param>
-    public record class FELStruct(int Address, string Name, FELStructType Type, List<FELObject> Values) : FELObject(Address, Name, Values);
+    public record class FELStruct(int Address, string Name, FELStructType Type, Dictionary<string, FELObject> Values) : FELObject(Address, Name, Values);
 
     /// <summary>
     /// The currently registered structure types.
@@ -3745,6 +3762,8 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "FurnishDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "DefineStructure", TokenStruct = new string[] { "DEFN", "STRC", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FinaliseStructure", TokenStruct = new string[] { "FINS", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "CreateStructure", TokenStruct = new string[] { "CREA", "STRC", "SMCL" } });
+
     }
 }
 #endregion

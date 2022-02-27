@@ -337,7 +337,13 @@
     <value>Preprocessing error. Cannot put this command in the current context.</value>
   </data>
   <data name="Lamentation67" xml:space="preserve">
-    <value>Invalid type entered for this property. Define this type first, or contact me in the case of the default types.</value>
+    <value>'{0}' is an invalid type entered for this property. Define this type first, or contact me in the case of the default types.</value>
+  </data>
+  <data name="Lamentation68" xml:space="preserve">
+    <value>Type '{0}' does not exist.</value>
+  </data>
+  <data name="Lamentation69" xml:space="preserve">
+    <value>This parameter's type ({0}) does not correspond with that of '{1}' ({2}). Reorder your parameters in the stack or change the type.</value>
   </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.</value>

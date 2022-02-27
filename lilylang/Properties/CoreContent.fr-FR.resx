@@ -337,7 +337,13 @@
     <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas déclarer cette ordre dans cette contexte.</value>
   </data>
   <data name="Lamentation67" xml:space="preserve">
-    <value>Ce type qui est référé pour ce champ est invalid. Définez ce type avant le utiliser, ou rappelez-moi s'il est en raison des types par défaut.</value>
+    <value>Ce type, '{0}', qui est référé pour ce champ est invalid. Définez ce type avant le utiliser, ou rappelez-moi s'il est en raison des types par défaut.</value>
+  </data>
+  <data name="Lamentation68" xml:space="preserve">
+    <value>Le type '{0}' n'existe pas.</value>
+  </data>
+  <data name="Lamentation69" xml:space="preserve">
+    <value>Le type du paramètre ({0}) ne correspond pas au type du '{1}' ({2}). Reorganisez vos paramètres dans la pile ou changez son type.</value>
   </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Un erreur d'implementation. Il y peut-être rien au jeton {0} en raison que la phrase {1} a seulement {2} jetons.</value>

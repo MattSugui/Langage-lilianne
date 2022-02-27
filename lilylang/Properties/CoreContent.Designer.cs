@@ -718,11 +718,29 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Invalid type entered for this property. Define this type first, or contact me in the case of the default types..
+        ///   Recherche une chaîne localisée semblable à &apos;{0}&apos; is an invalid type entered for this property. Define this type first, or contact me in the case of the default types..
         /// </summary>
         internal static string Lamentation67 {
             get {
                 return ResourceManager.GetString("Lamentation67", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string Lamentation68 {
+            get {
+                return ResourceManager.GetString("Lamentation68", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This parameter&apos;s type ({0}) does not correspond with that of &apos;{1}&apos; ({2}). Reorder your parameters in the stack or change the type..
+        /// </summary>
+        internal static string Lamentation69 {
+            get {
+                return ResourceManager.GetString("Lamentation69", resourceCulture);
             }
         }
         
