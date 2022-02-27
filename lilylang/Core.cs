@@ -2202,7 +2202,7 @@ public static class Interpreter
                     };
 
                     writer.Write(marker);
-                    writer.Write(act.Value!);
+                    if (act.Value! is not FELCompilerFlag) writer.Write(act.Value!);
                     //writer.Write((byte)14);
                 }
                 else if (act.ActionType == FELActionType.furnish ||

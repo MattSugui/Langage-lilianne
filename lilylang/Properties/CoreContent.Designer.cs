@@ -754,7 +754,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à There is nothing on the tray to substitute the asterisk..
+        ///   Recherche une chaîne localisée semblable à There is nothing on the tray to substitute the exclamation mark..
         /// </summary>
         internal static string Lamentation70 {
             get {
