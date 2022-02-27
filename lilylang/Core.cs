@@ -3707,7 +3707,7 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
         CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
-        CurrentTokens.Add(new() { Name = "ASTR", Value = @"^\*$" });
+        CurrentTokens.Add(new() { Name = "EXCL", Value = @"^\!$" });
         CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
@@ -3864,8 +3864,8 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "PresentStructure", TokenStruct = new string[] { "PRSN", "HEAP", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "GetStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "SetStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "ASTR", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "ASTR", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "ShelveStructure", TokenStruct = new string[] { "RECL", "SMCL" } });
     }
 }

@@ -349,7 +349,7 @@
     <value>Un erreur d'implementation. Il y peut-être rien au jeton {0} en raison que la phrase {1} a seulement {2} jetons.</value>
   </data>
   <data name="Lamentation70" xml:space="preserve">
-    <value>Il n'y a pas aucun sur le plateau pour remplacer l'astérisque.</value>
+    <value>Il n'y a pas aucun sur le plateau pour remplacer le point d'exclamation.</value>
   </data>
   <data name="Lamentation71" xml:space="preserve">
     <value>La propriété « {0} » n'existe pas sous le type « {1} ».</value>

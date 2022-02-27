@@ -349,7 +349,7 @@
     <value>Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.</value>
   </data>
   <data name="Lamentation70" xml:space="preserve">
-    <value>There is nothing on the tray to substitute the asterisk.</value>
+    <value>There is nothing on the tray to substitute the exclamation mark.</value>
   </data>
   <data name="Lamentation71" xml:space="preserve">
     <value>Property '{0}' does not exist for type '{1}'.</value>
