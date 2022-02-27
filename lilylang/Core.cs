@@ -882,7 +882,7 @@ public static class Interpreter
                 else if (sent.Value[1] == "double" && double.TryParse(sent.Value[2], out double valQ)) val = valQ;
                 else if (sent.Value[1] == "quadruple" && decimal.TryParse(sent.Value[2], out decimal valR)) val = valR;
                 else if (sent.Value[1] == "character" && char.TryParse(sent.Value[2], out char valS)) val = valS;
-                else if (sent.Value[1] == "string" && sent.Value[2].Contains('"')) val = sent.Value[1].Trim('"');
+                else if (sent.Value[1] == "string" && sent.Value[2].Contains('"')) val = sent.Value[2].Trim('"');
                 else if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
                 else if (sbyte.TryParse(sent.Value[1], out sbyte val2)) val = val2;
                 else if (byte.TryParse(sent.Value[1], out byte val3)) val = val3;
