@@ -214,7 +214,7 @@
     <value>« {0} » : nous ne pouvons pas le diminuer.</value>
   </data>
   <data name="Lamentation3" xml:space="preserve">
-    <value>Un erreur de syntaxe. Le jeton « {0} » n'existe pas dans ce contexte.</value>
+    <value>Un erreur de syntaxe. Le jetonnisation « {0} » n'existe pas dans ce contexte.</value>
   </data>
   <data name="Lamentation30" xml:space="preserve">
     <value>« {0} » : nous ne pouvons pas le agrandir.</value>
@@ -337,16 +337,28 @@
     <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas déclarer cette ordre dans cette contexte.</value>
   </data>
   <data name="Lamentation67" xml:space="preserve">
-    <value>Ce type, '{0}', qui est référé pour ce champ est invalid. Définez ce type avant le utiliser, ou rappelez-moi s'il est en raison des types par défaut.</value>
+    <value>Ce type, « {0} », qui est référé pour ce champ est invalid. Définez ce type avant le utiliser, ou rappelez-moi s'il est en raison des types par défaut.</value>
   </data>
   <data name="Lamentation68" xml:space="preserve">
-    <value>Le type '{0}' n'existe pas.</value>
+    <value>Le type « {0} » n'existe pas.</value>
   </data>
   <data name="Lamentation69" xml:space="preserve">
-    <value>Le type du paramètre ({0}) ne correspond pas au type du '{1}' ({2}). Reorganisez vos paramètres dans la pile ou changez son type.</value>
+    <value>Le type du paramètre ({0}) ne correspond pas au type du « {1} » ({2}). Reorganisez vos paramètres dans la pile ou changez son type.</value>
   </data>
   <data name="Lamentation7" xml:space="preserve">
     <value>Un erreur d'implementation. Il y peut-être rien au jeton {0} en raison que la phrase {1} a seulement {2} jetons.</value>
+  </data>
+  <data name="Lamentation70" xml:space="preserve">
+    <value>Il n'y a pas aucun sur le plateau pour remplacer l'astérisque.</value>
+  </data>
+  <data name="Lamentation71" xml:space="preserve">
+    <value>La propriété « {0} » n'existe pas sous le type « {1} ».</value>
+  </data>
+  <data name="Lamentation72" xml:space="preserve">
+    <value>Le type de cet objet ({0}) ne correspond pas au type du « {1} » ({2}). Changez son type.</value>
+  </data>
+  <data name="Lamentation73" xml:space="preserve">
+    <value>Le variable « {0} » n'existe pas.</value>
   </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Un erreur d'implementation. Des jetons certains dans la phrase {0} sont déjà spécifiés.</value>

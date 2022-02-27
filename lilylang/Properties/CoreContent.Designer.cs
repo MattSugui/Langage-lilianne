@@ -754,6 +754,42 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à There is nothing on the tray to substitute the asterisk..
+        /// </summary>
+        internal static string Lamentation70 {
+            get {
+                return ResourceManager.GetString("Lamentation70", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Property &apos;{0}&apos; does not exist for type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Lamentation71 {
+            get {
+                return ResourceManager.GetString("Lamentation71", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This object&apos;s type ({0}) does not correspond with that of &apos;{1}&apos; ({2}). Change the type..
+        /// </summary>
+        internal static string Lamentation72 {
+            get {
+                return ResourceManager.GetString("Lamentation72", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string Lamentation73 {
+            get {
+                return ResourceManager.GetString("Lamentation73", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Implementation error. Some tokens of the {0} sentence have already been specified..
         /// </summary>
         internal static string Lamentation8 {

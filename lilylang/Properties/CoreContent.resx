@@ -348,6 +348,18 @@
   <data name="Lamentation7" xml:space="preserve">
     <value>Implementation error. There can be nothing at token {0} because the {1} sentence only has {2}.</value>
   </data>
+  <data name="Lamentation70" xml:space="preserve">
+    <value>There is nothing on the tray to substitute the asterisk.</value>
+  </data>
+  <data name="Lamentation71" xml:space="preserve">
+    <value>Property '{0}' does not exist for type '{1}'.</value>
+  </data>
+  <data name="Lamentation72" xml:space="preserve">
+    <value>This object's type ({0}) does not correspond with that of '{1}' ({2}). Change the type.</value>
+  </data>
+  <data name="Lamentation73" xml:space="preserve">
+    <value>Variable '{0}' does not exist.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Implementation error. Some tokens of the {0} sentence have already been specified.</value>
   </data>

@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (184/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (191/242 kB)                                                                 ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -150,7 +150,6 @@ global using static fonder.Lilian.New.Interpreter;
 global using static fonder.Lilian.New.Interpreter.Spellbook;
 global using static fonder.Lilian.New.Interpreter.Actualiser;
 global using static fonder.Lilian.New.Coco.Preprocessor;
-global using static fonder.Lilian.New.Coco.Grammar;
 global using static fonder.Lilian.New.UserInterface;
 global using static fonder.Lilian.New.ObjectModel;
 global using static System.Threading.Thread;
@@ -277,6 +276,29 @@ public static class Programme
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
 
+#if COCOTESTS
+        {
+            // hardcode AYO.CCN lol
+            RegulateCompilation = true;
+            string test = @"D:\multitest\ayo.ccn";
+            try
+            {
+                WriteLine("First pass on preproc!");
+                if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
+                else Preprocess(File.ReadAllLines(test));
+                WriteLine("tests done!!!!!!!!!!!!!");
+                WriteLine("Second pass on preproc!");
+                Preprocess(ConsummateSource.ToArray(), true);
+                ReadKey(true);
+            }
+            catch (Exception e)
+            {
+                ErrorScreen(e);
+            }
+            return;
+        }
+#endif
+
         // Choice screen
         DisplayScreen(
             Properties.CoreContent.ChoiceScreenBody,
@@ -385,19 +407,14 @@ public static class Interpreter
     public static List<FELFrame> CurrentFrame = new();
 
     /// <summary>
-    /// The current consummate collection of objects.
-    /// </summary>
-    public static Stack<object> CurrentObjects;
-
-    /// <summary>
-    /// The current consummate collections of <see cref="FELStruct"/>s.
-    /// </summary>
-    public static List<FELStruct> CurrentHeap;
-
-    /// <summary>
     /// The current saved collection of objects.
     /// </summary>
     public static List<FELObject> CurrentStore = new();
+
+    /// <summary>
+    /// The current struct being defined.
+    /// </summary>
+    public static FELStruct RawStructure { get; set; }
 
     /// <summary>
     /// The current frame being pointed to.
@@ -927,8 +944,9 @@ public static class Interpreter
                 return new(FELActionType.xor);
             case "store":
                 return new(
-                    FELActionType.store,
-                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
+                    sent.Value[1] == "#*" ? FELActionType.storestruct : FELActionType.store,
+                    sent.Value[1].StartsWith('#') ? 
+                    (sent.Value[1] == "#*" ? new FELCompilerFlag() : sent.Value[1].TrimStart('#') ):
                     (sent.Value[1].StartsWith('&') ?
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
@@ -1076,10 +1094,45 @@ public static class Interpreter
                     ); 
             case "finalise":
                 return new(FELActionType.finalise);
+            case "shelve":
+                return new(FELActionType.shelve);
             case "create":
                 return new(
                     FELActionType.create,
                     sent.Value[1].TrimStart('&')
+                    );
+            case "delete":
+                return new(
+                    FELActionType.delete,
+                    sent.Value[1].TrimStart('*')
+                    );
+            case "present":
+                return new(
+                    FELActionType.present,
+                    sent.Value[1].TrimStart('*')
+                    );
+            case "get":
+                return new(
+                    FELActionType.@get,
+                    new object[]
+                    {
+                        sent.Value[1] == "*"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                        sent.Value[2].TrimStart('#')
+                    }
+                    );
+            case "set":
+                return new(
+                    FELActionType.@set,
+                    new object[]
+                    {
+                        sent.Value[1] == "*"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                        sent.Value[2].TrimStart('#')
+                    }
+                    );
+            case "save":
+                return new(
+                    FELActionType.save,
+                    sent.Value[1].TrimStart('*')
                     );
             default:
                 if (sent.Value[0].StartsWith('@'))
@@ -1246,6 +1299,10 @@ public static class Interpreter
             def.Add(0x0048, Properties.CoreContent.Lamentation67);
             def.Add(0x0049, Properties.CoreContent.Lamentation68);
             def.Add(0x004A, Properties.CoreContent.Lamentation69);
+            def.Add(0x004B, Properties.CoreContent.Lamentation70);
+            def.Add(0x004C, Properties.CoreContent.Lamentation71);
+            def.Add(0x004D, Properties.CoreContent.Lamentation72);
+            def.Add(0x004E, Properties.CoreContent.Lamentation73);
         }
 
         /// <summary>
@@ -1400,7 +1457,7 @@ public static class Interpreter
                         #endregion
                         #region Print
                         case FELActionType.print:
-                            WriteLine( CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
+                            WriteLine(CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
                             goto GoForward;
                         #endregion
                         #region Arithmetic operations
@@ -1981,7 +2038,7 @@ public static class Interpreter
                                     "character" => typeof(char),
                                     _ => throw new Lamentation("Custom types are not yet supported for properties at this time.")
                                 }
-                                ) ;
+                                );
                             goto GoForward;
                         case FELActionType.finalise:
                             CurrentType++;
@@ -1991,21 +2048,83 @@ public static class Interpreter
                             FELStructType AssociatedType = TypeRegistry.Find(t => t.Name == BruhName);
                             if (AssociatedType is null) throw new Lamentation(0x49, BruhName);
 
-                            CurrentFrame[CurrentFrameIndex].HeapFrame.Insert(CurrentPointedStruct, new(default, string.Empty, AssociatedType, new()));
+                            RawStructure = new(0, string.Empty, AssociatedType, new());
                             foreach ((string objn, Type bruh1) in AssociatedType.PropertyList)
-                                CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Values.Add(objn, default);
+                                RawStructure.Values.Add(objn, default);
 
                             List<object> supposedProps = new();
-                            foreach ((string objname, Type type) in CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Type.PropertyList)
+                            foreach ((string objname, Type type) in RawStructure.Type.PropertyList)
                             {
                                 dynamic supposed = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
 
                                 if (supposed.GetType() == type || supposed is null)
-                                    CurrentFrame[CurrentFrameIndex].HeapFrame[CurrentPointedStruct].Values[objname] = new(-1, objname, supposed);
+                                    RawStructure.Values[objname] = new(-1, objname, supposed);
                                 else throw new Lamentation(0x4A, supposed.GetType().Name, objname, type.Name);
                             }
                             goto GoForward;
-                        #endregion
+                        case FELActionType.save:
+                            string newName = Value!;
+                            CurrentFrame[CurrentFrameIndex].HeapFrame.Add(RawStructure with { Name = newName, Address = CurrentFrame[CurrentFrameIndex].HeapFrame.Count });
+                            RawStructure = null;
+                            goto GoForward;
+                        case FELActionType.delete:
+                            string ayoName = Value!;
+                            if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == ayoName)) throw new Lamentation(0x49, ayoName);
+                            CurrentFrame[CurrentFrameIndex].HeapFrame.Remove(CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == ayoName));
+                            goto GoForward;
+                        case FELActionType.storestruct:
+                            CurrentStore.Add(CurrentFrame[CurrentFrameIndex].HeapFrame[0]);
+                            goto GoForward;
+                        case FELActionType.get:
+                            string getName = Value![1]!;
+                            bool presentation = false; string unpresent = string.Empty;
+
+                            if (Value![0] is FELCompilerFlag) presentation = true;
+                            else if (Value![0] is string suppParName)
+                            {
+                                if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == suppParName)) throw new Lamentation(0x49, suppParName);
+                                presentation = false; unpresent = suppParName;
+                            }
+
+                            FELStruct getThing = presentation ? (RawStructure ?? throw new Lamentation(0x4B)) : CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == unpresent);
+
+                            if (!getThing.Values.ContainsKey(getName)) throw new Lamentation(0x4C, getName, getThing.Type.Name);
+
+                            CurrentFrame[CurrentFrameIndex].StackFrame.Push(getThing.Values[getName]);
+                            goto GoForward;
+                        case FELActionType.set:
+                            string setName = Value![1]!;
+                            bool spresentation = false; string unspresent = string.Empty;
+                            
+                            if (Value![0] is FELCompilerFlag) presentation = true;
+                            else if (Value![0] is string suppParName)
+                            {
+                                if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == suppParName)) throw new Lamentation(0x49, suppParName);
+                                spresentation = false; unspresent = suppParName;
+                            }
+                            
+                            FELStruct setThing = spresentation ? (RawStructure ?? throw new Lamentation(0x4B)) : CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == unspresent);
+                           
+                            if (!setThing.Values.ContainsKey(setName)) throw new Lamentation(0x4C, setName, setThing.Type.Name);
+                            
+                            dynamic shit = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                            Type comparaison = setThing.Type.PropertyList[setName];
+                            
+                            if (!shit.GetType() != comparaison) throw new Lamentation(0x4D, shit.GetType(), setName, comparaison.Name);
+                            
+                            setThing.Values[setName] = setThing.Values[setName] with { Value = shit };
+                            goto GoForward;
+                        case FELActionType.present:
+                            string presenterName = Value!;
+                            if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == presenterName)) throw new Lamentation(0x4E, presenterName);
+                            RawStructure = CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == presenterName);
+                            CurrentFrame[CurrentFrameIndex].HeapFrame.Remove(RawStructure);
+                            goto GoForward;
+                        case FELActionType.shelve:
+                            CurrentFrame[CurrentFrameIndex].HeapFrame.Insert(RawStructure.Address, RawStructure);
+                            RawStructure = null;
+                            goto GoForward;
+                            #endregion
                     }
                 }
                 catch (Lamentation cry) 
@@ -2054,7 +2173,10 @@ public static class Interpreter
                     (act.ActionType >= FELActionType.throwc &&
                     act.ActionType <= FELActionType.pause) ||
                     act.ActionType == FELActionType.define ||
-                    act.ActionType == FELActionType.create
+                    (act.ActionType >= FELActionType.create &&
+                    act.ActionType <= FELActionType.carry) ||
+                    act.ActionType == FELActionType.present ||
+                    act.ActionType == FELActionType.shelve
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -2075,6 +2197,7 @@ public static class Interpreter
                         double => 26,
                         decimal => 27,
                         char => 28,
+                        FELCompilerFlag => 73,
                         _ => throw new Lamentation(0x3d)
                     };
 
@@ -2082,10 +2205,13 @@ public static class Interpreter
                     writer.Write(act.Value!);
                     //writer.Write((byte)14);
                 }
-                else if (act.ActionType == FELActionType.furnish) // more shit needed for typename and prop name
+                else if (act.ActionType == FELActionType.furnish ||
+                    act.ActionType == FELActionType.@get ||
+                    act.ActionType == FELActionType.@set
+                    ) // more shit needed for typename and prop name
                 {
                     writer.Write((byte)act.ActionType);
-                    writer.Write((byte)11);
+                    writer.Write(act.Value is FELCompilerFlag? 73 : 11);
                     writer.Write(act.Value![0]!); // typename
                     writer.Write((byte)11);
                     writer.Write(act.Value![1]!); // prop name
@@ -2127,7 +2253,10 @@ public static class Interpreter
                     (opcode >= 57 &&
                     opcode <= 59) ||
                     opcode == 61 ||
-                    opcode == 64
+                    (opcode >= 64 &&
+                    opcode <= 68) ||
+                    opcode == 71 ||
+                    opcode == 72
                     )
                 {
                     byte marker = reader.ReadByte();
@@ -2178,15 +2307,18 @@ public static class Interpreter
                         case 28:
                             thing = reader.ReadChar();
                             break;
+                        case 73:
+                            thing = new FELCompilerFlag();
+                            break;
                     }
                 }
                 else if (opcode == 62) // special
                 {
-                    reader.ReadByte(); // byte 11 to mark type name
-                    string TypeName = reader.ReadString();
+                    byte marker = reader.ReadByte(); // byte 11/73 to mark type name
+                    object TypeName = marker == 73? new FELCompilerFlag() : reader.ReadString();
                     reader.ReadByte(); // another byte to mark prop name
                     string PropName = reader.ReadString();
-                    thing = new string[] { TypeName, PropName };
+                    thing = new object[] { TypeName, PropName };
                 }
                 PlaceEffect(new((FELActionType)opcode, thing), CurrentPointedEffect, true);
                 CurrentPointedEffect++;
@@ -2536,7 +2668,48 @@ public static class Interpreter
             /// <summary>
             /// Deinstantiation?? is that a word? Anyways, a structure instance is removed from the heap.
             /// </summary>
-            delete
+            delete,
+
+            /// <summary>
+            /// Names a structure type. By default, a structure is unnamed as it is created, so this
+            /// opcode will give the struct a name.
+            /// </summary>
+            save,
+
+            /// <summary>
+            /// Stores a structure along with the other normal <see cref="FELObject"/>s.
+            /// </summary>
+            storestruct,
+
+            /// <summary>
+            /// Puts a structure on the stack. (You can't do anything with it currently, though.)
+            /// </summary>
+            carry,
+
+            /// <summary>
+            /// Gets a property from a structure.
+            /// </summary>
+            @get,
+
+            /// <summary>
+            /// Sets a value to a property from a structure.
+            /// </summary>
+            @set,
+
+            /// <summary>
+            /// Puts a structure on the tray (internally <see cref="RawStructure"/>).
+            /// </summary>
+            present,
+
+            /// <summary>
+            /// Removes the structure from the tray (internally <see cref="RawStructure"/>).
+            /// </summary>
+            shelve,
+
+            /// <summary>
+            /// A context-sensitive compiler flag byte marker.
+            /// </summary>
+            compflag
         }
 
         /* example:
@@ -2569,7 +2742,7 @@ public static class ObjectModel
     /// </summary>
     /// <param name="StackFrame">The current stack.</param>
     /// <param name="HeapFrame">The current heap (collection of structs).</param>
-    public record class FELFrame(Stack<object> StackFrame, List<FELStruct> HeapFrame);
+    public record struct FELFrame(Stack<object> StackFrame, List<FELStruct> HeapFrame);
 
     /// <summary>
     /// A structure type.
@@ -2585,12 +2758,21 @@ public static class ObjectModel
     /// <param name="Name">The name of the object.</param>
     /// <param name="Values">The list of properties in the thing.</param>
     /// <param name="Type">The kind of structure this object is.</param>
-    public record class FELStruct(int Address, string Name, FELStructType Type, Dictionary<string, FELObject> Values) : FELObject(Address, Name, Values);
+    public record class FELStruct(int Address, string Name, FELStructType Type, Dictionary<string, FELObject> Values)
+        : FELObject(Address, Name, Values);
 
     /// <summary>
     /// The currently registered structure types.
     /// </summary>
     public static List<FELStructType> TypeRegistry = new();
+
+    /// <summary>
+    /// An empty struct that just meant to mean something in whereever this is sent to.
+    /// </summary>
+    public struct FELCompilerFlag
+    {
+        public override string ToString() => "helo";
+    }
 
     /// <summary>
     /// The currently-pointed registered structure type in <see cref="TypeRegistry"/>.
@@ -3067,14 +3249,6 @@ public static class Coco
             XmlNode titleNode = outputPath.Attributes["Title"];
             if (titleNode is not null) ConsummateSource.Add($"title \"{titleNode.Value}\";");
 
-            XmlNode grammarPath = root.SelectSingleNode("descendant::Grammar");
-            if (grammarPath is not null)
-            {
-                GrammarType = true;
-                LoadGrammar(grammarPath.Attributes["Path"].Value);
-            }
-            else GrammarType = false;
-
             // get project contents
             XmlNodeList projContents = root.SelectNodes("descendant::Include");
             if (projContents.Count != 0)
@@ -3140,9 +3314,6 @@ public static class Coco
             Dictionary<string, string> symbols = new();
             List<(string? symval, List<string> lines)> lignes = new();
             List<string> IncludeFilepaths = new();
-
-            List<NewToken> GatheredTokens = new();
-            List<NewSentenceStructure> GatheredStructures = new();
 
             string currval = string.Empty;
             string currsym = string.Empty;
@@ -3508,91 +3679,6 @@ public static class Coco
         #endregion
     }
     #endregion
-
-    #region Coco comprehension
-    /// <summary>
-    /// All grammar implementation processes.
-    /// </summary>
-    public static class Grammar
-    {
-        /// <summary>
-        /// What Lilian should currently use.
-        /// </summary>
-        /// <remarks>
-        /// If false, Lilian should use the grammar of the intermediate representation which is hardcoded
-        /// into the <see cref="TEMP.LOADPATTERNS"/> method and actually still use an older form of the
-        /// language's syntax checker. If true, Lilian should use the custom grammar, then use the IR.
-        /// </remarks>
-        public static bool GrammarType { get; set; }
-
-        /// <summary>
-        /// Loads a grammar file.
-        /// </summary>
-        /// <param name="path">The path to the grammar file. By default it should load "core.lgf".</param>
-        public static void LoadGrammar(string path = "core.lgf")
-        {
-
-        }
-
-        /// <summary>
-        /// The token registry.
-        /// </summary>
-        public static List<NewToken> Tokens = new();
-
-        /// <summary>
-        /// The sentence structure registry.
-        /// </summary>
-        public static List<NewSentenceStructure> Sentences = new();
-
-        /// <summary>
-        /// A token.
-        /// </summary>
-        /// <remarks>
-        /// This is different from <see cref="Token"/>.
-        /// </remarks>
-        /// <param name="Name">The name of the token.</param>
-        /// <param name="Pattern">The pattern of the token.</param>
-        /// <param name="Seek">
-        ///     If true, the interpreter will seek for more of the same type, if the pattern
-        /// does not use brackets.
-        /// </param>
-        /// <param name="IsValue">If true, the interpreter will make use of the value of the resulting fruit.</param>
-        /// <param name="Ignore">If true, the interpreter will ignore this token.</param>
-        public record class NewToken(string Name, string Pattern, bool Seek, bool IsValue, bool Ignore);
-
-        /// <summary>
-        /// A captured token.
-        /// </summary>
-        /// <remarks>
-        /// This is different from <see cref="TokenFruit"/>.
-        /// </remarks>
-        /// <param name="AssociatedToken">The name of the token that's associated with this value.</param>
-        /// <param name="Value">The value itself.</param>
-        public record struct NewTokenFruit(string AssociatedToken, string Value);
-
-        /// <summary>
-        /// A sentence structure.
-        /// </summary>
-        /// <remarks>
-        /// This is different from <see cref="SentenceStructure"/>.
-        /// </remarks>
-        /// <param name="Name">The name of the structure.</param>
-        /// <param name="Pattern">The pattern of the structure, made up of the names of the tokens.</param>
-        /// <param name="AssociatedSub">The subroutine it converts to. It is not validated beforehand for certain case uses.</param>
-        public record class NewSentenceStructure(string Name, string[] Pattern, string AssociatedSub);
-
-        /// <summary>
-        /// A captured sentence.
-        /// </summary>
-        /// <remarks>
-        /// This is different from <see cref="SentenceFruit"/>.
-        /// </remarks>
-        /// <param name="AssociatedSentence">The name of the sentence that's associated with this value.</param>
-        /// <param name="Value">The value itself.</param>
-        public record struct NewSentence(string AssociatedSentence, string[] Value);
-
-    }
-#endregion
 }
 #endregion
    
@@ -3620,7 +3706,10 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
         CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
+        CurrentTokens.Add(new() { Name = "ASTR", Value = @"^\*$" });
         CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
         CurrentTokens.Add(new() { Name = "PUSH", Value = @"^push$" });
@@ -3682,6 +3771,12 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "CHAR", Value = @"^character$" });
         CurrentTokens.Add(new() { Name = "DECM", Value = @"^quadruple$" });
         CurrentTokens.Add(new() { Name = "DOUB", Value = @"^double$" });
+        CurrentTokens.Add(new() { Name = "SAVE", Value = @"^save$" });
+        CurrentTokens.Add(new() { Name = "DELT", Value = @"^delete$" });
+        CurrentTokens.Add(new() { Name = "GET", Value = @"^get$" });
+        CurrentTokens.Add(new() { Name = "SET", Value = @"^set$" });
+        CurrentTokens.Add(new() { Name = "PRSN", Value = @"^present$" });
+        CurrentTokens.Add(new() { Name = "RECL", Value = @"^shelve$" });
 
         //----------------------------------- Name                      TokenStruct ----------------                            -----
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", TokenStruct = new string[] { "PRPR", "COLN" } });
@@ -3763,7 +3858,15 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "DefineStructure", TokenStruct = new string[] { "DEFN", "STRC", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FinaliseStructure", TokenStruct = new string[] { "FINS", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "CreateStructure", TokenStruct = new string[] { "CREA", "STRC", "SMCL" } });
-
+        CurrentSentenceStructures.Add(new() { Name = "DeleteStructure", TokenStruct = new string[] { "DELT", "HEAP", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SaveStructure", TokenStruct = new string[] { "SAVE", "HEAP", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreStructure", TokenStruct = new string[] { "STOR", "HSST", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PresentStructure", TokenStruct = new string[] { "PRSN", "HEAP", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GetStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SetStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "ASTR", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "ASTR", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "ShelveStructure", TokenStruct = new string[] { "RECL", "SMCL" } });
     }
 }
 #endregion
