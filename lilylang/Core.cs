@@ -1116,7 +1116,7 @@ public static class Interpreter
                     FELActionType.@get,
                     new object[]
                     {
-                        sent.Value[1] == "*"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                        sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
                         sent.Value[2].TrimStart('#')
                     }
                     );
@@ -1125,7 +1125,7 @@ public static class Interpreter
                     FELActionType.@set,
                     new object[]
                     {
-                        sent.Value[1] == "*"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                        sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
                         sent.Value[2].TrimStart('#')
                     }
                     );
