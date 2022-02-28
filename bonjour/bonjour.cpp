@@ -4,6 +4,10 @@
 #include <iostream>
 #include <string>
 
+#define bonjour(a) a * 69420
+
+
+
 using namespace std;
 
 /*
@@ -14,35 +18,24 @@ struct sample
 };
 */
 
+struct hi
+{
+    int place;
+};
+
+typedef struct big
+{
+    int bruh;
+} hello;
+
 int main()
 {
-    /*
-    cout << "Hello World!\n";
+    struct hi bruhhh { 69 };
+    big shit{420};
 
-    int thisisanintarray[69] {};
-    for (int i = 0; i < 69; i++)
-    {
-        thisisanintarray[i] = i xor (69 - i);
-    }
-
-    int* thisisaloc = &thisisanintarray[21];
-
-    cout << thisisaloc << " is stored at " << &thisisaloc << endl;
-
-    sample samplevar;
-    samplevar.thisisanint = 69; samplevar.thisisalongerone = 420;
-    cout << "samplevar has " << samplevar.thisisanint << " and " << samplevar.thisisalongerone << endl;
-
-    sample* pointwhere = &samplevar;
-
-    cout << "samplevar is at " << pointwhere << endl;
-
+    cout << bonjour(bruhhh.place) << endl;
+    cout << shit.bruh << endl;
     system("pause");
-
-    return 0;
-    */
-
-    int x = 69; int y = 420; cout << x or y; system("pause");
 }
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage

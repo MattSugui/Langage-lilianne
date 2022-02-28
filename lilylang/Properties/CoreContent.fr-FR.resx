@@ -376,7 +376,7 @@
     <value>Non...</value>
   </data>
   <data name="OutputAsk" xml:space="preserve">
-    <value>Où doit-être le résultat ?</value>
+    <value>Où doit-être le résultat ? (Laisser vide pour la location comme défini dans la définition du projet)</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Veulliez patientier tandis que Lilian examine votre code. Il peut prendre des plusieurs minutes selon la taille du code.</value>

@@ -835,7 +835,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Where should be the output?.
+        ///   Recherche une chaîne localisée semblable à Where should be the output? (Leave empty for the one found in the project&apos;s definition).
         /// </summary>
         internal static string OutputAsk {
             get {
