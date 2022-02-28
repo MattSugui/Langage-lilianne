@@ -56,6 +56,7 @@
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
 ║ Size goal: IBM 33FD (191/242 kB)                                                                 ║
+║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -2217,7 +2218,7 @@ public static class Interpreter
                 {
                     writer.Write((byte)act.ActionType);
                     writer.Write(act.Value is FELCompilerFlag? 73 : 11);
-                    writer.Write(act.Value![0]!); // typename
+                    if (act.Value! is not FELCompilerFlag) writer.Write(act.Value![0]!); // typename
                     writer.Write((byte)11);
                     writer.Write(act.Value![1]!); // prop name
 
@@ -2260,8 +2261,7 @@ public static class Interpreter
                     opcode == 61 ||
                     (opcode >= 64 &&
                     opcode <= 68) ||
-                    opcode == 71 ||
-                    opcode == 72
+                    opcode == 71
                     )
                 {
                     byte marker = reader.ReadByte();
@@ -2317,7 +2317,10 @@ public static class Interpreter
                             break;
                     }
                 }
-                else if (opcode == 62) // special
+                else if (opcode == 62 ||
+                    opcode == 69 ||
+                    opcode == 70
+                    ) // special
                 {
                     byte marker = reader.ReadByte(); // byte 11/73 to mark type name
                     object TypeName = marker == 73? new FELCompilerFlag() : reader.ReadString();
