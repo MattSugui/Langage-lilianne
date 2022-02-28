@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (192/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (193/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -262,7 +262,7 @@ public static class Programme
         SetBufferSize(81, 25);
         WriteLine(
             $"\n\n\n\n\n\n\n\n\n\n{Properties.CoreContent.ProgramName}\n" +
-            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "":", "+(Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
+            "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "" : ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
@@ -315,9 +315,9 @@ public static class Programme
             new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, Properties.CoreContent.ChoiceScreenChoice2),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
-        string filepath = AskingFileScreen(SingleOrProj? Properties.CoreContent.InputAskVer1: Properties.CoreContent.InputAskVer2); string outpath;
+        string filepath = AskingFileScreen(SingleOrProj ? Properties.CoreContent.InputAskVer1 : Properties.CoreContent.InputAskVer2); string outpath;
         if (SingleOrProj) outpath = AskingScreen(Properties.CoreContent.OutputAsk); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
-        
+
         InterpretNewGUI(filepath, outpath.Trim('"'));
 
         if (!ErrorRaised)
@@ -396,14 +396,14 @@ public static class Programme
 /// </summary>
 public static class Interpreter
 {
-#region Static-field flags and data
-#region Execution
+    #region Static-field flags and data
+    #region Execution
     /// <summary>
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
     public static bool ErrorRaised { get; set; }
-#endregion
-#region Compilation
+    #endregion
+    #region Compilation
     /// <summary>
     /// The unprocessed project file. (XML version)
     /// </summary>
@@ -449,8 +449,8 @@ public static class Interpreter
     /// The name of the project. Is also the name of the application unless stated otherwise.
     /// </summary>
     public static string ProjectTitle { get; set; }
-#endregion
-#region End-user debug services
+    #endregion
+    #region End-user debug services
     /// <summary>
     /// The current line number.
     /// </summary>
@@ -470,8 +470,8 @@ public static class Interpreter
     /// The current line column. Uses <c>CurrentLine</c> for the column.
     /// </summary>
     public static int CurrentColumn => CurrentLine.Length;
-#endregion
-#region Operation
+    #endregion
+    #region Operation
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
@@ -531,16 +531,16 @@ public static class Interpreter
     /// The current accumulator.
     /// </summary>
     public static int CurrentObjectA { get; set; }
-#endregion
-#endregion
+    #endregion
+    #endregion
 
-#region Interpretation
+    #region Interpretation
     /// <summary>
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
 
-#region File operations
+    #region File operations
     /// <summary>
     /// Reads from a path.
     /// </summary>
@@ -559,7 +559,7 @@ public static class Interpreter
     {
         foreach (string line in lines) ConsummateSource.Add(line);
     }
-#endregion
+    #endregion
 
     /// <summary>
     /// Do the whole thing. (Doesn't use the progress bars but instead uses the newer GUI system.)
@@ -688,8 +688,8 @@ public static class Interpreter
         }
     }
 
-#endregion
-#region Spellbook
+    #endregion
+    #region Spellbook
     /// <summary>
     /// The lexer and parser components of the interpreter.
     /// </summary>
@@ -705,7 +705,7 @@ public static class Interpreter
         /// </summary>
         public static List<SentenceStructure> CurrentSentenceStructures = new();
 
-#region Stuffs
+        #region Stuffs
         /// <summary>
         /// A token.
         /// </summary>
@@ -811,7 +811,7 @@ public static class Interpreter
             /// <returns>The string representation.</returns>
             public override string ToString() => $"{AssociatedSentence.Name}.";
         }
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -1003,8 +1003,8 @@ public static class Interpreter
             case "store":
                 return new(
                     sent.Value[1] == "#*" ? FELActionType.storestruct : FELActionType.store,
-                    sent.Value[1].StartsWith('#') ? 
-                    (sent.Value[1] == "#*" ? new FELCompilerFlag() : sent.Value[1].TrimStart('#') ):
+                    sent.Value[1].StartsWith('#') ?
+                    (sent.Value[1] == "#*" ? new FELCompilerFlag() : sent.Value[1].TrimStart('#')) :
                     (sent.Value[1].StartsWith('&') ?
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
@@ -1144,12 +1144,12 @@ public static class Interpreter
                 else throw new Lamentation("Custom types are not yet supported for properties at this time.");
                 return new(
                     FELActionType.furnish,
-                    new string[]
+                    new object[]
                     {
-                        proposedType,
-                        sent.Value[2].TrimStart('#')
+                            proposedType,
+                            sent.Value[2].TrimStart('#')
                     }
-                    ); 
+                    );
             case "finalise":
                 return new(FELActionType.finalise);
             case "shelve":
@@ -1174,8 +1174,8 @@ public static class Interpreter
                     FELActionType.@get,
                     new object[]
                     {
-                        sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
-                        sent.Value[2].TrimStart('#')
+                            sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                            sent.Value[2].TrimStart('#')
                     }
                     );
             case "set":
@@ -1183,8 +1183,8 @@ public static class Interpreter
                     FELActionType.@set,
                     new object[]
                     {
-                        sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
-                        sent.Value[2].TrimStart('#')
+                            sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
+                            sent.Value[2].TrimStart('#')
                     }
                     );
             case "save":
@@ -1262,8 +1262,8 @@ public static class Interpreter
             else currentEffect = 0; // reset
         }
     }
-#endregion
-#region Execution
+    #endregion
+    #region Execution
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>
@@ -1275,8 +1275,8 @@ public static class Interpreter
 
         while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
-#endregion
-#region Lamentation
+    #endregion
+    #region Lamentation
     /// <summary>
     /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
@@ -1464,8 +1464,8 @@ public static class Interpreter
         }
     }
 
-#endregion
-#region Operation
+    #endregion
+    #region Operation
     /// <summary>
     /// The main opcode interpretation class.
     /// </summary>
@@ -1501,24 +1501,24 @@ public static class Interpreter
                 {
                     switch (ActionType)
                     {
-#region Default
+                        #region Default
                         case FELActionType.nop:
                             goto GoForward;
-#endregion
-#region Stack operations
+                        #endregion
+                        #region Stack operations
                         case FELActionType.push:
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
                             if (CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0) CurrentFrame[CurrentFrameIndex].StackFrame.Pop(); // do nothing if the stack is empty
                             goto GoForward;
-#endregion
-#region Print
+                        #endregion
+                        #region Print
                         case FELActionType.print:
                             WriteLine(CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
                             goto GoForward;
-#endregion
-#region Arithmetic operations
+                        #endregion
+                        #region Arithmetic operations
                         case FELActionType.add:
                             try
                             {
@@ -1639,8 +1639,8 @@ public static class Interpreter
                                 throw new Lamentation(0x17, ex.Message);
                             }
                             goto GoForward;
-#endregion
-#region Variable management operations
+                        #endregion
+                        #region Variable management operations
                         case FELActionType.store:
                             dynamic x = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
@@ -1669,8 +1669,8 @@ public static class Interpreter
                                     }
                                 ));
                             goto GoForward;
-#endregion
-#region Branching operations
+                        #endregion
+                        #region Branching operations
                         case FELActionType.beq:
                             dynamic z = Value!;
                             if (z is int index)
@@ -1892,8 +1892,8 @@ public static class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
-#endregion
-#region User interaction operations
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.take:
                             Write("-> ");
                             string? asked = ReadLine();
@@ -1924,8 +1924,8 @@ public static class Interpreter
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(content2);
                             goto GoForward;
-#endregion
-#region Data manipulation operations
+                        #endregion
+                        #region Data manipulation operations
                         case FELActionType.narrow:
                             dynamic narrowand = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             unchecked
@@ -2003,15 +2003,15 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(realisand!);
 
                             goto GoForward;
-#endregion
-#region Lamentations
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@catch:
                             if (!ErrorRaised) goto GoForward;
                             ErrorRaised = false;
                             CurrentPointedEffect = Value!;
                             return;
-#endregion
-#region Branching operations
+                        #endregion
+                        #region Branching operations
                         case FELActionType.call:
                             dynamic zC = Value!;
                             if (zC is int indexC)
@@ -2042,8 +2042,8 @@ public static class Interpreter
                             }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
-#endregion
-#region Lamentations
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@throw:
                             throw new Lamentation(0x2F);
                         case FELActionType.throwc:
@@ -2051,13 +2051,13 @@ public static class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
-#endregion
-#region Cosmetics
+                        #endregion
+                        #region Cosmetics
                         case FELActionType.settitle:
                             Title = Value!;
                             goto GoForward;
-#endregion
-#region User interaction operations
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.pause:
                             dynamic pause = Value!;
                             if (pause is int duration) Thread.Sleep(duration);
@@ -2066,8 +2066,8 @@ public static class Interpreter
                         case FELActionType.wait:
                             ReadKey(true);
                             goto GoForward;
-#endregion
-#region Object model operations
+                        #endregion
+                        #region Object model operations
                         case FELActionType.define:
                             string Name = Value!;
                             TypeRegistry.Insert(CurrentType, new(Name, new()));
@@ -2153,23 +2153,23 @@ public static class Interpreter
                         case FELActionType.set:
                             string setName = Value![1]!;
                             bool spresentation = false; string unspresent = string.Empty;
-                            
+
                             if (Value![0] is FELCompilerFlag) spresentation = true;
                             else if (Value![0] is string suppParName)
                             {
                                 if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == suppParName)) throw new Lamentation(0x49, suppParName);
                                 spresentation = false; unspresent = suppParName;
                             }
-                            
+
                             FELStruct setThing = spresentation ? (RawStructure ?? throw new Lamentation(0x4B)) : CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == unspresent);
-                           
+
                             if (!setThing.Values.ContainsKey(setName)) throw new Lamentation(0x4C, setName, setThing.Type.Name);
-                            
+
                             dynamic shit = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             Type comparaison = setThing.Type.PropertyList[setName];
-                            
+
                             if (!shit.GetType() != comparaison) throw new Lamentation(0x4D, shit.GetType(), setName, comparaison.Name);
-                            
+
                             setThing.Values[setName] = setThing.Values[setName] with { Value = shit };
                             goto GoForward;
                         case FELActionType.present:
@@ -2182,10 +2182,10 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].HeapFrame.Insert(RawStructure.Address, RawStructure);
                             RawStructure = null;
                             goto GoForward;
-#endregion
+                            #endregion
                     }
                 }
-                catch (Lamentation cry) 
+                catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
                     ErrorRaised = true;
@@ -2384,7 +2384,7 @@ public static class Interpreter
                     ) // special
                 {
                     byte marker = reader.ReadByte(); // byte 11/73 to mark type name
-                    object TypeName = marker == 73? new FELCompilerFlag() : reader.ReadString();
+                    object TypeName = marker == 73 ? new FELCompilerFlag() : reader.ReadString();
                     reader.ReadByte(); // another byte to mark prop name
                     string PropName = reader.ReadString();
                     thing = new object[] { TypeName, PropName };
@@ -2788,7 +2788,7 @@ public static class Interpreter
          * pop;
          */
     }
-#endregion
+    #endregion
 }
 #endregion
 
@@ -2961,7 +2961,7 @@ public static class UserInterface
         {
             if (currentLine.Length + (whole[i].Length + 1) <= width)
             {
-                reserve = i + 1 < whole.Length ? whole[i + 1]:string.Empty;
+                reserve = i + 1 < whole.Length ? whole[i + 1] : string.Empty;
                 currentLine.Append(whole[i] + ' ');
                 if (i == whole.Length - 1)
                 {
@@ -3016,8 +3016,8 @@ public static class UserInterface
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
         WriteLine("                                                                                ");
-        ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;                 
-        Write    (" Please wait while the application loads.                                       ");
+        ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
+        Write(" Please wait while the application loads.                                       ");
         SetCursorPosition(0, 0); //ReadKey(true);
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
     }
@@ -3062,8 +3062,8 @@ public static class UserInterface
 
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
         WriteLine(Programme.ReleaseMode ? new string(' ', 80) : ("Dev " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion).PadLeft(80));
-        WriteLine(" " + ApplicationTitle.PadRight(79)                                               );
-        WriteLine((new string('═', ApplicationTitle.Length + 1)+ '═').PadRight(80));
+        WriteLine(" " + ApplicationTitle.PadRight(79));
+        WriteLine((new string('═', ApplicationTitle.Length + 1) + '═').PadRight(80));
         WriteLine("                                                                                ");
         for (int i = 0; i < limit; i++)
         {
@@ -3087,15 +3087,15 @@ public static class UserInterface
         if (dispprog)
         {
             WriteLine(" ╔════════════════════════════════════════════════════════════════════════════╗ ");
-            WriteLine(" ║ " + (progress.ToString() + "%").PadRight(74) +                           " ║ ");
+            WriteLine(" ║ " + (progress.ToString() + "%").PadRight(74) + " ║ ");
             WriteLine(" ║ ┌────────────────────────────────────────────────────────────────────────┐ ║ ");
-            WriteLine(" ║ ╞" + new string('═', (int)((progress!/100m)*72m)).PadRight(72) +        "╡ ║ ");
+            WriteLine(" ║ ╞" + new string('═', (int)((progress! / 100m) * 72m)).PadRight(72) + "╡ ║ ");
             WriteLine(" ║ └────────────────────────────────────────────────────────────────────────┘ ║ ");
             WriteLine(" ╚════════════════════════════════════════════════════════════════════════════╝ ");
         }
 
         ForegroundColor = ConsoleColor.Black; BackgroundColor = ConsoleColor.Gray;
-        Write    (" " + (FooterText ?? "").PadRight(79));
+        Write(" " + (FooterText ?? "").PadRight(79));
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.Black;
         SetCursorPosition(0, 0);
         Sleep(1);
@@ -3126,7 +3126,7 @@ public static class UserInterface
     /// <returns>The input.</returns>
     public static string? AskingScreen(string Description, bool Required = false)
     {
-        Start:
+    Start:
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
 
         Clear();
@@ -3143,7 +3143,7 @@ public static class UserInterface
     /// <returns>The input.</returns>
     public static string? AskingFileScreen(string Description)
     {
-        Start:
+    Start:
         ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkBlue;
 
         Clear();
@@ -3151,7 +3151,8 @@ public static class UserInterface
         WriteLine(Properties.CoreContent.ThisProgIsAsk);
         Write("> ");
         string input = ReadLine();
-        if (File.Exists(input.Trim('"'))) return input.Trim('"'); else
+        if (File.Exists(input.Trim('"'))) return input.Trim('"');
+        else
         {
             ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
 
@@ -3246,13 +3247,13 @@ public static class UserInterface
 /// </summary>
 public static class Coco
 {
-#region Coco preprocessor
+    #region Coco preprocessor
     /// <summary>
     /// The main class for the preprocessor.
     /// </summary>
     public static class Preprocessor
     {
-#region Flags
+        #region Flags
         /// <summary>
         /// If true, enable the preprocessor. If false, all directive lines will be ignored.
         /// </summary>
@@ -3274,7 +3275,7 @@ public static class Coco
         /// If true, the compiler will report that there was no output path specified.
         /// </summary>
         public static bool NoOutputFound { get; set; }
-#endregion
+        #endregion
 
         /// <summary>
         /// Determines the project version to use.
@@ -3293,7 +3294,7 @@ public static class Coco
             finally { if (ver! == true) VersionOfCompilation = true; else VersionOfCompilation = false; }
         }
 
-#region Faux Coco
+        #region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
         /// </summary>
@@ -3340,7 +3341,7 @@ public static class Coco
             else
                 RegulateCompilation = false;
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// The resulting consummate or arranged source file.
@@ -3368,7 +3369,7 @@ public static class Coco
         /// </summary>
         public static string Outgoing { get; set; }
 
-#region Vrai Coco
+        #region Vrai Coco
 
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
@@ -3432,13 +3433,13 @@ public static class Coco
                         lignes[currindx].lines.Add(line);
                     else if (Pass && !string.IsNullOrWhiteSpace(line)) // just visiting
                         CurrentFile.Add(line);
-                    
+
                     continue;
                 }
 
                 string preprocline = line.TrimStart().TrimStart('/');
 
-#region Original macros
+                #region Original macros
                 if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
                     if (ProjectSection) throw new Lamentation(0x42);
@@ -3627,10 +3628,10 @@ public static class Coco
                     lignes = new();
                     currindx = -1;
                 }
-#endregion
+                #endregion
                 else if (!Pass)
                 {
-#region Project macros
+                    #region Project macros
                     if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
                     {
                         var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
@@ -3697,13 +3698,13 @@ public static class Coco
 
                         OutputPresent = true;
                     }
-#endregion
-#region Grammar definition macros
+                    #endregion
+                    #region Grammar definition macros
                     else if (Regex.IsMatch(preprocline, "grammar"))
                     {
                         if (GrammarSection) throw new Lamentation();
                     }
-#endregion
+                    #endregion
                     else throw new Lamentation(0x32);
                 }
                 else throw new Lamentation(0x32);
@@ -3745,12 +3746,12 @@ public static class Coco
 #endif
         }
 
-#endregion
+        #endregion
     }
-#endregion
+    #endregion
 }
 #endregion
-   
+
 #region Preloader
 /// <summary>
 /// Hard-coded structures.
@@ -3898,17 +3899,17 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "ThreadSleep", TokenStruct = new string[] { "PAUS", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Pause", TokenStruct = new string[] { "WAIT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushTrueBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "TRUE", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushFalseBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "FAUX", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushFalseBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "FAUX", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushByteExpl", TokenStruct = new string[] { "PUSH", "BYTE", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushSByteExpl", TokenStruct = new string[] { "PUSH", "SBYT", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushIntegerExpl", TokenStruct = new string[] { "PUSH", "INTG", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushUIntegerExpl", TokenStruct = new string[] { "PUSH", "UINT", "INTL", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushUIntegerExpl", TokenStruct = new string[] { "PUSH", "UINT", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushLongExpl", TokenStruct = new string[] { "PUSH", "LONG", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushULongExpl", TokenStruct = new string[] { "PUSH", "ULNG", "INTL", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushULongExpl", TokenStruct = new string[] { "PUSH", "ULNG", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushStringExpl", TokenStruct = new string[] { "PUSH", "STRG", "QUOT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushCharExpl", TokenStruct = new string[] { "PUSH", "CHAR", "SQUT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushHalfExpl", TokenStruct = new string[] { "PUSH", "HALF", "FPIN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushFloatExpl", TokenStruct = new string[] { "PUSH", "FLOT", "FPIN", "SMCL" } }); 
+        CurrentSentenceStructures.Add(new() { Name = "PushFloatExpl", TokenStruct = new string[] { "PUSH", "FLOT", "FPIN", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushDoubleExpl", TokenStruct = new string[] { "PUSH", "DOUB", "FPIN", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushDecimalExpl", TokenStruct = new string[] { "PUSH", "DECM", "FPIN", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FurnishBooleanExpl", TokenStruct = new string[] { "FRNS", "BOOL", "IDNT", "SMCL" } });
