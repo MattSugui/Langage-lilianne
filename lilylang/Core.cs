@@ -2181,8 +2181,7 @@ public static class Interpreter
                     act.ActionType == FELActionType.define ||
                     (act.ActionType >= FELActionType.create &&
                     act.ActionType <= FELActionType.carry) ||
-                    act.ActionType == FELActionType.present ||
-                    act.ActionType == FELActionType.shelve
+                    act.ActionType == FELActionType.present
                     )
                 {
                     writer.Write((byte)act.ActionType);
