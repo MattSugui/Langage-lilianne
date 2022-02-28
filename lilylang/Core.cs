@@ -2097,7 +2097,7 @@ public static class Interpreter
                             string setName = Value![1]!;
                             bool spresentation = false; string unspresent = string.Empty;
                             
-                            if (Value![0] is FELCompilerFlag) presentation = true;
+                            if (Value![0] is FELCompilerFlag) spresentation = true;
                             else if (Value![0] is string suppParName)
                             {
                                 if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == suppParName)) throw new Lamentation(0x49, suppParName);
