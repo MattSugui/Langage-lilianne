@@ -351,8 +351,14 @@ public static class Programme
             WriteLine("Test 2: deeper difference");
             for (int i = 0; i < correct.Length; i++)
             {
-                if (correct[i] == guest[i]) WriteLine($"{correct[i]}\nv.\n{guest[i]}:\n{i} of {correct.Length - 1} verified");
-                else throw new Lamentation($"mismatch: {correct[i]} v. {guest[i]}");
+                if (correct[i].Value == guest[i].Value) WriteLine($"{correct[i]}\nv.\n{guest[i]}:\n{i} of {correct.Length - 1} verified");
+                else if (correct[i].Value is object[] cola && guest[i].Value is object[] soda)
+                {
+                    var comp = from a in cola join b in soda on a equals b select a; // tf??
+                    if (comp.Count() == cola.Length) WriteLine($"{correct[i]}\nv.\n{guest[i]}:\n{i} of {correct.Length - 1} verified");
+                    else throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}");
+                }
+                else throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}");
             }
 
             succ = true;
