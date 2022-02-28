@@ -115,6 +115,7 @@
 #pragma warning disable CS8602 // waaa, 'as' can return null!!!!
 #pragma warning disable CS8600 // waaa, possible null literal!
 #pragma warning disable CS8625 // waaa, possible null argument!
+#pragma warning disable CS8765 // nullability discongruence
 
 // rants by the quality checker
 #pragma warning disable CA1416 // platformist scum
@@ -2847,6 +2848,29 @@ public static class ObjectModel
     public struct FELCompilerFlag
     {
         public override string ToString() => "helo";
+
+        /// <summary>
+        /// Requirement to satisfy shit
+        /// </summary>
+        /// <param name="obj">The right operand</param>
+        /// <returns>
+        /// If <paramref name="obj"/> is not a <see cref="FELCompilerFlag"/>, return <see langword="false"/>.
+        /// If <paramref name="obj"/> is a fellow <see cref="FELCompilerFlag"/>, return <see langword="true"/>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is not FELCompilerFlag || obj is null) return false; else return true;
+        }
+
+        public static bool operator ==(FELCompilerFlag left, FELCompilerFlag right) => true;
+
+        public static bool operator !=(FELCompilerFlag left, FELCompilerFlag right) => false;
+
+        /// <summary>
+        /// Another requirement to satisfy shit
+        /// </summary>
+        /// <returns>0x075AC211</returns>
+        public override int GetHashCode() => (69420 ^ 123456789) & (555-678-4084);
     }
 
     /// <summary>

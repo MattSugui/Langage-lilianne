@@ -9,9 +9,9 @@
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.2.550.0</AssemblyVersion>
-		<FileVersion>1.2.550.0</FileVersion>
-		<InformationalVersion>Scholarly Beta 1 220228-1750</InformationalVersion>
+		<AssemblyVersion>1.2.551.0</AssemblyVersion>
+		<FileVersion>1.2.551.0</FileVersion>
+		<InformationalVersion>Scholarly Beta 1 220228-1802</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
