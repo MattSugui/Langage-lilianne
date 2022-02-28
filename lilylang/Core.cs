@@ -2218,7 +2218,7 @@ public static class Interpreter
                 {
                     writer.Write((byte)act.ActionType);
                     writer.Write(act.Value is FELCompilerFlag? 73 : 11);
-                    if (act.Value! is not FELCompilerFlag) writer.Write(act.Value![0]!); // typename
+                    if (act.Value![0]! is not FELCompilerFlag) writer.Write(act.Value![0]!); // typename
                     writer.Write((byte)11);
                     writer.Write(act.Value![1]!); // prop name
 
