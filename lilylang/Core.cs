@@ -127,7 +127,7 @@
 //#define COCOTESTS
 // Runs Coco immediately with the input file without going through the interpretation process.
 // Lilian will also display the output PCP.
-//#define COMPARAISON
+#define COMPARAISON
 // Runs a comparison (comparaison is the French translation of the word) test between a program
 // that's saved in memory and the output. If both return true through and through, the test is
 // obviously successful. sinon, il y a un bogue
