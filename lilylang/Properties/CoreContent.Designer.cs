@@ -790,6 +790,24 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do not use &apos;store&apos; for the placement of structures to the store. Use &apos;put&apos; instead..
+        /// </summary>
+        internal static string Lamentation74 {
+            get {
+                return ResourceManager.GetString("Lamentation74", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You cannot perform arithmetic on these types yet. Tangible subroutines don&apos;t exist yet..
+        /// </summary>
+        internal static string Lamentation75 {
+            get {
+                return ResourceManager.GetString("Lamentation75", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Implementation error. Some tokens of the {0} sentence have already been specified..
         /// </summary>
         internal static string Lamentation8 {

@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (193/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (208/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -127,7 +127,7 @@
 //#define COCOTESTS
 // Runs Coco immediately with the input file without going through the interpretation process.
 // Lilian will also display the output PCP.
-#define COMPARAISON
+//#define COMPARAISON
 // Runs a comparison (comparaison is the French translation of the word) test between a program
 // that's saved in memory and the output. If both return true through and through, the test is
 // obviously successful. sinon, il y a un bogue
@@ -251,13 +251,38 @@ public static class Programme
 
         CurrentThread.CurrentUICulture = CurrentThread.CurrentCulture;
 
-        if (args.Length > 0 && args[0] == "-p" && File.Exists(args[1]))
+        #region yanderesim-style checks
+        if (args.Length >= 2)
         {
-            Clear();
-            LoadBinary(args[1]);
-            Execute();
-            Environment.Exit(0); // gtfo
+            if (args[0] == "-p" && File.Exists(args[1])) // -p <program> (run program)
+            {
+                Clear();
+                LoadBinary(args[1]);
+                Execute();
+                Environment.Exit(0); // gtfo
+            }
+            else if (args[0] == "-proj" && File.Exists(args[1])) // -proj <project> [<out>] (compile project)
+            {
+                string @out = string.Empty;
+                if (args.Length == 3 && File.Exists(args[2])) @out = args[2];
+
+                SingleOrProj = true;
+                InterpretSilent(args[1], @out);
+
+                Environment.Exit(0);
+            }
+            else if (args[0] == "-file" && File.Exists(args[1])) // -file <script> [<out>] (compile single file)
+            {
+                string @out = string.Empty;
+                if (args.Length == 3 && File.Exists(args[2])) @out = args[2];
+
+                SingleOrProj = false;
+                InterpretSilent(args[1], @out);
+
+                Environment.Exit(0);
+            }
         }
+        #endregion
 
         SetWindowSize(81, 25);
         SetBufferSize(81, 25);
@@ -280,7 +305,8 @@ public static class Programme
             null,
             null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
-            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
+            new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2),
+            new FELUIAction(ConsoleKey.A, () => {; }, "Argument help")
             );
 
 #if COCOTESTS
@@ -569,7 +595,7 @@ public static class Interpreter
     #endregion
 
     /// <summary>
-    /// Do the whole thing. (Doesn't use the progress bars but instead uses the newer GUI system.)
+    /// Do the whole thing.
     /// </summary>
     /// <param name="infile">The path to the input file.</param>
     /// <param name="outfile">The path to the output file.</param>
@@ -693,6 +719,59 @@ public static class Interpreter
             Programme.ErrorRaised = true;
             ReadKey(true);
         }
+    }
+
+    /// <summary>
+    /// Do the whole thing. (Doesn't use the GUI)
+    /// </summary>
+    /// <param name="infile">The path to the input file.</param>
+    /// <param name="outfile">The path to the output file.</param>
+    public static void InterpretSilent(string infile, string outfile = "")
+    {
+        try
+        {
+            if (SingleOrProj)
+            {
+                VersionSelector(infile);
+                if (VersionOfCompilation)
+                {
+                    RegulateCompilation = false;
+                    XmlDocument doc = new(); doc.Load(infile);
+                    ReadProjectFile(doc);
+                }
+                else
+                {
+                    RegulateCompilation = true;
+                    Preprocess(File.ReadAllLines(infile));
+                }
+                if (DoNotDoCompilation) return;
+            }
+            else
+            {
+                ReadFile(infile);
+                ConsummateSource = CurrentFile;
+            }
+
+            for (int i = 0; i < CurrentFile.Count; i++) ScanTokens(CurrentFile[i]);
+            for (int i = 0; i < CurrentWordPacks.Count; i++) ArrangeTokens(CurrentWordPacks[i]);
+
+            for (int i = 0; i < CurrentSentences.Count; i++)
+            {
+                PlaceEffect(InterpretSentenceNew(CurrentSentences[i]), CurrentPointedEffect, true);
+                CurrentPointedEffect++;
+            }
+            CheckForFriendlyNames();
+            CreateBinary(Outgoing);
+
+            Programme.ErrorRaised = false;
+        }
+        catch (Lamentation lam)
+        {
+            ErrorScreen(lam);
+            Programme.ErrorRaised = true;
+            ReadKey(true);
+        }
+
     }
 
     #endregion
@@ -1009,9 +1088,8 @@ public static class Interpreter
                 return new(FELActionType.xor);
             case "store":
                 return new(
-                    sent.Value[1] == "#*" ? FELActionType.storestruct : FELActionType.store,
-                    sent.Value[1].StartsWith('#') ?
-                    (sent.Value[1] == "#*" ? new FELCompilerFlag() : sent.Value[1].TrimStart('#')) :
+                    FELActionType.store,
+                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
                     (sent.Value[1].StartsWith('&') ?
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
@@ -1199,6 +1277,13 @@ public static class Interpreter
                     FELActionType.save,
                     sent.Value[1].TrimStart('*')
                     );
+            case "put":
+                object ident = sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*');
+                object newname = sent.Value[2] == "!" ? new FELCompilerFlag() : sent.Value[2].TrimStart('#');
+                return new(
+                    FELActionType.put,
+                    new object[] { ident, newname }
+                    );
             default:
                 if (sent.Value[0].StartsWith('@'))
                     return new(
@@ -1368,6 +1453,8 @@ public static class Interpreter
             def.Add(0x004C, Properties.CoreContent.Lamentation71);
             def.Add(0x004D, Properties.CoreContent.Lamentation72);
             def.Add(0x004E, Properties.CoreContent.Lamentation73);
+            def.Add(0x004F, Properties.CoreContent.Lamentation74);
+            def.Add(0x0050, Properties.CoreContent.Lamentation75);
         }
 
         /// <summary>
@@ -1531,7 +1618,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a + b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1543,7 +1635,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a - b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1555,7 +1652,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a * b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1567,7 +1669,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a / b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1579,7 +1686,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a % b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1591,7 +1703,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a << b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1603,7 +1720,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a >> b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1615,7 +1737,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a & b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1627,6 +1754,7 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a | b); // rely on implementation...
                             }
                             catch (Exception ex)
@@ -1639,7 +1767,12 @@ public static class Interpreter
                             {
                                 dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                 dynamic b = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct || b is FELStruct) throw new Lamentation(0x50);
                                 CurrentFrame[CurrentFrameIndex].StackFrame.Push(a ^ b); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
                             }
                             catch (Exception ex)
                             {
@@ -1688,7 +1821,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 == var2) CurrentPointedEffect = index; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1709,7 +1847,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 != var2) CurrentPointedEffect = index2; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1730,7 +1873,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 > var2) CurrentPointedEffect = index3; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1751,7 +1899,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 >= var2) CurrentPointedEffect = index4; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1772,7 +1925,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 < var2) CurrentPointedEffect = index5; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1793,7 +1951,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 == var2) CurrentPointedEffect = index6; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1813,7 +1976,12 @@ public static class Interpreter
                                     try
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct) throw new Lamentation(0x50);
                                         if (var1) CurrentPointedEffect = index7; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1833,7 +2001,12 @@ public static class Interpreter
                                     try
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct) throw new Lamentation(0x50);
                                         if (!var1) CurrentPointedEffect = index8; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1864,7 +2037,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 && var2) CurrentPointedEffect = indexA; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -1885,7 +2063,12 @@ public static class Interpreter
                                     {
                                         dynamic var1 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                                         dynamic var2 = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                        if (var1 is FELStruct || var2 is FELStruct) throw new Lamentation(0x50);
                                         if (var1 || var2) CurrentPointedEffect = indexB; else goto GoForward;
+                                    }
+                                    catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                                    {
+                                        throw;
                                     }
                                     catch (Exception ex)
                                     {
@@ -2138,8 +2321,7 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].HeapFrame.Remove(CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == ayoName));
                             goto GoForward;
                         case FELActionType.storestruct:
-                            CurrentStore.Add(CurrentFrame[CurrentFrameIndex].HeapFrame[0]);
-                            goto GoForward;
+                            throw new Lamentation(0x4F);
                         case FELActionType.get:
                             string getName = Value![1]!;
                             bool presentation = false; string unpresent = string.Empty;
@@ -2189,7 +2371,20 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].HeapFrame.Insert(RawStructure.Address, RawStructure);
                             RawStructure = null;
                             goto GoForward;
-                            #endregion
+                        case FELActionType.put:
+                            FELStruct thing = default;
+                            if (Value![0] is FELCompilerFlag)
+                                thing = RawStructure ?? throw new Lamentation(0x4b);
+                            else if (Value![0] is string ayoname)
+                            {
+                                if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == ayoname)) throw new Lamentation(0x4E, ayoname);
+                                thing = CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == ayoname);
+                            }
+
+                            if (Value![1] is FELCompilerFlag) CurrentStore.Add(thing);
+                            else if (Value![1] is string newnamee) CurrentStore.Add(thing with { Name = newnamee});
+                            goto GoForward;
+                        #endregion
                     }
                 }
                 catch (Lamentation cry)
@@ -2277,7 +2472,8 @@ public static class Interpreter
                 }
                 else if (act.ActionType == FELActionType.furnish ||
                     act.ActionType == FELActionType.@get ||
-                    act.ActionType == FELActionType.@set
+                    act.ActionType == FELActionType.@set ||
+                    act.ActionType == FELActionType.put
                     ) // more shit needed for typename and prop name
                 {
                     writer.Write((byte)act.ActionType);
@@ -2287,8 +2483,12 @@ public static class Interpreter
                         writer.Write((byte)11);
                         writer.Write(act.Value![0]!); // type name
                     }
-                    writer.Write((byte)11);
-                    writer.Write(act.Value![1]!); // prop name
+                    if (act.Value![1] is FELCompilerFlag) writer.Write((byte)73);
+                    else
+                    {
+                        writer.Write((byte)11);
+                        writer.Write(act.Value![1]!); // type name
+                    }
 
                 }
                 else writer.Write((byte)act.ActionType); // only one byte is needed
@@ -2296,7 +2496,7 @@ public static class Interpreter
         }
 
         /// <summary>
-        /// Loads in the binary.
+        /// Loads in a binary.
         /// </summary>
         /// <param name="path">The path to the file.</param>
         public static void LoadBinary(string path)
@@ -2387,13 +2587,14 @@ public static class Interpreter
                 }
                 else if (opcode == 62 ||
                     opcode == 69 ||
-                    opcode == 70
+                    opcode == 70 ||
+                    opcode == 74
                     ) // special
                 {
                     byte marker = reader.ReadByte(); // byte 11/73 to mark type name
                     object TypeName = marker == 73 ? new FELCompilerFlag() : reader.ReadString();
-                    reader.ReadByte(); // another byte to mark prop name
-                    string PropName = reader.ReadString();
+                    byte secondmarker = reader.ReadByte(); // another byte to mark prop name
+                    object PropName = secondmarker == 73 ? new FELCompilerFlag() : reader.ReadString();
                     thing = new object[] { TypeName, PropName };
                 }
                 PlaceEffect(new((FELActionType)opcode, thing), CurrentPointedEffect, true);
@@ -2402,7 +2603,7 @@ public static class Interpreter
         }
 
         /// <summary>
-        /// What to do. For operation correctness some marker bytes (11 and 15-28) are also included in the table
+        /// What to do. For operation correctness some marker bytes (11, 15-28 & 73) are also included in the table
         /// even though they don't do anything.
         /// </summary>
         public enum FELActionType : byte
@@ -2755,6 +2956,7 @@ public static class Interpreter
             /// <summary>
             /// Stores a structure along with the other normal <see cref="FELObject"/>s.
             /// </summary>
+            [Obsolete("Use put")]
             storestruct,
 
             /// <summary>
@@ -2785,7 +2987,12 @@ public static class Interpreter
             /// <summary>
             /// A context-sensitive compiler flag byte marker.
             /// </summary>
-            compflag
+            compflag,
+
+            /// <summary>
+            /// Stores a structure along with the other normal <see cref="FELObject"/>s.
+            /// </summary>
+            put
         }
 
         /* example:
@@ -2835,7 +3042,21 @@ public static class ObjectModel
     /// <param name="Values">The list of properties in the thing.</param>
     /// <param name="Type">The kind of structure this object is.</param>
     public record class FELStruct(int Address, string Name, FELStructType Type, Dictionary<string, FELObject> Values)
-        : FELObject(Address, Name, Values);
+        : FELObject(Address, Name, Values)
+    {
+        /// <summary>
+        /// Returns an array version of the <see cref="Values"/> dictionary.
+        /// </summary>
+        /// <returns>An array of <see cref="string"/>-<see cref="FELObject"/> key-value pairs turned tuples.</returns>
+        public (string PropertyName, FELObject PropertyValue)[] Summarise()
+        {
+            List<(string, FELObject)> tupletime = new();
+            foreach (var thing in Values) tupletime.Add((thing.Key, thing.Value));
+
+            return tupletime.ToArray();
+        }
+    }
+
 
     /// <summary>
     /// The currently registered structure types.
@@ -2847,7 +3068,11 @@ public static class ObjectModel
     /// </summary>
     public struct FELCompilerFlag
     {
-        public override string ToString() => "helo";
+        /// <summary>
+        /// Something to show up in debug
+        /// </summary>
+        /// <returns>helo, i'm a flag</returns>
+        public override string ToString() => "helo, i'm a flag";
 
         /// <summary>
         /// Requirement to satisfy shit
@@ -2859,11 +3084,19 @@ public static class ObjectModel
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj is not FELCompilerFlag || obj is null) return false; else return true;
+            if (obj is not FELCompilerFlag) return false; else return true;
         }
 
+        /// <summary>
+        /// Always returns <see langword="true"/>, as the two parameters are always <see cref="FELCompilerFlag"/>s.
+        /// </summary>
+        /// <returns><see langword="true"/></returns>
         public static bool operator ==(FELCompilerFlag left, FELCompilerFlag right) => true;
 
+        /// <summary>
+        /// Always returns <see langword="false"/>, as the two parameters are always <see cref="FELCompilerFlag"/>s.
+        /// </summary>
+        /// <returns><see langword="false"/></returns>
         public static bool operator !=(FELCompilerFlag left, FELCompilerFlag right) => false;
 
         /// <summary>
@@ -3794,24 +4027,12 @@ public static class TEMP
     public static void LOADPATTERNS()
     {
         //----------------------- Name              Value                               Look            IgnoreOnRefinement          Terminate
+        // Keywords
         CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
-        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
-        CurrentTokens.Add(new() { Name = "SQUT", Value = @"^'[^'\n]'$|^'`.'$" });
-        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "FPIN", Value = @"^[0-9]+\.[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
-        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
-        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
         CurrentTokens.Add(new() { Name = "PRPR", Value = @"^preprocess$" });
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
-        CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
         CurrentTokens.Add(new() { Name = "EXCL", Value = @"^\!$" });
-        CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
         CurrentTokens.Add(new() { Name = "PUSH", Value = @"^push$" });
         CurrentTokens.Add(new() { Name = "POP", Value = @"^pop$" });
         CurrentTokens.Add(new() { Name = "ADDO", Value = @"^add$" });
@@ -3844,7 +4065,6 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "CTCH", Value = @"^catch$" });
         CurrentTokens.Add(new() { Name = "CALL", Value = @"^call$" });
         CurrentTokens.Add(new() { Name = "RETN", Value = @"^return$" });
-        CurrentTokens.Add(new() { Name = "LABL", Value = @"^@[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "THNK", Value = @"^think$" });
         CurrentTokens.Add(new() { Name = "THRW", Value = @"^throw$" });
         CurrentTokens.Add(new() { Name = "TITL", Value = @"^title$" });
@@ -3875,8 +4095,27 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "DELT", Value = @"^delete$" });
         CurrentTokens.Add(new() { Name = "GET", Value = @"^get$" });
         CurrentTokens.Add(new() { Name = "SET", Value = @"^set$" });
+        CurrentTokens.Add(new() { Name = "PUT", Value = @"^put$" });
         CurrentTokens.Add(new() { Name = "PRSN", Value = @"^present$" });
         CurrentTokens.Add(new() { Name = "RECL", Value = @"^shelve$" });
+
+        // More sensitive things
+        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
+        CurrentTokens.Add(new() { Name = "SQUT", Value = @"^'[^'\n]'$|^'`.'$" });
+        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
+        CurrentTokens.Add(new() { Name = "FPIN", Value = @"^[0-9]+\.[0-9]+$", Look = true });
+        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
+        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
+        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
+        CurrentTokens.Add(new() { Name = "LABL", Value = @"^@[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
+        CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
+        CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
+
+
 
         //----------------------------------- Name                      TokenStruct ----------------                            -----
         CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", TokenStruct = new string[] { "PRPR", "COLN" } });
@@ -3960,13 +4199,64 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "CreateStructure", TokenStruct = new string[] { "CREA", "STRC", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "DeleteStructure", TokenStruct = new string[] { "DELT", "HEAP", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "SaveStructure", TokenStruct = new string[] { "SAVE", "HEAP", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreStructure", TokenStruct = new string[] { "STOR", "HSST", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PresentStructure", TokenStruct = new string[] { "PRSN", "HEAP", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "GetStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "SetStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "ShelveStructure", TokenStruct = new string[] { "RECL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreStructure", TokenStruct = new string[] { "PUT", "HEAP", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreStructureSameName", TokenStruct = new string[] { "PUT", "HEAP", "EXCL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructureSameName", TokenStruct = new string[] { "PUT", "EXCL", "EXCL", "SMCL" } });
+    }
+}
+#endregion
+
+#region Help on arguments
+/// <summary>
+/// Some help.
+/// </summary>
+public static class Help
+{
+    /// <summary>
+    /// Help module on program arguments.
+    /// </summary>
+    public static class OnArguments
+    {
+        /// <summary>
+        /// Displays the entire help on program arguments.
+        /// </summary>
+        public static void ReadRiotAct()
+        {
+            BackgroundColor = ConsoleColor.DarkGreen;
+            Clear();
+            WriteLine(
+                "Program arguments\n\n" +
+
+                "Instead of going through the entire spiel of doing shit with the GUI, you can\n" +
+                "start a compilation process using the following arguments.\n\n" +
+
+                "lilylang {-p <program file>} {-proj <project file> [<output path>]}\n" +
+                "{-file <script file> [<output path>]}\n\n" +
+
+                "-p: Runs a program. By default, if you've installed this program, launching an\n" +
+                "LSA file will launch this program with these arguments, as if they're normal\n" +
+                "programs. Otherwise, you might have to manually launch LSA files. LSA files, by\n" +
+                "the way, are binaries created by this compiler.\n\n" +
+
+                "-proj: Compiles a project file. The input file must preferrably end in CCN\n" +
+                "(Coco scripts). The output path is optional, and if left blank, the compiler\n" +
+                "will rely on what's in the project file.\n\n" +
+
+                "-file: Compiles a single file. The input file must preferrably end in LPS\n" +
+                "(Lilian program script). The output path is optional, and if left blank\n" +
+                "the compiler will compile to the same path by default but with the LSA\n" +
+                "extension.\n\n" +
+
+                "Now press any key to exit and relaunch this compiler with these apples!"
+                );
+        }
     }
 }
 #endregion

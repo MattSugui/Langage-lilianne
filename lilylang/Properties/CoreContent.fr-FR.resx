@@ -360,6 +360,12 @@
   <data name="Lamentation73" xml:space="preserve">
     <value>Le variable « {0} » n'existe pas.</value>
   </data>
+  <data name="Lamentation74" xml:space="preserve">
+    <value>N'utiliser pas « store » pour stocker un structure au stockage. Utiliser « put » au contraire.</value>
+  </data>
+  <data name="Lamentation75" xml:space="preserve">
+    <value>Vous ne pouvez pas performer l'arithmetique sur deux des structures. Des sous-programmes tangibles n'existent pas à cette moment.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Un erreur d'implementation. Des jetons certains dans la phrase {0} sont déjà spécifiés.</value>
   </data>

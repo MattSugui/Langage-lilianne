@@ -360,6 +360,12 @@
   <data name="Lamentation73" xml:space="preserve">
     <value>Variable '{0}' does not exist.</value>
   </data>
+  <data name="Lamentation74" xml:space="preserve">
+    <value>Do not use 'store' for the placement of structures to the store. Use 'put' instead.</value>
+  </data>
+  <data name="Lamentation75" xml:space="preserve">
+    <value>You cannot perform arithmetic on these types yet. Tangible subroutines don't exist yet.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Implementation error. Some tokens of the {0} sentence have already been specified.</value>
   </data>
