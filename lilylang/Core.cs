@@ -381,9 +381,12 @@ public static class Programme
                 if (correct[i].Value == guest[i].Value) WriteLine($"{correct[i]}\nv.\n{guest[i]}:\n{i} of {correct.Length - 1} verified");
                 else if (correct[i].Value is object[] cola && guest[i].Value is object[] soda)
                 {
-                    var comp = from a in cola join b in soda on a equals b select a; // tf??
-                    if (comp.Count() == cola.Length) WriteLine($"{correct[i]}\nv.\n{guest[i]}:\n{i} of {correct.Length - 1} verified");
-                    else throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}");
+                    if (cola.Length != soda.Length) throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}. Incorrect lengths.");
+                    for (int j = 0; j < cola.Length; j++)
+                    {
+                        if (cola[j] != soda[j]) throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}. {cola[j]} v. {soda[j]}.");
+                        else WriteLine("u-huh. yes.");
+                    }
                 }
                 else throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}");
             }
