@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (208/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (209/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -127,7 +127,7 @@
 //#define COCOTESTS
 // Runs Coco immediately with the input file without going through the interpretation process.
 // Lilian will also display the output PCP.
-#define COMPARAISON
+//#define COMPARAISON
 // Runs a comparison (comparaison is the French translation of the word) test between a program
 // that's saved in memory and the output. If both return true through and through, the test is
 // obviously successful. sinon, il y a un bogue
@@ -165,7 +165,7 @@ global using static System.Console;
 #endregion
 
 namespace fonder.Lilian.New;
-
+-
 //#line 1
 
 #region Programme
@@ -2996,7 +2996,12 @@ public static class Interpreter
             /// <summary>
             /// Stores a structure along with the other normal <see cref="FELObject"/>s.
             /// </summary>
-            put
+            put,
+
+            /// <summary>
+            /// Removes an object from the store. Now your dad can't get the milk
+            /// </summary>
+            remove
         }
 
         /* example:
@@ -3016,21 +3021,6 @@ public static class Interpreter
 /// </summary>
 public static class ObjectModel
 {
-    /// <summary>
-    /// Declares on those who apply this interface how to turn out by default.
-    /// </summary>
-    /// <typeparam name="T">The type. This must be a struct as classes can just be null for a default value.</typeparam>
-    public interface IDefaultable<T> where T: struct
-    {
-        /// <summary>
-        /// A representation of how the type must look like by default.
-        /// </summary>
-        /// <remarks>
-        /// The only thing you gotta do is basically just make it return <see langword="default"/>.
-        /// </remarks>
-        static T DefaultObject { get; }
-    }
-
     /// <summary>
     /// A classic. This provides an ID on an object and allows manipulation to it.
     /// </summary>
@@ -4117,6 +4107,7 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "PUT", Value = @"^put$" });
         CurrentTokens.Add(new() { Name = "PRSN", Value = @"^present$" });
         CurrentTokens.Add(new() { Name = "RECL", Value = @"^shelve$" });
+        CurrentTokens.Add(new() { Name = "REMV", Value = @"^remove$" });
 
         // More sensitive things
         CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
@@ -4228,6 +4219,9 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreStructureSameName", TokenStruct = new string[] { "PUT", "HEAP", "EXCL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructureSameName", TokenStruct = new string[] { "PUT", "EXCL", "EXCL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "RemoveIndex", TokenStruct = new string[] { "REMV", "ADDR", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "RemoveNamed", TokenStruct = new string[] { "REMV", "IDNT", "SMCL" } });
+
     }
 }
 #endregion
