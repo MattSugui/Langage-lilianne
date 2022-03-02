@@ -384,7 +384,7 @@ public static class Programme
                     if (cola.Length != soda.Length) throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}. Incorrect lengths.");
                     for (int j = 0; j < cola.Length; j++)
                     {
-                        object a = cola[j]; object b = soda[j];
+                        string a = cola[j].ToString(); string b = soda[j].ToString();
                         if (a!=b) throw new Lamentation($"mismatch: {i} {correct[i]} v. {guest[i]}. {cola[j]} v. {soda[j]}.");
                         else WriteLine("u-huh. yes.");
                     }
