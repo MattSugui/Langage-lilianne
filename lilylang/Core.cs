@@ -306,7 +306,7 @@ public static class Programme
             null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2),
-            new FELUIAction(ConsoleKey.A, () => {; }, "Argument help")
+            new FELUIAction(ConsoleKey.A, () => { Help.OnArguments.ReadRiotAct(); Environment.Exit(0); }, "Argument help")
             );
 
 #if COCOTESTS
@@ -2299,7 +2299,7 @@ public static class Interpreter
                             string BruhName = Value!;
                             FELStructType AssociatedType = TypeRegistry.Find(t => t.Name == BruhName);
                             if (AssociatedType is null) throw new Lamentation(0x49, BruhName);
-
+                             
                             RawStructure = new(0, string.Empty, AssociatedType, new());
                             foreach ((string objn, Type bruh1) in AssociatedType.PropertyList)
                                 RawStructure.Values.Add(objn, default);
@@ -3016,6 +3016,21 @@ public static class Interpreter
 /// </summary>
 public static class ObjectModel
 {
+    /// <summary>
+    /// Declares on those who apply this interface how to turn out by default.
+    /// </summary>
+    /// <typeparam name="T">The type. This must be a struct as classes can just be null for a default value.</typeparam>
+    public interface IDefaultable<T> where T: struct
+    {
+        /// <summary>
+        /// A representation of how the type must look like by default.
+        /// </summary>
+        /// <remarks>
+        /// The only thing you gotta do is basically just make it return <see langword="default"/>.
+        /// </remarks>
+        static T DefaultObject { get; }
+    }
+
     /// <summary>
     /// A classic. This provides an ID on an object and allows manipulation to it.
     /// </summary>
@@ -4260,6 +4275,7 @@ public static class Help
 
                 "Now press any key to exit and relaunch this compiler with these apples!"
                 );
+            ReadKey(true);
         }
     }
 }
