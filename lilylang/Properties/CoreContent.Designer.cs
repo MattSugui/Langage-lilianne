@@ -61,7 +61,18 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Program arguments\n\nInstead of going through the entire spiel of doing shit with the GUI, you can\nstart a compilation process using the following arguments.\n\nlilylang {-p &lt;program file&gt;} {-proj &lt;project file&gt; [&lt;output path&gt;]}\n{-file &lt;script file&gt; [&lt;output path&gt;]}\n\n-p: Runs a program. By default, if you&apos;ve installed this program, launching an\nLSA file will launch this program with these arguments, as if they&apos;re normal\nprograms. Otherwise, you might have to manually launch LSA files. LSA files,\nby t [le reste de la chaîne a été tronqué]&quot;;.
+        ///   Recherche une chaîne localisée semblable à Program arguments
+        ///
+        ///Instead of going through the entire spiel of doing shit with the GUI, you can
+        ///start a compilation process using the following arguments.
+        ///
+        ///lilylang {-p &lt;program file&gt;} {-proj &lt;project file&gt; [&lt;output path&gt;]}
+        ///{-file &lt;script file&gt; [&lt;output path&gt;]}
+        ///
+        ///-p: Runs a program. By default, if you&apos;ve installed this program, launching an
+        ///LSA file will launch this program with these arguments, as if they&apos;re normal
+        ///programs. Otherwise, you might have to manually launch LSA files. LSA files,
+        ///by t [le reste de la chaîne a été tronqué]&quot;;.
         /// </summary>
         internal static string ArgsHelp {
             get {
