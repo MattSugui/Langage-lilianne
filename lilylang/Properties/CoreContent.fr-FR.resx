@@ -117,6 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArgsHelp" xml:space="preserve">
+    <value>Arguments de l'application
+
+Au lieu d'utilisant l'interface graphique pour faire merde, vous pouvez
+commencer un processus de génération avec ces arguments.
+
+lilylang {-p &lt;fichier d'app&gt;} {-proj &lt;fichier de proj&gt; [&lt;lien de la sortie&gt;]}
+{-file &lt;fichier script&gt; [&lt;lien de la sortie&gt;]}
+
+-p: Lancer une app. Par défaut, si vous avez installé cette app, l'ouverture
+d'un fichier LSA lancera cette app avec ces arguments, comme s'il est une app
+normale. Autrement, vous pouvez avoir besoin de lancer manuellement des
+fichiers LSA. Des LSA sont fichiers binaires générés par la compilatrice.
+
+-proj: Compiler un fichier de projet. L'apport doit préferrablement être
+terminé avec CCN (script Coco). Le lien de la sortie peut être vide, et s'il
+est, la compilatrice dépèndra qu'est ce dans le fichier de projet.
+
+-file: Compiler un seule fichier. L'apport doit préferrablement être terminé
+avec LPS (script d'app Lilian). Le lien de la sortie peut être vide, et s'il
+est, la compilatrice compilera au lien même par défaut mais avec l'extension
+LSA.
+
+Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</value>
+  </data>
   <data name="ChoiceScreenBody" xml:space="preserve">
     <value>Lilian peut soit compiler une single scripte ou un projet entière. Appuyez P pour utiliser un fichier d'un projet, ou S pour utiliser un single fichier.</value>
   </data>

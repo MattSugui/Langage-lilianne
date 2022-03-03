@@ -165,7 +165,7 @@ try
         if ($CheckIfOverflowing.IsPresent)
         {
             $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
-            $drivespace = (get-volume "$((get-item $dossier).PSDrive.Name)").SizeRemaining + $stuffs
+            $drivespace = (get-volume (get-item $dossier).PSDrive.Name).SizeRemaining + $stuffs
             $ratio = $stuffs / $drivespace
             $restant = 0
             for ($a = 0; $a -lt ($drivespace - $stuffs); $a += $size) { $restant++ }
