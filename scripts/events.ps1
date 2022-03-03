@@ -44,8 +44,8 @@ param
 add-type -AssemblyName System.Runtime
 add-type -AssemblyName System.Windows.Forms
 
-write-output "Evènements pour la compilation" 
-write-output "Créé en 2021 par Matt Sugui. CC-BY-SA-NC"
+write-host "Evènements pour la compilation" 
+write-host "Créé en 2021 par Matt Sugui. CC-BY-SA-NC"
 
 try
 {   
@@ -78,7 +78,7 @@ try
 
     if ($Pre.IsPresent)
     {
-        write-output "Evènements avant construction - mise à jour des dates"
+        write-host "Evènements avant construction - mise à jour des dates"
         $filematch = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[^\/\?\<\>\\\:\*\|`"]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
         $currdate = [DateTime]::Now.ToString("yyMMdd-HHmm")
         $stage = ""
@@ -88,7 +88,7 @@ try
     }
     elseif ($IncrementBuild.IsPresent)
     {
-        write-output "Evènements après construction - mise à jour des numéros de version pour la compilation suivante et l'archivage de l'application"
+        write-host "Evènements après construction - mise à jour des numéros de version pour la compilation suivante et l'archivage de l'application"
         $filematches = [System.Text.RegularExpressions.Regex]::Matches($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)")
         $futureinfo = [System.Text.RegularExpressions.Regex]::Match($filecont, "\<InformationalVersion\>(?<stage>[^\/\?\<\>\\\:\*\|`"]+)\s(?<stamp>[0-9]{6}-[0-9]{4})\<\/InformationalVersion\>")
 
@@ -110,7 +110,7 @@ try
         $vernums[2]++
         if ($BigUpgrade.IsPresent) { $vernums[0]++; $vernums[1] = 0 } elseif ($SmallUpgrade.IsPresent) { $vernums[1]++ }
 
-        #write-output $vernums
+        #write-host $vernums
 
         $filecont = [System.Text.RegularExpressions.Regex]::Replace($filecont, "[0-9]+\.[0-9]+\.([0-9]+\.[0-9]+|\*)", [string]::Format("{0}.{1}.{2}.{3}", $vernums[0], $vernums[1], $vernums[2], $vernums[3]))
         
@@ -160,7 +160,7 @@ try
         #[System.Windows.Forms.MessageBox]::Show($newdest)
         remove-item $newdest -recurse -force
 
-        write-output $CheckIfOverflowing.IsPresent
+        #write-host $CheckIfOverflowing.IsPresent
 
         if ($CheckIfOverflowing.IsPresent)
         {
@@ -169,23 +169,23 @@ try
             $ratio = $stuffs / $drivespace
             $restant = 0
             for ($a = 0; $a -lt ($drivespace - $stuffs); $a += $size) { $restant++ }
-            write-output "Approximativement $($restant) recordes restante avec votre condition actuelle. Allons-y !"
+            write-host "Approximativement $($restant) recordes restante avec votre condition actuelle. Allons-y !"
             # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
-            if ($ratio -ge 0.5) { write-output "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
+            if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
         }
     }    
     else
     {
-        write-output "Aucun argument correct défini. Utilisez cette moment pour essayer une commande qui pointe à ici pour tous erreurs de référence. Si vous pouvez ce voir, félicitations ! C'est fonctionnant."
+        write-host "Aucun argument correct défini. Utilisez cette moment pour essayer une commande qui pointe à ici pour tous erreurs de référence. Si vous pouvez ce voir, félicitations ! C'est fonctionnant."
     }
 }
 <# redundant
 catch [System.IO.FileNotFoundException]
 {
-    write-output $PSItem.Exception.Message
+    write-host $PSItem.Exception.Message
 }
 #>
 catch [System.Exception]
 {
-    write-output $PSItem.Exception.ToString()
+    write-host $PSItem.Exception.ToString()
 }
