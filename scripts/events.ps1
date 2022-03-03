@@ -28,15 +28,17 @@ param
     <#
     [Parameter(Mandatory = $false)]
     [switch] $VisualBasicProj,
-    [Parameter(Mandatory = $true)]
     #>
+    [Parameter(Mandatory = $true)]
     [int] $ProjectType,
     [Parameter(Mandatory = $true)]
     [bool] $IsRelease,
     [Parameter(Mandatory = $true)]
     [int] $Platform,
     [Parameter(Mandatory = $false)]
-    [string] $CopyExecToThisProject
+    [string] $CopyExecToThisProject,
+    [Parameter(Mandatory = $false)]
+    [switch] $CheckIfOverflowing
 )
 
 add-type -AssemblyName System.Runtime
@@ -153,13 +155,22 @@ try
 
         compress-archive -path ($newdest + "\*") -destinationpath $yo
 
-        if ($CopyExecToThisProject.IsPresent)
-        {
-            
-        }
+        $size = (get-item -path $yo).Length # unused if not stared at
 
         #[System.Windows.Forms.MessageBox]::Show($newdest)
         remove-item $newdest -recurse -force
+
+        if ($CheckIfOverflowing.IsPresent)
+        {
+            $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
+            $drivespace = (get-volume "$((get-item $dossier).PSDrive.Name)").SizeRemaining + $stuffs
+            $ratio = $stuffs / $drivespace
+            $restant = 0
+            for ($a = 0; $a -lt ($drivespace - $stuffs); $a += $size) { $restant++ }
+            write-host "Approximativement $($restant) recordes restante avec votre condition actuelle. Allons-y !"
+            # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
+            if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
+        }
     }    
     else
     {

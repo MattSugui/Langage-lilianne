@@ -61,6 +61,15 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Program arguments\n\nInstead of going through the entire spiel of doing shit with the GUI, you can\nstart a compilation process using the following arguments.\n\nlilylang {-p &lt;program file&gt;} {-proj &lt;project file&gt; [&lt;output path&gt;]}\n{-file &lt;script file&gt; [&lt;output path&gt;]}\n\n-p: Runs a program. By default, if you&apos;ve installed this program, launching an\nLSA file will launch this program with these arguments, as if they&apos;re normal\nprograms. Otherwise, you might have to manually launch LSA files. LSA files,\nby t [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        internal static string ArgsHelp {
+            get {
+                return ResourceManager.GetString("ArgsHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Lilian can either compile a single script or an entire project. Press P to use a project file, or press S to use a single file..
         /// </summary>
         internal static string ChoiceScreenBody {
@@ -232,7 +241,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à File operation error. The archive &apos;{0}&apos; does not exist..
+        ///   Recherche une chaîne localisée semblable à File operation error. The application &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string Lamentation18 {
             get {
@@ -241,7 +250,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à File operation error. Cannot export to an archive. This is not your fault; it&apos;s ours. Contact us lmao. ({0}).
+        ///   Recherche une chaîne localisée semblable à File operation error. Cannot export to an application. This is not your fault; it&apos;s ours. Contact us lmao. ({0}).
         /// </summary>
         internal static string Lamentation19 {
             get {
@@ -259,7 +268,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à File operation error. Cannot import from an archive. Either that you&apos;re a dumbarse and imported something not in an LPS format or it&apos;s our fault. If so, contact us. lMAO. ({0}).
+        ///   Recherche une chaîne localisée semblable à File operation error. Cannot import from an application. Either that you&apos;re a dumbarse and imported something not in an LPS format or it&apos;s our fault. If so, contact us. lMAO. ({0}).
         /// </summary>
         internal static string Lamentation20 {
             get {

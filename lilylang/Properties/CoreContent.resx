@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArgsHelp" xml:space="preserve">
+    <value>Program arguments\n\nInstead of going through the entire spiel of doing shit with the GUI, you can\nstart a compilation process using the following arguments.\n\nlilylang {-p &lt;program file&gt;} {-proj &lt;project file&gt; [&lt;output path&gt;]}\n{-file &lt;script file&gt; [&lt;output path&gt;]}\n\n-p: Runs a program. By default, if you've installed this program, launching an\nLSA file will launch this program with these arguments, as if they're normal\nprograms. Otherwise, you might have to manually launch LSA files. LSA files,\nby the way, are binaries created by this compiler.\n\n-proj: Compiles a project file. The input file must preferrably end in CCN\n(Coco scripts). The output path is optional, and if left blank, the compiler\nwill rely on what's in the project file.\n\n-file: Compiles a single file. The input file must preferrably end in LPS\n(Lilian program script). The output path is optional, and if left blank\nthe compiler will compile to the same path by default but with the LSA\nextension.\n\nNow press any key to exit and relaunch this compiler with these apples!</value>
+  </data>
   <data name="ChoiceScreenBody" xml:space="preserve">
     <value>Lilian can either compile a single script or an entire project. Press P to use a project file, or press S to use a single file.</value>
   </data>

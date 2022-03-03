@@ -165,7 +165,7 @@ global using static System.Console;
 #endregion
 
 namespace fonder.Lilian.New;
--
+
 //#line 1
 
 #region Programme
@@ -1106,6 +1106,14 @@ public static class Interpreter
                         (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, sent.Value[1])) :
                         throw new Lamentation()
                     ));
+            case "remove":
+                return new(
+                    FELActionType.remove,
+                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
+                    (sent.Value[1].StartsWith('&') ?
+                        (int.TryParse(sent.Value[1].TrimStart('&'), out int ded) ? ded : throw new Lamentation(0x21, sent.Value[1])) :
+                        throw new Lamentation()
+                    ));
             case "beq":
                 return new(
                     FELActionType.beq,
@@ -1813,6 +1821,26 @@ public static class Interpreter
                                     }
                                 ));
                             goto GoForward;
+                        case FELActionType.remove:
+                            dynamic rname = Value!;
+                            if (
+                                (rname is string rstr && CurrentStore.Exists(obj => obj.Name == rstr)) ||
+                                (rname is int rnum && CurrentStore.Exists(obj => obj.Address == rnum))
+                            )
+                            {
+                                if (rname is string strn) CurrentStore.Remove(CurrentStore.Find(obj => obj.Name == strn));
+                                else if (rname is int numa) CurrentStore.Remove(CurrentStore.Find(obj => obj.Address == numa));
+                            }
+                            else throw new Lamentation(0x18,
+                                (
+                                    rname switch
+                                    {
+                                        string => rname,
+                                        int => rname.ToString(),
+                                        _ => string.Empty,
+                                    }
+                                ));
+                            goto GoForward;
                         #endregion
                         #region Branching operations
                         case FELActionType.beq:
@@ -2391,6 +2419,7 @@ public static class Interpreter
                         #endregion
                     }
                 }
+                #region when shit go
                 catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
@@ -2407,6 +2436,7 @@ public static class Interpreter
                         WriteLine(cry.ToString()); ErrorRaised = true;
                     }
                 }
+            #endregion
             GoForward: CurrentPointedEffect++;
             }
         }
@@ -2445,7 +2475,8 @@ public static class Interpreter
                     act.ActionType == FELActionType.define ||
                     (act.ActionType >= FELActionType.create &&
                     act.ActionType <= FELActionType.carry) ||
-                    act.ActionType == FELActionType.present
+                    act.ActionType == FELActionType.present ||
+                    act.ActionType == FELActionType.remove
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -2533,7 +2564,8 @@ public static class Interpreter
                     opcode == 61 ||
                     (opcode >= 64 &&
                     opcode <= 68) ||
-                    opcode == 71
+                    opcode == 71 ||
+                    opcode == 75
                     )
                 {
                     byte marker = reader.ReadByte();
@@ -4244,32 +4276,9 @@ public static class Help
         {
             BackgroundColor = ConsoleColor.DarkGreen;
             Clear();
-            WriteLine(
-                "Program arguments\n\n" +
-
-                "Instead of going through the entire spiel of doing shit with the GUI, you can\n" +
-                "start a compilation process using the following arguments.\n\n" +
-
-                "lilylang {-p <program file>} {-proj <project file> [<output path>]}\n" +
-                "{-file <script file> [<output path>]}\n\n" +
-
-                "-p: Runs a program. By default, if you've installed this program, launching an\n" +
-                "LSA file will launch this program with these arguments, as if they're normal\n" +
-                "programs. Otherwise, you might have to manually launch LSA files. LSA files, by\n" +
-                "the way, are binaries created by this compiler.\n\n" +
-
-                "-proj: Compiles a project file. The input file must preferrably end in CCN\n" +
-                "(Coco scripts). The output path is optional, and if left blank, the compiler\n" +
-                "will rely on what's in the project file.\n\n" +
-
-                "-file: Compiles a single file. The input file must preferrably end in LPS\n" +
-                "(Lilian program script). The output path is optional, and if left blank\n" +
-                "the compiler will compile to the same path by default but with the LSA\n" +
-                "extension.\n\n" +
-
-                "Now press any key to exit and relaunch this compiler with these apples!"
-                );
+            WriteLine(Properties.CoreContent.ArgsHelp);
             ReadKey(true);
+            Clear();
         }
     }
 }
