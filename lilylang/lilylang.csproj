@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
 		<!--<AssemblyName>lilylang</AssemblyName>-->
 		<RootNamespace>fonder.Lilian.New</RootNamespace>
-		<Deterministic>False</Deterministic>
+		<Deterministic>True</Deterministic> <!-- we don't use auto versions anymore so let's turn back -->
 		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
 
 		<AssemblyTitle>Lilian Language</AssemblyTitle>
-		<AssemblyVersion>1.1.341.0</AssemblyVersion>
-		<FileVersion>1.1.341.0</FileVersion>
-		<InformationalVersion>releaseman 220120-1932</InformationalVersion>
+		<AssemblyVersion>1.2.577.0</AssemblyVersion>
+		<FileVersion>1.2.577.0</FileVersion>
+		<InformationalVersion>releaseman 220304-1840</InformationalVersion>
 		<Authors>Matt Sugui</Authors>
 		<Copyright>Created and given TLC, 2021-2022. Released under the GNU Public Licence v3.</Copyright><!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
 		<ProductName>Lilian language interpreter</ProductName>
@@ -25,6 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Properties\CoreContent.fr-FR.resx.bak" />
 	  <None Remove="syntaxes.txt" />
 	</ItemGroup>
 
@@ -33,12 +34,36 @@
 		<PackageReference Include="System.CodeDom" Version="6.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Properties\CoreContent.fr-FR.Designer.cs">
+	    <DependentUpon>CoreContent.fr-FR.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	  <Compile Update="Properties\CoreContent.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>CoreContent.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\CoreContent.fr-FR.resx">
+	    <LastGenOutput>CoreContent.fr-FR.Designer.cs</LastGenOutput>
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\CoreContent.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>CoreContent.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -NewVerName 'Scholarly Alpha 1'&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'lilylang' -ProjectType 0 -IsRelease $true -Platform 0&quot;" />
 	</Target>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $false -Platform 0 -SmallUpgrade&quot;" />
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'lilylang' -ProjectType 0 -IsRelease $true -Platform 0&quot;" />
 	</Target>
 
 </Project>

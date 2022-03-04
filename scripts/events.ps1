@@ -28,15 +28,17 @@ param
     <#
     [Parameter(Mandatory = $false)]
     [switch] $VisualBasicProj,
-    [Parameter(Mandatory = $true)]
     #>
+    [Parameter(Mandatory = $true)]
     [int] $ProjectType,
     [Parameter(Mandatory = $true)]
     [bool] $IsRelease,
     [Parameter(Mandatory = $true)]
     [int] $Platform,
     [Parameter(Mandatory = $false)]
-    [string] $CopyExecToThisProject
+    [string] $CopyExecToThisProject#,
+    #[Parameter(Mandatory = $false)]
+    #[switch] $CheckIfOverflowing
 )
 
 add-type -AssemblyName System.Runtime
@@ -50,7 +52,7 @@ try
     $filecont = ""
     $pathpart = get-location -Verbose
     $miscpath = ""
-    if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName }
+    if ([string]::IsNullOrWhiteSpace($ProjectName) -ne $true) { $miscpath = "\" + $ProjectName } else { throw [System.IO.FileNotFoundException]::new("")}
 
     $pathpart2 = (split-path -Path $pathpart) + $miscpath
     
@@ -144,8 +146,11 @@ try
         $dossier = $archivepath + [string]::Format("{0}.{1}", $vernums[0], $vernums[1])
         if ([System.IO.File]::Exists($dossier) -ne $true) { [System.IO.Directory]::CreateDirectory($dossier) }
 
+        $mode = ""
+        if ($IsRelease -eq $true) { $mode = "Release" } else { $mode = "Debug" }
+
         # lilylang\archive\0.1\0.1.2.3, 4, 5(.zip)
-        $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5}", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"])
+        $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5} ({6})", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"], $mode)
         $yo = $newdest + ".zip"
 
         [System.IO.Directory]::CreateDirectory($newdest)
@@ -153,13 +158,33 @@ try
 
         compress-archive -path ($newdest + "\*") -destinationpath $yo
 
-        if ($CopyExecToThisProject.IsPresent)
-        {
-            
-        }
+        $size = (get-item -path $yo).Length # unused if not stared at
 
         #[System.Windows.Forms.MessageBox]::Show($newdest)
         remove-item $newdest -recurse -force
+
+        #write-host $CheckIfOverflowing.IsPresent
+        <#
+        if ($CheckIfOverflowing.IsPresent)
+        {
+            try
+            {
+                $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
+                $lettre = (get-item $dossier).PSDrive.Name
+                $drivespace = (get-volume -driveletter $lettre).SizeRemaining + $stuffs
+                $ratio = $stuffs / $drivespace
+                $restant = 0
+                while ($a -lt ($drivespace - $stuffs)) { $restant++ }
+                write-host "Approximativement $($restant) recordes restante avec la même taille et votre condition actuelle. Allons-y !"
+                # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
+                if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
+            }
+            catch
+            {
+                write-host "Oups ! Nous avons échoué de générér un rapport de statistiques de votre archive. Continuons..."
+            }
+        }
+        #>
     }    
     else
     {
@@ -172,7 +197,7 @@ catch [System.IO.FileNotFoundException]
     write-host $PSItem.Exception.Message
 }
 #>
-catch [System.Exception]
+catch
 {
-    Write-host $PSItem.Exception.ToString()
+    write-host $PSItem.Exception.ToString()
 }

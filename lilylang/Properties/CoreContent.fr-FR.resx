@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ArgsHelp" xml:space="preserve">
+    <value>Arguments de l'application
+
+Au lieu d'utilisant l'interface graphique pour faire merde, vous pouvez
+commencer un processus de génération avec ces arguments.
+
+lilylang {-p &lt;fichier d'app&gt;} {-proj &lt;fichier de proj&gt; [&lt;lien de la sortie&gt;]}
+{-file &lt;fichier script&gt; [&lt;lien de la sortie&gt;]}
+
+-p: Lancer une app. Par défaut, si vous avez installé cette app, l'ouverture
+d'un fichier LSA lancera cette app avec ces arguments, comme s'il est une app
+normale. Autrement, vous pouvez avoir besoin de lancer manuellement des
+fichiers LSA. Des LSA sont fichiers binaires générés par la compilatrice.
+
+-proj: Compiler un fichier de projet. L'apport doit préferrablement être
+terminé avec CCN (script Coco). Le lien de la sortie peut être vide, et s'il
+est, la compilatrice dépèndra qu'est ce dans le fichier de projet.
+
+-file: Compiler un seule fichier. L'apport doit préferrablement être terminé
+avec LPS (script d'app Lilian). Le lien de la sortie peut être vide, et s'il
+est, la compilatrice compilera au lien même par défaut mais avec l'extension
+LSA.
+
+Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</value>
+  </data>
+  <data name="ChoiceScreenBody" xml:space="preserve">
+    <value>Lilian peut soit compiler une single scripte ou un projet entière. Appuyez P pour utiliser un fichier d'un projet, ou S pour utiliser un single fichier.</value>
+  </data>
+  <data name="ChoiceScreenChoice1" xml:space="preserve">
+    <value>Utiliser un fichier d'un projet</value>
+  </data>
+  <data name="ChoiceScreenChoice2" xml:space="preserve">
+    <value>Utiliser un single fichier</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value> jours </value>
+  </data>
+  <data name="FileDoesNotExist" xml:space="preserve">
+    <value>Le fichier n'existe pas !</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value> heures </value>
+  </data>
+  <data name="Hurrah" xml:space="preserve">
+    <value>Lilian a réussi en compilation de votre application. Appuyez sur un touche pour continuer.</value>
+  </data>
+  <data name="HurrahAny" xml:space="preserve">
+    <value>[]=Continuer</value>
+  </data>
+  <data name="InputAskVer1" xml:space="preserve">
+    <value>Où-est le fichier du projet ?</value>
+  </data>
+  <data name="InputAskVer2" xml:space="preserve">
+    <value>Où-est le fichier du code ?</value>
+  </data>
+  <data name="Lamentation1" xml:space="preserve">
+    <value>Un état incorrect pour l'environnement. Si vous ne savez pas qu'est-il arrivé, c'est mon faut.</value>
+  </data>
+  <data name="Lamentation10" xml:space="preserve">
+    <value>Un erreur d'implementation. Le jeton « {0} » a un UUID prédéfini incorrect. Faites le champ d'UUID vidé pour un UUID random, ou reconfigurez votre UUID.</value>
+  </data>
+  <data name="Lamentation11" xml:space="preserve">
+    <value>Un erreur d'implementation. Quelque chose a arrivée.</value>
+  </data>
+  <data name="Lamentation12" xml:space="preserve">
+    <value>Un erreur d'implementation. L'opcode « {0} » n'existe pas. Avez-vous oublié d'ajouter l'opcode avant le utilisant ?</value>
+  </data>
+  <data name="Lamentation13" xml:space="preserve">
+    <value>Un erreur d'implementation. L'opcode prédéfini « {0} » n'existe pas. Veuillez réinstaller Lilian, ou envoyez-nous un rapport de bogue.</value>
+  </data>
+  <data name="Lamentation14" xml:space="preserve">
+    <value>Un erreur d'implementation. Le bracket au droit « {0} » pour le bracket au gauche « {1} » n'existe pas. Avez-vous oublié d'ajouter le jeton avant le utilisant ?</value>
+  </data>
+  <data name="Lamentation15" xml:space="preserve">
+    <value>Un erreur d'implementation. L'opcode « {0} » n'existe pas. Avez-vous oublié d'attribuer une opération ?</value>
+  </data>
+  <data name="Lamentation16" xml:space="preserve">
+    <value>Un erreur d'implementation. La phrase « {0} » a trop des pointeurs que les parametres alloués pour l'opcode attribué « {1} : {2} ».</value>
+  </data>
+  <data name="Lamentation17" xml:space="preserve">
+    <value>Un erreur d'opération avec des fichiers. {0}</value>
+  </data>
+  <data name="Lamentation18" xml:space="preserve">
+    <value>Un erreur d'opération avec des fichiers. L'archive « {0} » n'existe pas.</value>
+  </data>
+  <data name="Lamentation19" xml:space="preserve">
+    <value>Un erreur d'opération avec des fichiers. Nous ne pouvons pas enregistrer à un archive. Ce n'est pas votre faut ; c'est de notre. Envoyez-nous mdr. ({0})</value>
+  </data>
+  <data name="Lamentation2" xml:space="preserve">
+    <value>Un erreur de syntaxe. Un string est sans fin.</value>
+  </data>
+  <data name="Lamentation20" xml:space="preserve">
+    <value>Un erreur d'opération avec des fichiers. Nous ne pouvons pas ouvrir d'un archive. trop paresseux d'traduire en français ({0})</value>
+  </data>
+  <data name="Lamentation21" xml:space="preserve">
+    <value>Un erreur d'implementation. La construction de phrase « {0} » ne correspond pas à tout des phrases disponibles.</value>
+  </data>
+  <data name="Lamentation22" xml:space="preserve">
+    <value>Coco a échouée. {0}</value>
+  </data>
+  <data name="Lamentation23" xml:space="preserve">
+    <value>{0} est une caractéristique inexistante dans cette version du Lilian. Utilisez une version plus nouvelle.</value>
+  </data>
+  <data name="Lamentation24" xml:space="preserve">
+    <value>Un erreur avec la pile. {0}</value>
+  </data>
+  <data name="Lamentation25" xml:space="preserve">
+    <value>{0} n'existe pas dans ce contexte.</value>
+  </data>
+  <data name="Lamentation26" xml:space="preserve">
+    <value>{0} n'est pas un valeur en Int32.</value>
+  </data>
+  <data name="Lamentation27" xml:space="preserve">
+    <value>L'index {0} est au-delà le courant.</value>
+  </data>
+  <data name="Lamentation28" xml:space="preserve">
+    <value>L'index {0} est en une forme incorrecte.</value>
+  </data>
+  <data name="Lamentation29" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas le diminuer.</value>
+  </data>
+  <data name="Lamentation3" xml:space="preserve">
+    <value>Un erreur de syntaxe. Le jetonnisation « {0} » n'existe pas dans ce contexte.</value>
+  </data>
+  <data name="Lamentation30" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas le agrandir.</value>
+  </data>
+  <data name="Lamentation31" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas diminuer un string !</value>
+  </data>
+  <data name="Lamentation32" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas agrandir un string !</value>
+  </data>
+  <data name="Lamentation33" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas diminuer un lettre !</value>
+  </data>
+  <data name="Lamentation34" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas agrandir un lettre !</value>
+  </data>
+  <data name="Lamentation35" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas diminuer ça !</value>
+  </data>
+  <data name="Lamentation36" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas agrandir ça !</value>
+  </data>
+  <data name="Lamentation37" xml:space="preserve">
+    <value>« {0} » : nous ne pouvons pas le convertir à un valeur intégrale.</value>
+  </data>
+  <data name="Lamentation38" xml:space="preserve">
+    <value>Ce appel n'est pas attaché partout : « {0} ».</value>
+  </data>
+  <data name="Lamentation39" xml:space="preserve">
+    <value>Un erreur internel : {0} {1}</value>
+  </data>
+  <data name="Lamentation4" xml:space="preserve">
+    <value>Le fichier « {0} » n'existe pas.</value>
+  </data>
+  <data name="Lamentation40" xml:space="preserve">
+    <value>J'ai un message ! « {0} »</value>
+  </data>
+  <data name="Lamentation41" xml:space="preserve">
+    <value>aYO qu'est ce merde ! Lamentation no. {0} n'existe pas !!!</value>
+  </data>
+  <data name="Lamentation42" xml:space="preserve">
+    <value>Salut !</value>
+  </data>
+  <data name="Lamentation43" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Numéro du build incorrect.</value>
+  </data>
+  <data name="Lamentation44" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Ceci projet n'utilise pas cette version du Lilian. Utilisez, au minimum, la version {0}.</value>
+  </data>
+  <data name="Lamentation45" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Commande inconnue.</value>
+  </data>
+  <data name="Lamentation46" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Symbole inconnue « {0} ».</value>
+  </data>
+  <data name="Lamentation47" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas rédéfinir la phrase d' 'if' avante.</value>
+  </data>
+  <data name="Lamentation48" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Il n'y avait pas une phrase d' 'if' pour attacher à cette phrase d' 'else'.</value>
+  </data>
+  <data name="Lamentation49" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Il n'y avait pas une phrase d' 'if' pour attacher à cette phrase d' 'elseif'.</value>
+  </data>
+  <data name="Lamentation5" xml:space="preserve">
+    <value>Un erreur d'implementation. Le jeton « {0} » n'existe pas. Avez-vous oublié d'ajouter le jeton avant le utilisant ?</value>
+  </data>
+  <data name="Lamentation50" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Il n'y avait pas une phrase d' 'if' pour finir.</value>
+  </data>
+  <data name="Lamentation51" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. « {0} » déjà existé. Utilisez 'defifn' s'il est requis.</value>
+  </data>
+  <data name="Lamentation52" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. « {0} » n'existe pas. Utilisez 'undefife' s'il est requis</value>
+  </data>
+  <data name="Lamentation53" xml:space="preserve">
+    <value>Un erreur internel. Il n'y avait pas plus de memoire pour travailler cette compilation.</value>
+  </data>
+  <data name="Lamentation54" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. « {0} » n'existe pas.</value>
+  </data>
+  <data name="Lamentation55" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Il y a des références aux symboles inexistant(s) : {0}.</value>
+  </data>
+  <data name="Lamentation56" xml:space="preserve">
+    <value>Un erreur internel. Dans cette version du Lilian, vous ne pouvez pas utiliser des types qui sont d'autre des 15 types prédéfini dans le .NET.</value>
+  </data>
+  <data name="Lamentation57" xml:space="preserve">
+    <value>Un erreur d'implementation. La grammaire primaire n'existe pas. Utilisez le syntaxe d'assemblage, ou réinstallez Lilian.</value>
+  </data>
+  <data name="Lamentation58" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Nous n'utilisons pas plus des ordres qui commencent avec un point. Utilisez des ordres qui commencent avec une barre oblique (/) ou retourner au Lilian 1.1.</value>
+  </data>
+  <data name="Lamentation59" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer un projet dans d'autre.</value>
+  </data>
+  <data name="Lamentation6" xml:space="preserve">
+    <value>Un erreur d'implementation. Le jeton prédéfini « {0} » n'existe pas. Veuillez réinstaller Lilian, ou envoyez-nous un rapport de bogue.</value>
+  </data>
+  <data name="Lamentation60" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Un autre projet est déjà déclaré.</value>
+  </data>
+  <data name="Lamentation61" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer un ordre d'alteration de code dans une déclaration de projet.</value>
+  </data>
+  <data name="Lamentation62" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Si vous fûtes croyant que l'ordre 'include' ajoute un fichier de code là, vous êtes incorrect. N'utilisez pas cette ordre à l'extérieur d'une définition de projet.</value>
+  </data>
+  <data name="Lamentation63" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas utiliser cette ordre à l'extérieur d'une déclaration de projet.</value>
+  </data>
+  <data name="Lamentation64" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Nous ne pouvons pas déclarer une grammaire dans d'autre.</value>
+  </data>
+  <data name="Lamentation65" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Une autre grammaire est déjà déclarée.</value>
+  </data>
+  <data name="Lamentation66" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez pas déclarer cette ordre dans cette contexte.</value>
+  </data>
+  <data name="Lamentation67" xml:space="preserve">
+    <value>Ce type, « {0} », qui est référé pour ce champ est invalid. Définez ce type avant le utiliser, ou rappelez-moi s'il est en raison des types par défaut.</value>
+  </data>
+  <data name="Lamentation68" xml:space="preserve">
+    <value>Le type « {0} » n'existe pas.</value>
+  </data>
+  <data name="Lamentation69" xml:space="preserve">
+    <value>Le type du paramètre ({0}) ne correspond pas au type du « {1} » ({2}). Reorganisez vos paramètres dans la pile ou changez son type.</value>
+  </data>
+  <data name="Lamentation7" xml:space="preserve">
+    <value>Un erreur d'implementation. Il y peut-être rien au jeton {0} en raison que la phrase {1} a seulement {2} jetons.</value>
+  </data>
+  <data name="Lamentation70" xml:space="preserve">
+    <value>Il n'y a pas aucun sur le plateau pour remplacer le point d'exclamation.</value>
+  </data>
+  <data name="Lamentation71" xml:space="preserve">
+    <value>La propriété « {0} » n'existe pas sous le type « {1} ».</value>
+  </data>
+  <data name="Lamentation72" xml:space="preserve">
+    <value>Le type de cet objet ({0}) ne correspond pas au type du « {1} » ({2}). Changez son type.</value>
+  </data>
+  <data name="Lamentation73" xml:space="preserve">
+    <value>Le variable « {0} » n'existe pas.</value>
+  </data>
+  <data name="Lamentation74" xml:space="preserve">
+    <value>N'utiliser pas « store » pour stocker un structure au stockage. Utiliser « put » au contraire.</value>
+  </data>
+  <data name="Lamentation75" xml:space="preserve">
+    <value>Vous ne pouvez pas performer l'arithmetique sur deux des structures. Des sous-programmes tangibles n'existent pas à cette moment.</value>
+  </data>
+  <data name="Lamentation8" xml:space="preserve">
+    <value>Un erreur d'implementation. Des jetons certains dans la phrase {0} sont déjà spécifiés.</value>
+  </data>
+  <data name="Lamentation9" xml:space="preserve">
+    <value>Un erreur de syntaxe. Le jeton « {0} » ne peut pas être dans cette position dans la phrase {1}.</value>
+  </data>
+  <data name="LinkingStatus" xml:space="preserve">
+    <value>Connexion des références...</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value> minutes </value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Non...</value>
+  </data>
+  <data name="OutputAsk" xml:space="preserve">
+    <value>Où doit-être le résultat ? (Laisser vide pour la location comme défini dans la définition du projet)</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Veulliez patientier tandis que Lilian examine votre code. Il peut prendre des plusieurs minutes selon la taille du code.</value>
+  </data>
+  <data name="PleaseWaitFinal" xml:space="preserve">
+    <value>Veulliez patientier tandis que Lilian finalise l'application.</value>
+  </data>
+  <data name="PreprocessStatus" xml:space="preserve">
+    <value>En train de traitement du project...</value>
+  </data>
+  <data name="PressAny" xml:space="preserve">
+    <value>Appuyez sur un touche pour continuer.</value>
+  </data>
+  <data name="ProgramName" xml:space="preserve">
+    <value>Environnement linguistique Fonder Lilian</value>
+  </data>
+  <data name="PSODFoot" xml:space="preserve">
+    <value>Oups, c'est tellement un désordre. Appuyez sur un touche pour continuer.</value>
+  </data>
+  <data name="PSODHead" xml:space="preserve">
+    <value>Un problème a arrivé tandis qu'elle fonctionne. La méditation a échouée.</value>
+  </data>
+  <data name="ReadingStatus" xml:space="preserve">
+    <value>Lecture de</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>restante.</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value> secondes </value>
+  </data>
+  <data name="ThisProgIsAsk" xml:space="preserve">
+    <value>Cette application vous demande pour un fichier.</value>
+  </data>
+  <data name="TranslationStatus" xml:space="preserve">
+    <value>Translation du code à la représentation intermédiate</value>
+  </data>
+  <data name="WannaRun" xml:space="preserve">
+    <value>Voulez-vous executer l'application ensuite ?</value>
+  </data>
+  <data name="WelcomeScreenBody" xml:space="preserve">
+    <value>Cette application compilera un projet ou script dans une éxecutable. Appuyez sur Entrer pour continuer à la page suivante. Appuyez sur F3 pour fermer.</value>
+  </data>
+  <data name="WelcomeScreenChoice1" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="WelcomeScreenChoice2" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="WelcomeScreenHeader" xml:space="preserve">
+    <value>Bienvenue au environnement de Lilian.</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Oui !</value>
+  </data>
+</root>
