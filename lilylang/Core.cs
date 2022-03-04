@@ -486,6 +486,13 @@ public static class Interpreter
     /// The name of the project. Is also the name of the application unless stated otherwise.
     /// </summary>
     public static string ProjectTitle { get; set; }
+
+    /// <summary>
+    /// Marks whether the compiler has encountered code that is now outside of the declarations zone.
+    /// The declarations zone is where usually the <c>define</c> and related opcodes are located.
+    /// (Currently unused)
+    /// </summary>
+    public static bool DeclarationsZoneEnd { get; set; }
     #endregion
     #region End-user debug services
     /// <summary>
@@ -2058,7 +2065,6 @@ public static class Interpreter
                             }
                             else throw new Lamentation(0x19, z9.ToString());
                             return;
-                        default: throw new Lamentation(0x16, ActionType.ToString());
                         case FELActionType.bsa:
                             dynamic zA = Value!;
                             if (zA is int indexA)
@@ -2352,8 +2358,6 @@ public static class Interpreter
                             if (!CurrentFrame[CurrentFrameIndex].HeapFrame.Exists(t => t.Name == ayoName)) throw new Lamentation(0x49, ayoName);
                             CurrentFrame[CurrentFrameIndex].HeapFrame.Remove(CurrentFrame[CurrentFrameIndex].HeapFrame.Find(t => t.Name == ayoName));
                             goto GoForward;
-                        case FELActionType.storestruct:
-                            throw new Lamentation(0x4F);
                         case FELActionType.get:
                             string getName = Value![1]!;
                             bool presentation = false; string unpresent = string.Empty;
@@ -2416,6 +2420,9 @@ public static class Interpreter
                             if (Value![1] is FELCompilerFlag) CurrentStore.Add(thing);
                             else if (Value![1] is string newnamee) CurrentStore.Add(thing with { Name = newnamee});
                             goto GoForward;
+                        #endregion
+                        #region Otherwise
+                        default: throw new Lamentation(0x16, ActionType.ToString());
                         #endregion
                     }
                 }
@@ -3674,7 +3681,6 @@ public static class Coco
         public static string Outgoing { get; set; }
 
         #region Vrai Coco
-
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
         /// If the file is primarily in Coco (i.e., no dot delimiter), this will think that all lines are normal Lilian.
@@ -3704,8 +3710,8 @@ public static class Coco
             bool GrammarSection = false;
             bool GrammarDefined = false;
 
-            bool? OutputPresent = null;
-            bool? InputPresent = null;
+            bool OutputPresent = false;
+            bool InputPresent = false;
             bool? GrammarPresent = null;
 
             Version ver = new();
@@ -3975,6 +3981,7 @@ public static class Coco
                     {
                         if (!ProjectSection) throw new Lamentation(0x42); else ProjectSection = false;
 
+                        // the thing remains null so we gotta
                         if (OutputPresent == false) NoOutputFound = true;
                         if (InputPresent == false) DoNotDoCompilation = true;
                     }

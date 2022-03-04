@@ -164,14 +164,22 @@ try
 
         if ($CheckIfOverflowing.IsPresent)
         {
-            $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
-            $drivespace = (get-volume (get-item $dossier).PSDrive.Name).SizeRemaining + $stuffs
-            $ratio = $stuffs / $drivespace
-            $restant = 0
-            while ($a -lt ($drivespace - $stuffs)) { $restant++ }
-            write-host "Approximativement $($restant) recordes restante avec la même taille et votre condition actuelle. Allons-y !"
-            # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
-            if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
+            try
+            {
+                $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
+                $lettre = (get-item $dossier).PSDrive.Name
+                $drivespace = (get-volume $lettre).SizeRemaining + $stuffs
+                $ratio = $stuffs / $drivespace
+                $restant = 0
+                while ($a -lt ($drivespace - $stuffs)) { $restant++ }
+                write-host "Approximativement $($restant) recordes restante avec la même taille et votre condition actuelle. Allons-y !"
+                # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
+                if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
+            }
+            catch
+            {
+                write-host "Oups ! Nous avons échoué de générér un rapport de statistiques de votre archive. Continuons..."
+            }
         }
     }    
     else
@@ -185,7 +193,7 @@ catch [System.IO.FileNotFoundException]
     write-host $PSItem.Exception.Message
 }
 #>
-catch [System.Exception]
+catch
 {
     write-host $PSItem.Exception.ToString()
 }
