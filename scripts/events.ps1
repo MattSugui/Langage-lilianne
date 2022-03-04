@@ -168,8 +168,8 @@ try
             $drivespace = (get-volume (get-item $dossier).PSDrive.Name).SizeRemaining + $stuffs
             $ratio = $stuffs / $drivespace
             $restant = 0
-            for ($a = 0; $a -lt ($drivespace - $stuffs); $a += $size) { $restant++ }
-            write-host "Approximativement $($restant) recordes restante avec votre condition actuelle. Allons-y !"
+            while ($a -lt ($drivespace - $stuffs)) { $restant++ }
+            write-host "Approximativement $($restant) recordes restante avec la même taille et votre condition actuelle. Allons-y !"
             # gets the ratio. e.g., 24 / 1024. The ratio is 3:128, or 2%. It's unnoticeable. 100 / 768 = 25:192, or 13%. Now we're getting somewhere.
             if ($ratio -ge 0.5) { write-host "RECOMMANDATION : L'archive est devenant gros ! (Le rapport est $($stuffs / 1mb) Mo d'éspace utilisé par l'archive : $($drivespace / 1mb) Mo d'éspace libre) Vous pouvez avoir le besoin de deplacer l'archive à ailleurs." }
         }

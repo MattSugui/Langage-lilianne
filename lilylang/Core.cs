@@ -1308,7 +1308,7 @@ public static class Interpreter
     }
 
     /// <summary>
-    /// Places an action or effect intp the list.
+    /// Places an action or effect into the list.
     /// </summary>
     /// <param name="effect">The action.</param>
     /// <param name="index">The location.</param>
