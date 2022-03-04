@@ -5,4 +5,6 @@
 
 add-type -AssemblyName System.Runtime
 
-$
+$lol = "D:\Langage lilianne\lilylang\archive\"
+
+

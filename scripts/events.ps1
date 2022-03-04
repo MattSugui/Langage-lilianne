@@ -36,9 +36,9 @@ param
     [Parameter(Mandatory = $true)]
     [int] $Platform,
     [Parameter(Mandatory = $false)]
-    [string] $CopyExecToThisProject,
-    [Parameter(Mandatory = $false)]
-    [switch] $CheckIfOverflowing
+    [string] $CopyExecToThisProject#,
+    #[Parameter(Mandatory = $false)]
+    #[switch] $CheckIfOverflowing
 )
 
 add-type -AssemblyName System.Runtime
@@ -164,7 +164,7 @@ try
         remove-item $newdest -recurse -force
 
         #write-host $CheckIfOverflowing.IsPresent
-
+        <#
         if ($CheckIfOverflowing.IsPresent)
         {
             try
@@ -184,6 +184,7 @@ try
                 write-host "Oups ! Nous avons échoué de générér un rapport de statistiques de votre archive. Continuons..."
             }
         }
+        #>
     }    
     else
     {
