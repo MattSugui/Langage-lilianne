@@ -171,7 +171,7 @@ try
             {
                 $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
                 $lettre = (get-item $dossier).PSDrive.Name
-                $drivespace = (get-volume -driveletter "C").SizeRemaining + $stuffs
+                $drivespace = (get-volume -driveletter $lettre).SizeRemaining + $stuffs
                 $ratio = $stuffs / $drivespace
                 $restant = 0
                 while ($a -lt ($drivespace - $stuffs)) { $restant++ }
