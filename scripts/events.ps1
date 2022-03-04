@@ -146,8 +146,11 @@ try
         $dossier = $archivepath + [string]::Format("{0}.{1}", $vernums[0], $vernums[1])
         if ([System.IO.File]::Exists($dossier) -ne $true) { [System.IO.Directory]::CreateDirectory($dossier) }
 
+        $mode = ""
+        if ($IsRelease -eq $true) { $mode = "Release" } else { $mode = "Debug" }
+
         # lilylang\archive\0.1\0.1.2.3, 4, 5(.zip)
-        $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5}", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"])
+        $newdest = $dossier + "\" + [string]::Format("{0}.{1}.{2}.{3}, {4}, {5} ({6})", $vernums[0], $vernums[1], $vernums[2], $vernums[3], $futureinfo.Groups["stage"], $futureinfo.Groups["stamp"], $mode)
         $yo = $newdest + ".zip"
 
         [System.IO.Directory]::CreateDirectory($newdest)
@@ -168,7 +171,7 @@ try
             {
                 $stuffs = (get-childitem $dossier -recurse | measure-object -sum Length).Sum
                 $lettre = (get-item $dossier).PSDrive.Name
-                $drivespace = (get-volume $lettre).SizeRemaining + $stuffs
+                $drivespace = (get-volume -driveletter "C").SizeRemaining + $stuffs
                 $ratio = $stuffs / $drivespace
                 $restant = 0
                 while ($a -lt ($drivespace - $stuffs)) { $restant++ }
