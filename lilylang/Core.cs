@@ -161,6 +161,7 @@ global using static fonder.Lilian.New.UserInterface;
 global using static fonder.Lilian.New.ObjectModel;
 global using static System.Threading.Thread;
 global using static System.Console;
+global using static fonder.Lilian.New.ObjectModel.FELTangibleMethod;
 
 #endregion
 
@@ -3105,6 +3106,62 @@ public static class ObjectModel
         }
     }
 
+    /// <summary>
+    /// A method in an object.
+    /// </summary>
+    /// <param name="Name">The name of the method.</param>
+    /// <param name="MethodBody">The contents of the method. This will be in its own frame.</param>
+    /// <param name="AssociatedOpcode">The associated opcode to override.</param>
+    public record class FELTangibleMethod(string Name, List<FELAction> MethodBody, FELReservedOperations? AssociatedOpcode = null)
+    {
+        /// <summary>
+        /// Any of the operations reserved for opcodes.
+        /// </summary>
+        public enum FELReservedOperations : byte
+        {
+            /// <summary>
+            /// Print top item
+            /// </summary>
+            print = 3,
+
+            /// <summary>
+            /// Add two values on top
+            /// </summary>
+            add,
+
+            /// <summary>
+            /// Subtract with two values on top
+            /// </summary>
+            sub,
+
+            /// <summary>
+            /// Multiply with two values on top
+            /// </summary>
+            mul,
+
+            /// <summary>
+            /// Divide with two values on top
+            /// </summary>
+            div,
+
+            /// <summary>
+            /// Divide with two values on top, pop these then return the remainder
+            /// </summary>
+            mod,
+
+            /// <summary>
+            /// Shift a value on top to the left
+            /// </summary>
+            lst,
+
+            /// <summary>
+            /// Shift a value on top to the right
+            /// </summary>
+            rst,
+
+        }
+
+    }
 
     /// <summary>
     /// The currently registered structure types.
