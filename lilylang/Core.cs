@@ -1407,6 +1407,19 @@ public static class Interpreter
 
                     CurrentIntSentence.Add(new() { AssociatedToken = CurrentAssumedToken, Value =  CurrentIntToken.ToString() });
                     CurrentIntToken.Clear(); CurrentAssumedToken = null;
+
+                    string[] lefthand = (from apple in CurrentIntSentence select apple.AssociatedToken.Name).ToArray();
+                    if (CurrentSentenceStructures.Exists(orange => orange.TokenStruct.SequenceEqual(lefthand)))
+                    {
+                        CurrentAssumedSentenceStructure = CurrentSentenceStructures.Find(orange => orange.TokenStruct.SequenceEqual(lefthand));
+                        CurrentSentenceFruit = new()
+                        {
+                            AssociatedSentence = CurrentAssumedSentenceStructure,
+                            Value = (from banana in CurrentIntSentence select banana.Value).ToArray()
+                        };
+                    }
+                    else goto Advance;
+
                     goto Advance;
                 }
             }
