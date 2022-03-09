@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (209/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (238/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -131,6 +131,8 @@
 // Runs a comparison (comparaison is the French translation of the word) test between a program
 // that's saved in memory and the output. If both return true through and through, the test is
 // obviously successful. sinon, il y a un bogue
+#define INTERPRET_STESTS
+// Tries out the near-exact copy of the tokenisation mechanism in Adelaide.
 #endregion
 
 #region Imports
@@ -310,6 +312,17 @@ public static class Programme
             new FELUIAction(ConsoleKey.A, () => { Help.OnArguments.ReadRiotAct(); Environment.Exit(0); }, "Argument help")
             );
 
+#if INTERPRET_STESTS
+        string sus = 
+            @"
+print ""hello world!"";
+print bruh;
+";
+        Interpret_S(sus);
+
+        return;
+#endif
+
 #if COCOTESTS
         {
             // hardcode AYO.CCN lol
@@ -434,14 +447,14 @@ public static class Programme
 /// </summary>
 public static class Interpreter
 {
-    #region Static-field flags and data
-    #region Execution
+#region Static-field flags and data
+#region Execution
     /// <summary>
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
     public static bool ErrorRaised { get; set; }
-    #endregion
-    #region Compilation
+#endregion
+#region Compilation
     /// <summary>
     /// The unprocessed project file. (XML version)
     /// </summary>
@@ -494,12 +507,42 @@ public static class Interpreter
     /// (Currently unused)
     /// </summary>
     public static bool DeclarationsZoneEnd { get; set; }
-    #endregion
-    #region End-user debug services
+#endregion
+#region End-user debug services
     /// <summary>
     /// The current line number.
     /// </summary>
     public static int CurrentIndex { get; set; }
+
+    /// <summary>
+    /// The current token.
+    /// </summary>
+    public static StringBuilder CurrentIntToken = new();
+
+    /// <summary>
+    /// The current statement.
+    /// </summary>
+    public static List<TokenFruit> CurrentIntSentence = new();
+
+    /// <summary>
+    /// The currently-assumed token.
+    /// </summary>
+    public static Token CurrentAssumedToken { get; set; }
+
+    /// <summary>
+    /// The currently-assumed sentence structure.
+    /// </summary>
+    public static SentenceStructure CurrentAssumedSentenceStructure { get; set; }
+
+    /// <summary>
+    /// The currently-analysed resultant sentence.
+    /// </summary>
+    public static SentenceFruit CurrentSentenceFruit { get; set; }
+
+    /// <summary>
+    /// The currently-analysed resultant action.
+    /// </summary>
+    public static FELAction CurrentAssumedAction { get; set; }
 
     /// <summary>
     /// The current line.
@@ -512,11 +555,11 @@ public static class Interpreter
     public static StringBuilder CurrentLine = new();
 
     /// <summary>
-    /// The current line column. Uses <c>CurrentLine</c> for the column.
+    /// The current line column.
     /// </summary>
-    public static int CurrentColumn => CurrentLine.Length;
-    #endregion
-    #region Operation
+    public static int CurrentColumn { get; set; }
+#endregion
+#region Operation
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
@@ -576,16 +619,16 @@ public static class Interpreter
     /// The current accumulator.
     /// </summary>
     public static int CurrentObjectA { get; set; }
-    #endregion
-    #endregion
+#endregion
+#endregion
 
-    #region Interpretation
+#region Interpretation
     /// <summary>
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
 
-    #region File operations
+#region File operations
     /// <summary>
     /// Reads from a path.
     /// </summary>
@@ -604,7 +647,7 @@ public static class Interpreter
     {
         foreach (string line in lines) ConsummateSource.Add(line);
     }
-    #endregion
+#endregion
 
     /// <summary>
     /// Do the whole thing.
@@ -786,8 +829,8 @@ public static class Interpreter
 
     }
 
-    #endregion
-    #region Spellbook
+#endregion
+#region Spellbook
     /// <summary>
     /// The lexer and parser components of the interpreter.
     /// </summary>
@@ -803,7 +846,7 @@ public static class Interpreter
         /// </summary>
         public static List<SentenceStructure> CurrentSentenceStructures = new();
 
-        #region Stuffs
+#region Stuffs
         /// <summary>
         /// A token.
         /// </summary>
@@ -909,7 +952,7 @@ public static class Interpreter
             /// <returns>The string representation.</returns>
             public override string ToString() => $"{AssociatedSentence.Name}.";
         }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -1332,6 +1375,52 @@ public static class Interpreter
     }
 
     /// <summary>
+    /// Completely interprets an entire file; all processes are merged within. Result
+    /// of studying cancelled project Adelaide.
+    /// </summary>
+    /// <param name="source">
+    /// The entire source file. Granted that all preprocessor
+    /// directives were removed before submitting the source.
+    /// </param>
+    public static void Interpret_S(string source)
+    {
+        for (int i = 0; i < source.Length; i++)
+        {
+            CurrentIntToken.Append(source[i]);
+
+            if (source[i] == '\n') // special recognition
+            {
+                CurrentIndex++; CurrentColumn = 0;
+
+            }
+            
+            CurrentColumn++;
+
+            for (int j = 0; j < CurrentTokens.Count; j++)
+            {
+                if (Regex.IsMatch(CurrentIntToken.ToString(), CurrentTokens[j].Value))
+                {
+                    CurrentAssumedToken = CurrentTokens[j];
+                    if (CurrentAssumedToken.Look)
+                        if (i + 1 < source.Length && Regex.IsMatch(CurrentIntToken.ToString() + source[i + 1], CurrentAssumedToken.Value))
+                            goto Advance;
+
+                    CurrentIntSentence.Add(new() { AssociatedToken = CurrentAssumedToken, Value =  CurrentIntToken.ToString() });
+                    CurrentIntToken.Clear(); CurrentAssumedToken = null;
+                    goto Advance;
+                }
+            }
+
+        Advance:
+            continue;
+        }
+
+#if DEBUG && INTERPRET_STESTS
+        WriteLine(string.Join(", ", from pear in CurrentIntSentence select pear.ToString()));
+#endif
+    }
+
+    /// <summary>
     /// Checks the <see cref="CurrentEffects"/> list for any labels and replaces them with their physical addresses instead.
     /// </summary>
     internal static void CheckForFriendlyNames()
@@ -1374,8 +1463,8 @@ public static class Interpreter
             else currentEffect = 0; // reset
         }
     }
-    #endregion
-    #region Execution
+#endregion
+#region Execution
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>
@@ -1387,8 +1476,8 @@ public static class Interpreter
 
         while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
-    #endregion
-    #region Lamentation
+#endregion
+#region Lamentation
     /// <summary>
     /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
@@ -1578,8 +1667,8 @@ public static class Interpreter
         }
     }
 
-    #endregion
-    #region Operation
+#endregion
+#region Operation
     /// <summary>
     /// The main opcode interpretation class.
     /// </summary>
@@ -1615,24 +1704,24 @@ public static class Interpreter
                 {
                     switch (ActionType)
                     {
-                        #region Default
+#region Default
                         case FELActionType.nop:
                             goto GoForward;
-                        #endregion
-                        #region Stack operations
+#endregion
+#region Stack operations
                         case FELActionType.push:
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
                             if (CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0) CurrentFrame[CurrentFrameIndex].StackFrame.Pop(); // do nothing if the stack is empty
                             goto GoForward;
-                        #endregion
-                        #region Print
+#endregion
+#region Print
                         case FELActionType.print:
                             WriteLine(CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
                             goto GoForward;
-                        #endregion
-                        #region Arithmetic operations
+#endregion
+#region Arithmetic operations
                         case FELActionType.add:
                             try
                             {
@@ -1799,8 +1888,8 @@ public static class Interpreter
                                 throw new Lamentation(0x17, ex.Message);
                             }
                             goto GoForward;
-                        #endregion
-                        #region Variable management operations
+#endregion
+#region Variable management operations
                         case FELActionType.store:
                             dynamic x = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
@@ -1849,8 +1938,8 @@ public static class Interpreter
                                     }
                                 ));
                             goto GoForward;
-                        #endregion
-                        #region Branching operations
+#endregion
+#region Branching operations
                         case FELActionType.beq:
                             dynamic z = Value!;
                             if (z is int index)
@@ -2121,8 +2210,8 @@ public static class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
-                        #endregion
-                        #region User interaction operations
+#endregion
+#region User interaction operations
                         case FELActionType.take:
                             Write("-> ");
                             string? asked = ReadLine();
@@ -2153,8 +2242,8 @@ public static class Interpreter
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(content2);
                             goto GoForward;
-                        #endregion
-                        #region Data manipulation operations
+#endregion
+#region Data manipulation operations
                         case FELActionType.narrow:
                             dynamic narrowand = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             unchecked
@@ -2232,15 +2321,15 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(realisand!);
 
                             goto GoForward;
-                        #endregion
-                        #region Lamentations
+#endregion
+#region Lamentations
                         case FELActionType.@catch:
                             if (!ErrorRaised) goto GoForward;
                             ErrorRaised = false;
                             CurrentPointedEffect = Value!;
                             return;
-                        #endregion
-                        #region Branching operations
+#endregion
+#region Branching operations
                         case FELActionType.call:
                             dynamic zC = Value!;
                             if (zC is int indexC)
@@ -2271,8 +2360,8 @@ public static class Interpreter
                             }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
-                        #endregion
-                        #region Lamentations
+#endregion
+#region Lamentations
                         case FELActionType.@throw:
                             throw new Lamentation(0x2F);
                         case FELActionType.throwc:
@@ -2280,13 +2369,13 @@ public static class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
-                        #endregion
-                        #region Cosmetics
+#endregion
+#region Cosmetics
                         case FELActionType.settitle:
                             Title = Value!;
                             goto GoForward;
-                        #endregion
-                        #region User interaction operations
+#endregion
+#region User interaction operations
                         case FELActionType.pause:
                             dynamic pause = Value!;
                             if (pause is int duration) Thread.Sleep(duration);
@@ -2295,8 +2384,8 @@ public static class Interpreter
                         case FELActionType.wait:
                             ReadKey(true);
                             goto GoForward;
-                        #endregion
-                        #region Object model operations
+#endregion
+#region Object model operations
                         case FELActionType.define:
                             string Name = Value!;
                             TypeRegistry.Insert(CurrentType, new(Name, new()));
@@ -2421,13 +2510,13 @@ public static class Interpreter
                             if (Value![1] is FELCompilerFlag) CurrentStore.Add(thing);
                             else if (Value![1] is string newnamee) CurrentStore.Add(thing with { Name = newnamee});
                             goto GoForward;
-                        #endregion
-                        #region Otherwise
+#endregion
+#region Otherwise
                         default: throw new Lamentation(0x16, ActionType.ToString());
-                        #endregion
+#endregion
                     }
                 }
-                #region when shit go
+#region when shit go
                 catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
@@ -2444,7 +2533,7 @@ public static class Interpreter
                         WriteLine(cry.ToString()); ErrorRaised = true;
                     }
                 }
-            #endregion
+#endregion
             GoForward: CurrentPointedEffect++;
             }
         }
@@ -3051,7 +3140,7 @@ public static class Interpreter
          * pop;
          */
     }
-    #endregion
+#endregion
 }
 #endregion
 
@@ -3615,13 +3704,13 @@ public static class UserInterface
 /// </summary>
 public static class Coco
 {
-    #region Coco preprocessor
+#region Coco preprocessor
     /// <summary>
     /// The main class for the preprocessor.
     /// </summary>
     public static class Preprocessor
     {
-        #region Flags
+#region Flags
         /// <summary>
         /// If true, enable the preprocessor. If false, all directive lines will be ignored.
         /// </summary>
@@ -3643,7 +3732,7 @@ public static class Coco
         /// If true, the compiler will report that there was no output path specified.
         /// </summary>
         public static bool NoOutputFound { get; set; }
-        #endregion
+#endregion
 
         /// <summary>
         /// Determines the project version to use.
@@ -3662,7 +3751,7 @@ public static class Coco
             finally { if (ver! == true) VersionOfCompilation = true; else VersionOfCompilation = false; }
         }
 
-        #region Faux Coco
+#region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
         /// </summary>
@@ -3709,7 +3798,7 @@ public static class Coco
             else
                 RegulateCompilation = false;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// The resulting consummate or arranged source file.
@@ -3737,7 +3826,7 @@ public static class Coco
         /// </summary>
         public static string Outgoing { get; set; }
 
-        #region Vrai Coco
+#region Vrai Coco
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
         /// If the file is primarily in Coco (i.e., no dot delimiter), this will think that all lines are normal Lilian.
@@ -3806,7 +3895,7 @@ public static class Coco
 
                 string preprocline = line.TrimStart().TrimStart('/');
 
-                #region Original macros
+#region Original macros
                 if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
                     if (ProjectSection) throw new Lamentation(0x42);
@@ -3995,10 +4084,10 @@ public static class Coco
                     lignes = new();
                     currindx = -1;
                 }
-                #endregion
+#endregion
                 else if (!Pass)
                 {
-                    #region Project macros
+#region Project macros
                     if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
                     {
                         var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
@@ -4066,13 +4155,13 @@ public static class Coco
 
                         OutputPresent = true;
                     }
-                    #endregion
-                    #region Grammar definition macros
+#endregion
+#region Grammar definition macros
                     else if (Regex.IsMatch(preprocline, "grammar"))
                     {
                         if (GrammarSection) throw new Lamentation();
                     }
-                    #endregion
+#endregion
                     else throw new Lamentation(0x32);
                 }
                 else throw new Lamentation(0x32);
@@ -4114,9 +4203,77 @@ public static class Coco
 #endif
         }
 
-        #endregion
+#endregion
     }
-    #endregion
+#endregion
+}
+#endregion
+
+#region Carmen
+/// <summary>
+/// The entire Carmen interpretation module.
+/// </summary>
+public static class Carmen
+{
+
+
+    /// <summary>
+    /// All the enums
+    /// </summary>
+    public static class States
+    {
+        /// <summary>
+        /// How properties are dealt with in inheritance.
+        /// </summary>
+        public enum ModifiabilityLevel
+        {
+            /// <summary>
+            /// The property is inheritable and can be modified.
+            /// </summary>
+            Normal,
+
+            /// <summary>
+            /// The property is undefined and must be inherited (<see langword="abstract"/>).
+            /// </summary>
+            MustInherit,
+
+            /// <summary>
+            /// The property is fixed at this point (<see langword="sealed"/>).
+            /// </summary>
+            NotInheritable,
+
+            /// <summary>
+            /// The property hides a similarly-named member (<see langword="new"/>).
+            /// </summary>
+            Shadows
+        }
+
+        /// <summary>
+        /// The visibility of the object.
+        /// </summary>
+        public enum AccessibilityLevel
+        {
+            /// <summary>
+            /// Anyone can get to it.
+            /// </summary>
+            Public,
+
+            /// <summary>
+            /// Only the stuff inside the type can get to it.
+            /// </summary>
+            Private,
+
+            /// <summary>
+            /// Only the containing assembly can get to it.
+            /// </summary>
+            Internal,
+            
+            /// <summary>
+            /// Only the stuff inside the type and its inheritors can get to it.
+            /// </summary>
+            Protected,
+        }
+    }
 }
 #endregion
 
@@ -4137,7 +4294,6 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "PRPR", Value = @"^preprocess$" });
         CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
         CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
-        CurrentTokens.Add(new() { Name = "EXCL", Value = @"^\!$" });
         CurrentTokens.Add(new() { Name = "PUSH", Value = @"^push$" });
         CurrentTokens.Add(new() { Name = "POP", Value = @"^pop$" });
         CurrentTokens.Add(new() { Name = "ADDO", Value = @"^add$" });
@@ -4205,20 +4361,24 @@ public static class TEMP
         CurrentTokens.Add(new() { Name = "RECL", Value = @"^shelve$" });
         CurrentTokens.Add(new() { Name = "REMV", Value = @"^remove$" });
 
+        // Symbols
+        CurrentTokens.Add(new() { Name = "EXCL", Value = @"^\!$" });
+        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
+        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
+
         // More sensitive things
         CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
         CurrentTokens.Add(new() { Name = "SQUT", Value = @"^'[^'\n]'$|^'`.'$" });
         CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "FPIN", Value = @"^[0-9]+\.[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
-        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
-        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s$", Look = true, IgnoreOnRefinement = true });
+        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s+$", Look = true, IgnoreOnRefinement = true });
         CurrentTokens.Add(new() { Name = "LABL", Value = @"^@[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
         CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
         CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
+        CurrentTokens.Add(new() { Name = "NAME", Value = @"^[A-Za-z][A-Za-z0-9]*$", Look = true });
         CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
 
 
