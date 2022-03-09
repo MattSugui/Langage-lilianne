@@ -1378,12 +1378,13 @@ public static class Interpreter
     /// Completely interprets an entire file; all processes are merged within. Result
     /// of studying cancelled project Adelaide.
     /// </summary>
-    /// <param name="source">
+    /// <param name="_source">
     /// The entire source file. Granted that all preprocessor
     /// directives were removed before submitting the source.
     /// </param>
-    public static void Interpret_S(string source)
+    public static void Interpret_S(string _source)
     {
+        string source = _source + " ";
         for (int i = 0; i < source.Length; i++)
         {
             CurrentIntToken.Append(source[i]);
@@ -1397,6 +1398,7 @@ public static class Interpreter
 
             for (int j = 0; j < CurrentTokens.Count; j++)
             {
+                if (j + 1 == CurrentTokens.Count) ;
                 if (Regex.IsMatch(CurrentIntToken.ToString(), CurrentTokens[j].Value))
                 {
                     CurrentAssumedToken = CurrentTokens[j];
