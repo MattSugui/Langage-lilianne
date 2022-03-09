@@ -315,8 +315,8 @@ public static class Programme
 #if INTERPRET_STESTS
         string sus = 
             @"
-print ""hello world!"";
-print bruh;
+push ""hello world!"";
+push bruh;
 ";
         Interpret_S(sus);
 
