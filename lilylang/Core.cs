@@ -1384,24 +1384,32 @@ public static class Interpreter
     /// </param>
     public static void Interpret_S(string _source)
     {
-        string source = _source + " ";
-        for (int i = 0; i < source.Length; i++)
+        string source = _source;
+        for (int i = 0; i <= source.Length; i++)
         {
-            CurrentIntToken.Append(source[i]);
-
-            if (source[i].ToString() == Environment.NewLine) // special recognition
+            if (i != source.Length)
             {
-                CurrentIndex++; CurrentColumn = 0;
-            }
+                CurrentIntToken.Append(source[i]);
+
+                if (source[i] == '\n') // special recognition
+                {
+                    CurrentIndex++; CurrentColumn = 0;
+                }
             
-            CurrentColumn++;
+                CurrentColumn++;
+            }
 
             for (int j = 0; j < CurrentTokens.Count; j++)
             {
-                if (j + 1 == CurrentTokens.Count) ;
                 if (Regex.IsMatch(CurrentIntToken.ToString(), CurrentTokens[j].Value))
                 {
                     CurrentAssumedToken = CurrentTokens[j];
+                    if (CurrentAssumedToken.IgnoreOnRefinement)
+                    {
+                        CurrentIntToken.Clear();
+                        CurrentAssumedToken = null;
+                        goto Advance;
+                    }
                     if (CurrentAssumedToken.Look)
                         if (i + 1 < source.Length && Regex.IsMatch(CurrentIntToken.ToString() + source[i + 1], CurrentAssumedToken.Value))
                             goto Advance;
@@ -1703,6 +1711,8 @@ public static class Interpreter
                                 throw new Lamentation(0x16, string.Join(' ', CurrentSentenceFruit.Value));
                             break;
                     }
+                    CurrentSentenceFruit = null;
+                    
                     goto Advance;
                 }
             }
