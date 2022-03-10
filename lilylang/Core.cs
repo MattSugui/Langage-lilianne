@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (235/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (240/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -120,7 +120,7 @@
 // rants by the quality checker
 #pragma warning disable CA1416 // platformist scum
 #pragma warning disable CA1806 // unused methods (for funky user32 manipulations)
-#pragma warning disable CA2211 // ayo! fields aint supposed to be public!
+//#pragma warning disable CA2211 // ayo! fields aint supposed to be public!
 #endregion
 
 #region Symbols that affect compilation
@@ -453,12 +453,19 @@ public static class Interpreter
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
     public static bool ErrorRaised { get; set; }
+
+    /// <summary>
+    /// Indicates which style of interpretation is used. Version 1.3 and above can use the newer
+    /// Adelaide compact parsing system or the older procedural style. Version 1.2 and below can
+    /// only use the older one.
+    /// </summary>
+    public static bool OldOrNew { get; set; }
 #endregion
 #region Compilation
     /// <summary>
     /// The unprocessed project file. (XML version)
     /// </summary>
-    public static XmlDocument tempCurrFile;
+    public static XmlDocument TempCurrFile { get; set; }
 
     /// <summary>
     /// The unprocessed project file. (Coco version)
@@ -468,27 +475,27 @@ public static class Interpreter
     /// <summary>
     /// The current file. Not exactly a single file, but a merger of all source files.
     /// </summary>
-    public static List<string> CurrentFile = new();
+    public static List<string> CurrentFile { get; set; } = new();
 
     /// <summary>
     /// The files that are coming in through the <c>/include</c> command.
     /// </summary>
-    public static List<string> IncomingFile = new();
+    public static List<string> IncomingFile { get; } = new();
 
     /// <summary>
     /// The current line as tokens.
     /// </summary>
-    public static List<TokenFruit> CurrentWords = new();
+    public static List<TokenFruit> CurrentWords { get; } = new();
 
     /// <summary>
     /// The current token bunches.
     /// </summary>
-    public static List<List<TokenFruit>> CurrentWordPacks = new();
+    public static List<List<TokenFruit>> CurrentWordPacks { get; set; } = new();
 
     /// <summary>
     /// The current sentences.
     /// </summary>
-    public static List<SentenceFruit> CurrentSentences = new();
+    public static List<SentenceFruit> CurrentSentences { get; } = new();
 
     /// <summary>
     /// If <see langword="false"/>, the compiler will assume that everything is in one file.
@@ -517,12 +524,12 @@ public static class Interpreter
     /// <summary>
     /// The current token.
     /// </summary>
-    public static StringBuilder CurrentIntToken = new();
+    public static StringBuilder CurrentIntToken { get; } = new();
 
     /// <summary>
     /// The current statement.
     /// </summary>
-    public static List<TokenFruit> CurrentIntSentence = new();
+    public static List<TokenFruit> CurrentIntSentence { get; } = new();
 
     /// <summary>
     /// The currently-assumed token.
@@ -552,7 +559,7 @@ public static class Interpreter
     /// continue getting filled for the purpose of finding the exact column of any possible error that may happen.
     /// The line number is taken care of by the <c>CurrentIndex</c>.
     /// </remarks>
-    public static StringBuilder CurrentLine = new();
+    public static StringBuilder CurrentLine { get; } = new();
 
     /// <summary>
     /// The current line column.
@@ -563,12 +570,12 @@ public static class Interpreter
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
-    public static List<FELFrame> CurrentFrame = new();
+    public static List<FELFrame> CurrentFrame { get; } = new();
 
     /// <summary>
     /// The current saved collection of objects.
     /// </summary>
-    public static List<FELObject> CurrentStore = new();
+    public static List<FELObject> CurrentStore { get; } = new();
 
     /// <summary>
     /// The current struct being defined.
@@ -603,7 +610,7 @@ public static class Interpreter
     /// <summary>
     /// The current list of locations where the Call has left its footprint for returning.
     /// </summary>
-    public static Stack<int> LocationHistoryForSubroutines = new();
+    public static Stack<int> LocationHistoryForSubroutines { get; } = new();
 
     /// <summary>
     /// The current X register.
@@ -839,12 +846,12 @@ public static class Interpreter
         /// <summary>
         /// The currently-registered tokens.
         /// </summary>
-        public static List<Token> CurrentTokens = new();
+        public static List<Token> CurrentTokens { get; } = new();
 
         /// <summary>
         /// The currently-registered sentence structures.
         /// </summary>
-        public static List<SentenceStructure> CurrentSentenceStructures = new();
+        public static List<SentenceStructure> CurrentSentenceStructures { get; } = new();
 
 #region Stuffs
         /// <summary>
@@ -955,6 +962,7 @@ public static class Interpreter
 #endregion
     }
 
+    #region Procedural style
     /// <summary>
     /// Scans a line into tokens.
     /// </summary>
@@ -1373,7 +1381,9 @@ public static class Interpreter
         }
         else CurrentEffects.Insert(index != -1 ? index : CurrentEffects.Count, effect);
     }
+    #endregion
 
+    #region Adelaide Compact
     /// <summary>
     /// Completely interprets an entire file; all processes are merged within. Result
     /// of studying cancelled project Adelaide.
@@ -1385,19 +1395,16 @@ public static class Interpreter
     public static void Interpret_S(string _source)
     {
         string source = _source;
-        for (int i = 0; i <= source.Length; i++)
+        for (int i = 0; i < source.Length; i++)
         {
-            if (i != source.Length)
-            {
-                CurrentIntToken.Append(source[i]);
+            CurrentIntToken.Append(source[i]);
 
-                if (source[i] == '\n') // special recognition
-                {
-                    CurrentIndex++; CurrentColumn = 0;
-                }
-            
-                CurrentColumn++;
+            if (source[i] == '\n') // special recognition
+            {
+                CurrentIndex++; CurrentColumn = 0;
             }
+            
+            CurrentColumn++;
 
             for (int j = 0; j < CurrentTokens.Count; j++)
             {
@@ -1712,8 +1719,9 @@ public static class Interpreter
                             break;
                     }
                     CurrentSentenceFruit = null;
-                    
-                    goto Advance;
+                    CurrentEffects.Add(CurrentAssumedAction);
+                    CurrentAssumedAction = default;
+                    break;
                 }
             }
 
@@ -1724,9 +1732,10 @@ public static class Interpreter
 #if DEBUG && INTERPRET_STESTS
         WriteLine(string.Join(", ", from pear in CurrentIntSentence select pear.ToString()));
         WriteLine(CurrentSentenceFruit);
-
+        WriteLine(string.Join(", ", from pear in CurrentEffects select pear.ToString()));
 #endif
     }
+    #endregion
 
     /// <summary>
     /// Checks the <see cref="CurrentEffects"/> list for any labels and replaces them with their physical addresses instead.
@@ -1988,7 +1997,7 @@ public static class Interpreter
         /// <remarks>
         /// <em>I did not choose the name, Intellicode/Pilot did. This will be a meme from now on.</em>
         /// </remarks>
-        public static List<FELAction> CurrentEffects = new();
+        public static List<FELAction> CurrentEffects { get; } = new();
 
         /// <summary>
         /// A form of delegate??? but not quite?? for use with the stack.
@@ -2018,6 +2027,7 @@ public static class Interpreter
 #endregion
 #region Stack operations
                         case FELActionType.push:
+
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
@@ -3563,7 +3573,7 @@ public static class ObjectModel
     /// <summary>
     /// The currently registered structure types.
     /// </summary>
-    public static List<FELStructType> TypeRegistry = new();
+    public static List<FELStructType> TypeRegistry { get; set; } = new();
 
     /// <summary>
     /// An empty struct that just meant to mean something in whereever this is sent to.
@@ -3677,7 +3687,7 @@ public static class UserInterface
     /// the footer will display the available actions instead of what was set in its
     /// backing field.
     /// </summary>
-    public static List<FELUIAction> Actions = new();
+    public static List<FELUIAction> Actions { get; } = new();
 
     /// <summary>
     /// A key-bound event.
@@ -4111,7 +4121,7 @@ public static class Coco
         /// <summary>
         /// The resulting consummate or arranged source file.
         /// </summary>
-        public static List<string> ConsummateSource = new();
+        public static List<string> ConsummateSource { get; set; } = new();
 
         /// <summary>
         /// The kind of output.
@@ -4167,6 +4177,9 @@ public static class Coco
             bool OutputPresent = false;
             bool InputPresent = false;
             bool? GrammarPresent = null;
+
+            bool TokensDefined = false;
+            bool SentencesDefined = false;
 
             Version ver = new();
 
@@ -4467,7 +4480,7 @@ public static class Coco
 #region Grammar definition macros
                     else if (Regex.IsMatch(preprocline, "grammar"))
                     {
-                        if (GrammarSection) throw new Lamentation();
+                        if (GrammarSection) throw new Lamentation(0x46);
                     }
 #endregion
                     else throw new Lamentation(0x32);
@@ -4697,8 +4710,10 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", TokenStruct = new string[] { "STRT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushString", TokenStruct = new string[] { "PUSH", "QUOT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushIntegral", TokenStruct = new string[] { "PUSH", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushAdelaide", TokenStruct = new string[] { "PUSH", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushTrueBoolean", TokenStruct = new string[] { "PUSH", "TRUE", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "PushFalseBoolean", TokenStruct = new string[] { "PUSH", "FAUX", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "PushNothing", TokenStruct = new string[] { "PUSH", "NULL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Pop", TokenStruct = new string[] { "POP", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Print", TokenStruct = new string[] { "PRNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "Add", TokenStruct = new string[] { "ADDO", "SMCL" } });
@@ -4712,6 +4727,10 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "StoreNamed", TokenStruct = new string[] { "STOR", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "LoadIndex", TokenStruct = new string[] { "LOAD", "ADDR", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "LoadNamed", TokenStruct = new string[] { "LOAD", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "AdelaideStoreIndex", TokenStruct = new string[] { "STOR", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "AdelaideStoreNamed", TokenStruct = new string[] { "STOR", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "AdelaideLoadIndex", TokenStruct = new string[] { "LOAD", "INTL", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "AdelaideLoadNamed", TokenStruct = new string[] { "LOAD", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "IfThen", TokenStruct = new string[] { "BEQ", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "UnlessThen", TokenStruct = new string[] { "BNE", "INTL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "GreaterThan", TokenStruct = new string[] { "BGT", "INTL", "SMCL" } });
@@ -4768,7 +4787,19 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "FurnishHalfExpl", TokenStruct = new string[] { "FRNS", "HALF", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FurnishFloatExpl", TokenStruct = new string[] { "FRNS", "FLOT", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FurnishDoubleExpl", TokenStruct = new string[] { "FRNS", "DOUB", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "IDNT", "SMCL" } }); CurrentSentenceStructures.Add(new() { Name = "FurnishBooleanExpl", TokenStruct = new string[] { "FRNS", "BOOL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideByteExpl", TokenStruct = new string[] { "FRNS", "BYTE", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideSByteExpl", TokenStruct = new string[] { "FRNS", "SBYT", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideIntegerExpl", TokenStruct = new string[] { "FRNS", "INTG", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideUIntegerExpl", TokenStruct = new string[] { "FRNS", "UINT", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideLongExpl", TokenStruct = new string[] { "FRNS", "LONG", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideULongExpl", TokenStruct = new string[] { "FRNS", "ULNG", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideStringExpl", TokenStruct = new string[] { "FRNS", "STRG", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideCharExpl", TokenStruct = new string[] { "FRNS", "CHAR", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideHalfExpl", TokenStruct = new string[] { "FRNS", "HALF", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideFloatExpl", TokenStruct = new string[] { "FRNS", "FLOT", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideDoubleExpl", TokenStruct = new string[] { "FRNS", "DOUB", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "DefineStructure", TokenStruct = new string[] { "DEFN", "STRC", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "FinaliseStructure", TokenStruct = new string[] { "FINS", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "CreateStructure", TokenStruct = new string[] { "CREA", "STRC", "SMCL" } });
@@ -4779,13 +4810,20 @@ public static class TEMP
         CurrentSentenceStructures.Add(new() { Name = "SetStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "IDNT", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GetAdelaideStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SetAdelaideStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "GetAdelaideCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "NAME", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "SetAdelaideCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "ShelveStructure", TokenStruct = new string[] { "RECL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreStructure", TokenStruct = new string[] { "PUT", "HEAP", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreAdelaideStructure", TokenStruct = new string[] { "PUT", "HEAP", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "StoreAdelaideCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "NAME", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreStructureSameName", TokenStruct = new string[] { "PUT", "HEAP", "EXCL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructureSameName", TokenStruct = new string[] { "PUT", "EXCL", "EXCL", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "RemoveIndex", TokenStruct = new string[] { "REMV", "ADDR", "SMCL" } });
         CurrentSentenceStructures.Add(new() { Name = "RemoveNamed", TokenStruct = new string[] { "REMV", "IDNT", "SMCL" } });
+        CurrentSentenceStructures.Add(new() { Name = "RemoveAdelaideNamed", TokenStruct = new string[] { "REMV", "NAME", "SMCL" } });
     }
 }
 #endregion
@@ -4849,11 +4887,11 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Checks if a <see cref="List{T}"/> is empty.
+    /// Checks if an <see cref="ICollection{T}"/> is empty.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list">The list.</param>
-    /// <returns>true if empty, false if it contains something.</returns>
-    public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
+    /// <returns>true if empty or <see langword="null"/>, false if it contains something.</returns>
+    public static bool IsEmpty<T>(this ICollection<T> list) => list.Count == 0 || list is null;
 }
 #endregion

@@ -1,0 +1,214 @@
+// Lilian Master Grammar - Intermediate Representation
+// DO NOT EDIT!!!
+
+/grammar [BASE] master override
+	/tokens
+		/keyword	[PRNT]	<print>
+		/keyword	[PRPR]	<preprocess>
+		/keyword	[STRT]	<start>
+		/keyword	[LET]	<let>
+		/keyword	[PUSH]	<push>
+		/keyword	[POP]	<pop>
+		/keyword	[ADDO]	<add>
+		/keyword	[SUBO]	<subtract>
+		/keyword	[MULO]	<multiply>
+		/keyword	[DIVO]	<divide>
+		/keyword	[MODO]	<remainder>
+		/keyword	[LSFT]	<lshift>
+		/keyword	[RSFT]	<rshift>
+		/keyword	[STOR]	<store>
+		/keyword	[LOAD]	<load>
+		/keyword	[BEQ]	<beq>
+		/keyword	[BNE]	<bne>
+		/keyword	[BGT]	<bgt>
+		/keyword	[BGE]	<bge>
+		/keyword	[BLT]	<blt>
+		/keyword	[BLE]	<ble>
+		/keyword	[GOTO]	<goto>
+		/keyword	[AND]	<and>
+		/keyword	[OR]	<or>
+		/keyword	[XOR]	<xor>
+		/keyword	[BTRU]	<btr>
+		/keyword	[BFLS]	<bfl>
+		/keyword	[END]	<end>
+		/keyword	[ASKN]	<take>
+		/keyword	[ASKL]	<ask>
+		/keyword	[NARW]	<narrow>
+		/keyword	[WIDN]	<widen>
+		/keyword	[REAL]	<realise>
+		/keyword	[CTCH]	<catch>
+		/keyword	[CALL]	<call>
+		/keyword	[RETN]	<return>
+		/keyword	[THNK]	<think>
+		/keyword	[THRW]	<throw>
+		/keyword	[TITL]	<title>
+		/keyword	[PAUS]	<pause>
+		/keyword	[WAIT]	<wait>
+		/keyword	[TRUE]	<true>
+		/keyword	[FAUX]	<false>
+		/keyword	[DEFN]	<define>
+		/keyword	[FRNS]	<furnish>
+		/keyword	[FINS]	<finalise>
+		/keyword	[CREA]	<create>
+		/keyword	[BOOL]	<boolean>
+		/keyword	[BYTE]	<byte>
+		/keyword	[SBYT]	<sbyte>
+		/keyword	[SHRT]	<short>
+		/keyword	[USHT]	<ushort>
+		/keyword	[INTG]	<integer>
+		/keyword	[UINT]	<uinteger>
+		/keyword	[LONG]	<long>
+		/keyword	[ULNG]	<ulong>
+		/keyword	[HALF]	<half>
+		/keyword	[FLOT]	<float>
+		/keyword	[STRG]	<string>
+		/keyword	[CHAR]	<character>
+		/keyword	[DECM]	<quadruple>
+		/keyword	[DOUB]	<double>
+		/keyword	[SAVE]	<save>
+		/keyword	[DELT]	<delete>
+		/keyword	[GET]	<get>
+		/keyword	[SET]	<set>
+		/keyword	[PUT]	<put>
+		/keyword	[PRSN]	<present>
+		/keyword	[RECL]	<shelve>
+		/keyword	[REMV]	<remove>
+		/keyword	[NULL]	<nothing>
+		/symbol		[EXCL]	<!>
+		/symbol		[SMCL]	<;>
+		/symbol		[COLN]	<:>
+		/sequence	[QUOT]	<"[^"\n]*">
+		/sequence	[SQUT]	<'[^'\n]'>
+		/sequence	[SQUT]	<'`.'>
+		/sequence	[INTL]	<[0-9]+>					recurse
+		/sequence	[FPIN]	<[0-9]+\.[0-9]+>			recurse
+		/sequence	[LABL]	<@[A-Za-z][A-Za-z0-9]*>		recurse
+		/sequence	[STRC]	<&[A-Za-z][A-Za-z0-9]*>		recurse
+		/sequence	[HEAP]	<\*[A-Za-z][A-Za-z0-9]*>	recurse
+		/sequence	[ADDR]	<\&[0-9]+>					recurse
+		/sequence	[IDNT]	<#[A-Za-z][A-Za-z0-9]*>		recurse
+		/sequence	[NAME]	<[A-Za-z][A-Za-z0-9]*>		recurse		base
+		/ignore				<\s+>						recurse
+	/endtokens
+	/sentences
+		/sentence   [StartPreprocess]						{ [PRPR] [COLN] }
+		/sentence   [EndPreprocess]							{ [STRT] [SMCL] }
+		/sentence   [PushString]							{ [PUSH] [QUOT] [SMCL] }
+		/sentence   [PushIntegral]							{ [PUSH] [INTL] [SMCL] }
+		/sentence   [PushAdelaide]							{ [PUSH] [NAME] [SMCL] }
+		/sentence   [PushTrueBoolean]						{ [PUSH] [TRUE] [SMCL] }
+		/sentence   [PushFalseBoolean]						{ [PUSH] [FAUX] [SMCL] }
+		/sentence   [PushNothing]							{ [PUSH] [NULL] [SMCL] }
+		/sentence   [Pop]									{ [POP] [SMCL] }
+		/sentence   [Print]									{ [PRNT] [SMCL] }
+		/sentence   [Add]									{ [ADDO] [SMCL] }
+		/sentence   [Subtract]								{ [SUBO] [SMCL] }
+		/sentence   [Multiply]								{ [MULO] [SMCL] }
+		/sentence   [Divide]								{ [DIVO] [SMCL] }
+		/sentence   [Modulus]								{ [MODO] [SMCL] }
+		/sentence   [LeftShift]								{ [LSFT] [SMCL] }
+		/sentence   [RightShift]							{ [RSFT] [SMCL] }
+		/sentence   [StoreIndex]							{ [STOR] [ADDR] [SMCL] }
+		/sentence   [StoreNamed]							{ [STOR] [IDNT] [SMCL] }
+		/sentence   [LoadIndex]								{ [LOAD] [ADDR] [SMCL] }
+		/sentence   [LoadNamed]								{ [LOAD] [IDNT] [SMCL] }
+		/sentence   [AdelaideStoreIndex]					{ [STOR] [INTL] [SMCL] }
+		/sentence   [AdelaideStoreNamed]					{ [STOR] [NAME] [SMCL] }
+		/sentence   [AdelaideLoadIndex]						{ [LOAD] [INTL] [SMCL] }
+		/sentence   [AdelaideLoadNamed]						{ [LOAD] [NAME] [SMCL] }
+		/sentence   [IfThen]								{ [BEQ] [INTL] [SMCL] }
+		/sentence   [UnlessThen]							{ [BNE] [INTL] [SMCL] }
+		/sentence   [GreaterThan]							{ [BGT] [INTL] [SMCL] }
+		/sentence   [GreaterEqual]							{ [BGE] [INTL] [SMCL] }
+		/sentence   [LessThan]								{ [BLT] [INTL] [SMCL] }
+		/sentence   [LessEqual]								{ [BLE] [INTL] [SMCL] }
+		/sentence   [Goto]									{ [GOTO] [INTL] [SMCL] }
+		/sentence   [And]									{ [AND] [SMCL] }
+		/sentence   [Or]									{ [OR] [SMCL] }
+		/sentence   [Xor]									{ [XOR] [SMCL] }
+		/sentence   [IfTrue]								{ [BTRU] [INTL] [SMCL] }
+		/sentence   [IfFalse]								{ [BFLS] [INTL] [SMCL] }
+		/sentence   [End]									{ [END] [SMCL] }
+		/sentence   [AskString]								{ [ASKN] [SMCL] }
+		/sentence   [Ask]									{ [ASKL] [SMCL] }
+		/sentence   [Narrowing]								{ [NARW] [SMCL] }
+		/sentence   [Widening]								{ [WIDN] [SMCL] }
+		/sentence   [Realisation]							{ [REAL] [SMCL] }
+		/sentence   [Catch]									{ [CTCH] [INTL] [SMCL] }
+		/sentence   [Call]									{ [CALL] [INTL] [SMCL] }
+		/sentence   [Return]								{ [RETN] [SMCL] }
+		/sentence   [CallNamed]								{ [CALL] [LABL] [SMCL] }
+		/sentence   [SubroutineName]						{ [LABL] [COLN] }
+		/sentence   [NoOperation]							{ [THNK] [SMCL] }
+		/sentence   [ThrowGeneric]							{ [THRW] [SMCL] }
+		/sentence   [ThrowMessage]							{ [THRW] [QUOT] [SMCL] }
+		/sentence   [ThrowCode]								{ [THRW] [INTL] [SMCL] }
+		/sentence   [SetTitle]								{ [TITL] [QUOT] [SMCL] }
+		/sentence   [ThreadSleep]							{ [PAUS] [INTL] [SMCL] }
+		/sentence   [Pause]									{ [WAIT] [SMCL] }
+		/sentence   [PushTrueBooleanExpl]					{ [PUSH] [BOOL] [TRUE] [SMCL] }
+		/sentence   [PushFalseBooleanExpl]					{ [PUSH] [BOOL] [FAUX] [SMCL] }
+		/sentence   [PushByteExpl]							{ [PUSH] [BYTE] [INTL] [SMCL] }
+		/sentence   [PushSByteExpl]							{ [PUSH] [SBYT] [INTL] [SMCL] }
+		/sentence   [PushIntegerExpl]						{ [PUSH] [INTG] [INTL] [SMCL] }
+		/sentence   [PushUIntegerExpl]						{ [PUSH] [UINT] [INTL] [SMCL] }
+		/sentence   [PushLongExpl]							{ [PUSH] [LONG] [INTL] [SMCL] }
+		/sentence   [PushULongExpl]							{ [PUSH] [ULNG] [INTL] [SMCL] }
+		/sentence   [PushStringExpl]						{ [PUSH] [STRG] [QUOT] [SMCL] }
+		/sentence   [PushCharExpl]							{ [PUSH] [CHAR] [SQUT] [SMCL] }
+		/sentence   [PushHalfExpl]							{ [PUSH] [HALF] [FPIN] [SMCL] }
+		/sentence   [PushFloatExpl]							{ [PUSH] [FLOT] [FPIN] [SMCL] }
+		/sentence   [PushDoubleExpl]						{ [PUSH] [DOUB] [FPIN] [SMCL] }
+		/sentence   [PushDecimalExpl]						{ [PUSH] [DECM] [FPIN] [SMCL] }
+		/sentence   [FurnishBooleanExpl]					{ [FRNS] [BOOL] [IDNT] [SMCL] }
+		/sentence   [FurnishByteExpl]						{ [FRNS] [BYTE] [IDNT] [SMCL] }
+		/sentence   [FurnishSByteExpl]						{ [FRNS] [SBYT] [IDNT] [SMCL] }
+		/sentence   [FurnishIntegerExpl]					{ [FRNS] [INTG] [IDNT] [SMCL] }
+		/sentence   [FurnishUIntegerExpl]					{ [FRNS] [UINT] [IDNT] [SMCL] }
+		/sentence   [FurnishLongExpl]						{ [FRNS] [LONG] [IDNT] [SMCL] }
+		/sentence   [FurnishULongExpl]						{ [FRNS] [ULNG] [IDNT] [SMCL] }
+		/sentence   [FurnishStringExpl]						{ [FRNS] [STRG] [IDNT] [SMCL] }
+		/sentence   [FurnishCharExpl]						{ [FRNS] [CHAR] [IDNT] [SMCL] }
+		/sentence   [FurnishHalfExpl]						{ [FRNS] [HALF] [IDNT] [SMCL] }
+		/sentence   [FurnishFloatExpl]						{ [FRNS] [FLOT] [IDNT] [SMCL] }
+		/sentence   [FurnishDoubleExpl]						{ [FRNS] [DOUB] [IDNT] [SMCL] }
+		/sentence   [FurnishDecimalExpl]					{ [FRNS] [DECM] [IDNT] [SMCL] }
+		/sentence   [FurnishBooleanExpl]					{ [FRNS] [BOOL] [IDNT] [SMCL] }
+		/sentence   [FurnishAdelaideByteExpl]				{ [FRNS] [BYTE] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideSByteExpl]				{ [FRNS] [SBYT] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideIntegerExpl]			{ [FRNS] [INTG] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideUIntegerExpl]			{ [FRNS] [UINT] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideLongExpl]				{ [FRNS] [LONG] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideULongExpl]				{ [FRNS] [ULNG] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideStringExpl]				{ [FRNS] [STRG] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideCharExpl]				{ [FRNS] [CHAR] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideHalfExpl]				{ [FRNS] [HALF] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideFloatExpl]				{ [FRNS] [FLOT] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideDoubleExpl]				{ [FRNS] [DOUB] [NAME] [SMCL] }
+		/sentence   [FurnishAdelaideDecimalExpl]			{ [FRNS] [DECM] [NAME] [SMCL] }
+		/sentence   [DefineStructure]						{ [DEFN] [STRC] [SMCL] }
+		/sentence   [FinaliseStructure]						{ [FINS] [SMCL] }
+		/sentence   [CreateStructure]						{ [CREA] [STRC] [SMCL] }
+		/sentence   [DeleteStructure]						{ [DELT] [HEAP] [SMCL] }
+		/sentence   [SaveStructure]							{ [SAVE] [HEAP] [SMCL] }
+		/sentence   [PresentStructure]						{ [PRSN] [HEAP] [SMCL] }
+		/sentence   [GetStructureProperty]					{ [GET] [HEAP] [IDNT] [SMCL] }
+		/sentence   [SetStructureProperty]					{ [SET] [HEAP] [IDNT] [SMCL] }
+		/sentence   [GetCurrentStructureProperty]			{ [GET] [EXCL] [IDNT] [SMCL] }
+		/sentence   [SetCurrentStructureProperty]			{ [SET] [EXCL] [IDNT] [SMCL] }
+		/sentence   [GetAdelaideStructureProperty]			{ [GET] [HEAP] [NAME] [SMCL] }
+		/sentence   [SetAdelaideStructureProperty]			{ [SET] [HEAP] [NAME] [SMCL] }
+		/sentence   [GetAdelaideCurrentStructureProperty]	{ [GET] [EXCL] [NAME] [SMCL] }
+		/sentence   [SetAdelaideCurrentStructureProperty]	{ [SET] [EXCL] [NAME] [SMCL] }
+		/sentence   [ShelveStructure]						{ [RECL] [SMCL] }
+		/sentence   [StoreStructure]						{ [PUT] [HEAP] [IDNT] [SMCL] }
+		/sentence   [StoreAdelaideStructure]				{ [PUT] [HEAP] [NAME] [SMCL] }
+		/sentence   [StoreCurrentStructure]					{ [PUT] [EXCL] [IDNT] [SMCL] }
+		/sentence   [StoreAdelaideCurrentStructure]			{ [PUT] [EXCL] [NAME] [SMCL] }
+		/sentence   [StoreStructureSameName]				{ [PUT] [HEAP] [EXCL] [SMCL] }
+		/sentence   [StoreCurrentStructureSameName]			{ [PUT] [EXCL] [EXCL] [SMCL] }
+		/sentence   [RemoveIndex]							{ [REMV] [ADDR] [SMCL] }
+		/sentence   [RemoveNamed]							{ [REMV] [IDNT] [SMCL] }
+		/sentence   [RemoveAdelaideNamed]					{ [REMV] [NAME] [SMCL] }
+	/endsentences
+/endgrammar
