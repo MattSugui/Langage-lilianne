@@ -391,6 +391,9 @@ Now press any key to exit and relaunch this compiler with these apples!</value>
   <data name="Lamentation75" xml:space="preserve">
     <value>You cannot perform arithmetic on these types yet. Tangible subroutines don't exist yet.</value>
   </data>
+  <data name="Lamentation76" xml:space="preserve">
+    <value>Adelaidean system - you cannot push a value by name. Use the LOAD opcode.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Implementation error. Some tokens of the {0} sentence have already been specified.</value>
   </data>

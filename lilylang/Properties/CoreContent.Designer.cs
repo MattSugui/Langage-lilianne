@@ -828,6 +828,15 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Adelaidean system - you cannot push a value by name. Use the LOAD opcode..
+        /// </summary>
+        internal static string Lamentation76 {
+            get {
+                return ResourceManager.GetString("Lamentation76", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Implementation error. Some tokens of the {0} sentence have already been specified..
         /// </summary>
         internal static string Lamentation8 {

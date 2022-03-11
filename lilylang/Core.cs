@@ -1475,7 +1475,7 @@ public static class Interpreter
                             else if (char.TryParse(CurrentSentenceFruit.Value[1], out char valE)) val = valE;
                             else if (CurrentSentenceFruit.Value[1].Contains('"')) val = CurrentSentenceFruit.Value[1].Trim('"');
                             else if (CurrentSentenceFruit.Value[1] == "nothing") val = null;
-                            else throw new Lamentation();
+                            else throw new Lamentation(0x50);
                             CurrentAssumedAction = new(FELActionType.push, val);
                             break;
                         //throw new Lamentation(0x16, "types other than int and string")
@@ -1881,6 +1881,7 @@ public static class Interpreter
             def.Add(0x004E, Properties.CoreContent.Lamentation73);
             def.Add(0x004F, Properties.CoreContent.Lamentation74);
             def.Add(0x0050, Properties.CoreContent.Lamentation75);
+            def.Add(0x0051, Properties.CoreContent.Lamentation76);
         }
 
         /// <summary>
@@ -2027,7 +2028,6 @@ public static class Interpreter
 #endregion
 #region Stack operations
                         case FELActionType.push:
-
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:

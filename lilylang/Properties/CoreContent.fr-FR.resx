@@ -391,6 +391,9 @@ Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</v
   <data name="Lamentation75" xml:space="preserve">
     <value>Vous ne pouvez pas performer l'arithmetique sur deux des structures. Des sous-programmes tangibles n'existent pas à cette moment.</value>
   </data>
+  <data name="Lamentation76" xml:space="preserve">
+    <value>Système d'interpretation Adélaïde - vous ne pouvez piler une valeur par son identificateur.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Un erreur d'implementation. Des jetons certains dans la phrase {0} sont déjà spécifiés.</value>
   </data>
