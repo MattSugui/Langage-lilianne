@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fonder.Adelaide"
         mc:Ignorable="d"
-        Title="Adelaide Environment" Height="450" Width="800">
+        Title="Adelaide Environment" Height="480" Width="640" ResizeMode="NoResize">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="11*"/>
+            <RowDefinition Height="47*"/>
+        </Grid.RowDefinitions>
+
         <Label Content="adelaide" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display" FontWeight="Bold" FontSize="48"/>
         <Label x:Name="vername" Content="Version name" HorizontalAlignment="Left" Margin="201,47,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Left"/>
-        <Label Content="bonjour" HorizontalAlignment="Left" Margin="10,114,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

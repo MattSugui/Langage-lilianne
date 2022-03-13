@@ -87,7 +87,6 @@
 		/sequence	[ADDR]	<\&[0-9]+>					recurse
 		/sequence	[IDNT]	<#[A-Za-z][A-Za-z0-9]*>		recurse
 		/sequence	[NAME]	<[A-Za-z][A-Za-z0-9]*>		recurse		base
-		/ignore				<\s+>						recurse
 	/endtokens
 	/sentences
 		/sentence   [StartPreprocess]						{ [PRPR] [COLN] }
