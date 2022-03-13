@@ -55,7 +55,7 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (240/242 kB)                                                                 ║
+║ Size goal: IBM 33FD (247/242 kB)                                                                 ║
 ║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
@@ -133,6 +133,8 @@
 // obviously successful. sinon, il y a un bogue
 #define INTERPRET_STESTS
 // Tries out the near-exact copy of the tokenisation mechanism in Adelaide.
+#define WALKIE
+// Immobilises the TEMP class.
 #endregion
 
 #region Imports
@@ -178,35 +180,6 @@ namespace fonder.Lilian.New;
 /// </summary>
 public static class Programme
 {
-    #region look, stuff
-    /// <summary>
-    /// Deletes a menu.
-    /// </summary>
-    /// <param name="hMenu">The menu of the window.</param>
-    /// <param name="nPosition">The position of the menu item.</param>
-    /// <param name="wFlag">Some flags i guess.</param>
-    /// <returns>The HRESULT of the operation.</returns>
-    [DllImport("user32.dll")]
-    internal static extern int DeleteMenu(IntPtr hMenu, int nPosition, int wFlag);
-
-    /// <summary>
-    /// Gets the menu of the window.
-    /// </summary>
-    /// <param name="hWnd">The window.</param>
-    /// <param name="bRevert">I dunno.</param>
-    /// <returns>The menu of the current window.</returns>
-    [DllImport("user32.dll")]
-    internal static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-
-    /// <summary>
-    /// Gets the current window.
-    /// </summary>
-    /// <returns>The current window.</returns>
-    [DllImport("kernel32.dll", ExactSpelling = true)]
-    internal static extern IntPtr GetConsoleWindow();
-
-    #endregion
-
     #region Switches
     /// <summary>
     /// If true, Lilian will delete some data to save memory. Not helpful for debugging as it deletes the syntax tree and generated sentences.
@@ -239,17 +212,6 @@ public static class Programme
         #region cock check1
         if ((Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion.Contains("releaseman"))
             ReleaseMode = true;
-        #endregion
-
-        #region funky user32
-        IntPtr handle = GetConsoleWindow();
-        IntPtr SystemMenu = GetSystemMenu(handle, false);
-
-        if (handle != IntPtr.Zero)
-        {
-            DeleteMenu(SystemMenu, 0xf030, 0x00000000);
-            DeleteMenu(SystemMenu, 0xf000, 0x00000000);
-        }
         #endregion
 
         CurrentThread.CurrentUICulture = CurrentThread.CurrentCulture;
@@ -300,6 +262,9 @@ public static class Programme
 
         ApplicationTitle = Properties.CoreContent.ProgramName;
         LaunchUI();
+
+        if (!File.Exists("maingram.cgd")) { ErrorScreen(new Lamentation(0x58)); Environment.Exit(0); }
+        Preprocess(File.ReadAllLines("maingram.cgd"));
 
         // Welcome screen
         DisplayScreen(
@@ -626,15 +591,17 @@ public static class Interpreter
     /// The current accumulator.
     /// </summary>
     public static int CurrentObjectA { get; set; }
-#endregion
+    #endregion
 #endregion
 
 #region Interpretation
+
+#if !WALKIE
     /// <summary>
     /// Static construction.
     /// </summary>
     static Interpreter() => TEMP.LOADPATTERNS();
-
+#endif
 #region File operations
     /// <summary>
     /// Reads from a path.
@@ -962,7 +929,7 @@ public static class Interpreter
 #endregion
     }
 
-    #region Procedural style
+#region Procedural style
     /// <summary>
     /// Scans a line into tokens.
     /// </summary>
@@ -1381,9 +1348,9 @@ public static class Interpreter
         }
         else CurrentEffects.Insert(index != -1 ? index : CurrentEffects.Count, effect);
     }
-    #endregion
+#endregion
 
-    #region Adelaide Compact
+#region Adelaide Compact
     /// <summary>
     /// Completely interprets an entire file; all processes are merged within. Result
     /// of studying cancelled project Adelaide.
@@ -1735,7 +1702,7 @@ public static class Interpreter
         WriteLine(string.Join(", ", from pear in CurrentEffects select pear.ToString()));
 #endif
     }
-    #endregion
+#endregion
 
     /// <summary>
     /// Checks the <see cref="CurrentEffects"/> list for any labels and replaces them with their physical addresses instead.
@@ -1882,6 +1849,13 @@ public static class Interpreter
             def.Add(0x004F, Properties.CoreContent.Lamentation74);
             def.Add(0x0050, Properties.CoreContent.Lamentation75);
             def.Add(0x0051, Properties.CoreContent.Lamentation76);
+            def.Add(0x0052, Properties.CoreContent.Lamentation77);
+            def.Add(0x0053, Properties.CoreContent.Lamentation78);
+            def.Add(0x0054, Properties.CoreContent.Lamentation79);
+            def.Add(0x0055, Properties.CoreContent.Lamentation80);
+            def.Add(0x0056, Properties.CoreContent.Lamentation81);
+            def.Add(0x0057, Properties.CoreContent.Lamentation82);
+            def.Add(0x0058, Properties.CoreContent.Lamentation83);
         }
 
         /// <summary>
@@ -4173,15 +4147,19 @@ public static class Coco
             bool ProjectDefined = false;
             bool GrammarSection = false;
             bool GrammarDefined = false;
+            bool TokensSection = false;
+            bool SentencesSection = false;
+            bool MasterMode = false;
 
             bool OutputPresent = false;
             bool InputPresent = false;
-            bool? GrammarPresent = null;
 
             bool TokensDefined = false;
             bool SentencesDefined = false;
 
             Version ver = new();
+
+            Token basetok = null;
 
             if (!Array.Exists(file, s => s.TrimStart().StartsWith('/')))
             {
@@ -4478,9 +4456,129 @@ public static class Coco
                     }
 #endregion
 #region Grammar definition macros
-                    else if (Regex.IsMatch(preprocline, "grammar"))
+                    else if (Regex.IsMatch(preprocline, @"grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?"))
                     {
-                        if (GrammarSection) throw new Lamentation(0x46);
+                        if (GrammarSection) throw new Lamentation(0x45);
+                        if (GrammarDefined) throw new Lamentation(0x46);
+
+                        GrammarSection = true;
+
+                        var mat = Regex.Match(preprocline, @"grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?").Groups;
+                        if (mat["GrammarSystem"].Value == "master") MasterMode = true;
+
+                    }
+                    else if (Regex.IsMatch(preprocline, @"endgrammar"))
+                    {
+                        if (!GrammarSection) throw new Lamentation(0x47);
+
+                        if (!TokensDefined || !SentencesDefined || CurrentTokens.Count == 0 || CurrentSentenceStructures.Count == 0)
+                            throw new Lamentation(0x57);
+
+                        GrammarSection = false;
+                        GrammarDefined = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"tokens"))
+                    {
+                        if (!GrammarSection || TokensDefined || TokensSection) throw new Lamentation(0x47);
+                        TokensSection = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"endtokens"))
+                    {
+                        if (!GrammarSection || !TokensSection) throw new Lamentation(0x47);
+                        TokensSection = false;
+                        TokensDefined = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"sentences"))
+                    {
+                        if (!GrammarSection || SentencesDefined || SentencesSection) throw new Lamentation(0x47);
+                        if (!TokensDefined || CurrentTokens.Count == 0) throw new Lamentation(0x56);
+
+                        SentencesSection = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"endsentences"))
+                    {
+                        if (!GrammarSection || !SentencesSection) throw new Lamentation(0x47);
+                        SentencesSection = false;
+                        SentencesDefined = true;
+                    }
+                    else if (Regex.IsMatch(preprocline, @"keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>"))
+                    {
+                        if (!TokensSection) throw new Lamentation(0x47);
+
+                        var mat = Regex.Match(preprocline, @"keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>").Groups;
+                        string nom = mat["TokenName"].Value;
+                        string pat = "^" + mat["Pattern"].Value + "$";
+
+                        if (MasterMode)
+                            if (!CurrentTokens.Exists(tok => tok.Name == nom))
+                                CurrentTokens.Add(new() { Name = nom, Value = pat });
+                            else throw new Lamentation(0x53);
+                    }
+                    else if (Regex.IsMatch(preprocline, @"symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>"))
+                    {
+                        if (!TokensSection) throw new Lamentation(0x47);
+
+                        var mat = Regex.Match(preprocline, @"symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>").Groups;
+                        string nom = mat["TokenName"].Value;
+                        string pat = "^" + mat["Pattern"].Value + "$";
+
+                        if (MasterMode)
+                            if (!CurrentTokens.Exists(tok => tok.Name == nom))
+                                CurrentTokens.Add(new() { Name = nom, Value = pat });
+                            else throw new Lamentation(0x53);
+                    }
+                    else if (Regex.IsMatch(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?"))
+                    {
+                        var mat = Regex.Match(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?").Groups;
+                        string nom = mat["TokenName"].Value;
+                        string pat = "^" + mat["Pattern"].Value + "$";
+
+                        var thing = new Token { Name = nom, Value = pat, Look = mat["Recurse"].Success };
+                        if (MasterMode)
+                        {
+                            if (mat["Base"].Success)
+                            {
+                                if (basetok is Token or not null) throw new Lamentation(0x52);
+
+                                basetok = thing;
+                            }
+                            else
+                            {
+                                if (!CurrentTokens.Exists(tok => tok.Name == nom))
+                                    CurrentTokens.Add(new() { Name = nom, Value = pat });
+                                else throw new Lamentation(0x53);
+                            }
+                        }
+                    }
+                    else if (Regex.IsMatch(preprocline, @"ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?"))
+                    {
+                        var mat = Regex.Match(preprocline, @"ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?").Groups;
+                        string nom = $"0x{new Random().NextInt64():XXXXXXXX}";
+                        string pat = "^" + mat["Pattern"].Value + "$";
+
+                        if (MasterMode)
+                            if (!CurrentTokens.Exists(tok => tok.Name == nom))
+                                CurrentTokens.Add(new() { Name = nom, Value = pat });
+                            else throw new Lamentation(0x53);
+                    }
+                    else if (Regex.IsMatch(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}"))
+                    {
+                        var mat = Regex.Match(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}").Groups;
+                        string nom = mat["TokenName"].Value;
+                        string pat = mat["Pattern"].Value;
+                        List<string> toknom = new();
+                        var stuff = Regex.Matches(pat, @"\[(?<Name>[^\[\]\n]*)\](?<ValueLoc>!)?");
+                        for (int i = 0; i < stuff.Count; i++)
+                        {
+                            if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value)) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
+                            if (MasterMode && stuff[i].Groups["ValueLoc"].Success) throw new Lamentation(0x54, stuff[i].Groups["Name"].Value);
+                            toknom.Add(stuff[i].Value);
+                        }
+
+                        if (MasterMode)
+                            if (!CurrentSentenceStructures.Exists(tok => tok.Name == nom))
+                                CurrentSentenceStructures.Add(new() { Name = nom, TokenStruct = toknom.ToArray() });
+                            else throw new Lamentation(0x53);
                     }
 #endregion
                     else throw new Lamentation(0x32);
@@ -4598,6 +4696,7 @@ public static class Carmen
 }
 #endregion
 
+#if !WALKIE
 #region Preloader
 /// <summary>
 /// Hard-coded structures.
@@ -4827,6 +4926,7 @@ public static class TEMP
     }
 }
 #endregion
+#endif
 
 #region Help on arguments
 /// <summary>

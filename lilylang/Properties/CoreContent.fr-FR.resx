@@ -329,7 +329,7 @@ Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</v
     <value>Un erreur internel. Dans cette version du Lilian, vous ne pouvez pas utiliser des types qui sont d'autre des 15 types prédéfini dans le .NET.</value>
   </data>
   <data name="Lamentation57" xml:space="preserve">
-    <value>Un erreur d'implementation. La grammaire primaire n'existe pas. Utilisez le syntaxe d'assemblage, ou réinstallez Lilian.</value>
+    <value>Un erreur d'implementation. La grammaire primaire n'existe pas. Réinstallez Lilian.</value>
   </data>
   <data name="Lamentation58" xml:space="preserve">
     <value>Un erreur en traitement avant la compilation. Nous n'utilisons pas plus des ordres qui commencent avec un point. Utilisez des ordres qui commencent avec une barre oblique (/) ou retourner au Lilian 1.1.</value>
@@ -394,8 +394,29 @@ Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</v
   <data name="Lamentation76" xml:space="preserve">
     <value>Système d'interpretation Adélaïde - vous ne pouvez piler une valeur par son identificateur.</value>
   </data>
+  <data name="Lamentation77" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Il ne peut y en avoir qu'un jeton de base.</value>
+  </data>
+  <data name="Lamentation78" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Elle a essayé d'enregistrer un jeton qui a un nom qui est égale à une autre.</value>
+  </data>
+  <data name="Lamentation79" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Le jeton « {0} » n'existe pas.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Un erreur d'implementation. Des jetons certains dans la phrase {0} sont déjà spécifiés.</value>
+  </data>
+  <data name="Lamentation80" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Vous ne pouvez déclarer des locations des valeurs dans des phrases dans la grammaire base car il est la responsabilité de la compilatrice.</value>
+  </data>
+  <data name="Lamentation81" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Où diable sont les jetons qui vous utiliserez pour former des phrases ?</value>
+  </data>
+  <data name="Lamentation82" xml:space="preserve">
+    <value>Un erreur en traitement avant la compilation. Cette grammaire est absoluement vide.</value>
+  </data>
+  <data name="Lamentation83" xml:space="preserve">
+    <value>Le lexique de la représentation intermediate n'existe pas. Obtenez-lui en ligne ou réinstallez Lilian.</value>
   </data>
   <data name="Lamentation9" xml:space="preserve">
     <value>Un erreur de syntaxe. Le jeton « {0} » ne peut pas être dans cette position dans la phrase {1}.</value>

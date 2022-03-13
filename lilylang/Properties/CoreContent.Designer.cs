@@ -639,7 +639,7 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Implementation error. The core grammar does not exist. Fall back to assembly syntax, or reinstall Lilian..
+        ///   Recherche une chaîne localisée semblable à Implementation error. The core grammar does not exist. Reinstall Lilian..
         /// </summary>
         internal static string Lamentation57 {
             get {
@@ -837,11 +837,74 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. There can be only one base token..
+        /// </summary>
+        internal static string Lamentation77 {
+            get {
+                return ResourceManager.GetString("Lamentation77", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Attempt to register a token of the same name as another..
+        /// </summary>
+        internal static string Lamentation78 {
+            get {
+                return ResourceManager.GetString("Lamentation78", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Token &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string Lamentation79 {
+            get {
+                return ResourceManager.GetString("Lamentation79", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Implementation error. Some tokens of the {0} sentence have already been specified..
         /// </summary>
         internal static string Lamentation8 {
             get {
                 return ResourceManager.GetString("Lamentation8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Cannot declare the locations of values in sentences in the master grammar as it is up to the compiler to determine which..
+        /// </summary>
+        internal static string Lamentation80 {
+            get {
+                return ResourceManager.GetString("Lamentation80", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Where in hell do you think you could get the tokens from to form sentences?.
+        /// </summary>
+        internal static string Lamentation81 {
+            get {
+                return ResourceManager.GetString("Lamentation81", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preprocessing error. Grammar is absolutely empty..
+        /// </summary>
+        internal static string Lamentation82 {
+            get {
+                return ResourceManager.GetString("Lamentation82", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The intermediate representation lexicon is absent. Get one online or reinstall Lilian..
+        /// </summary>
+        internal static string Lamentation83 {
+            get {
+                return ResourceManager.GetString("Lamentation83", resourceCulture);
             }
         }
         

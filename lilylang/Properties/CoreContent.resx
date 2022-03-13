@@ -329,7 +329,7 @@ Now press any key to exit and relaunch this compiler with these apples!</value>
     <value>Internal error. For this version of Lilian, you cannot declare types other than the standard 15 .NET types.</value>
   </data>
   <data name="Lamentation57" xml:space="preserve">
-    <value>Implementation error. The core grammar does not exist. Fall back to assembly syntax, or reinstall Lilian.</value>
+    <value>Implementation error. The core grammar does not exist. Reinstall Lilian.</value>
   </data>
   <data name="Lamentation58" xml:space="preserve">
     <value>Preprocessing error. We do not use dot-directives anymore. Use slash directives or fall back to Lilian 1.1.</value>
@@ -394,8 +394,29 @@ Now press any key to exit and relaunch this compiler with these apples!</value>
   <data name="Lamentation76" xml:space="preserve">
     <value>Adelaidean system - you cannot push a value by name. Use the LOAD opcode.</value>
   </data>
+  <data name="Lamentation77" xml:space="preserve">
+    <value>Preprocessing error. There can be only one base token.</value>
+  </data>
+  <data name="Lamentation78" xml:space="preserve">
+    <value>Preprocessing error. Attempt to register a token of the same name as another.</value>
+  </data>
+  <data name="Lamentation79" xml:space="preserve">
+    <value>Preprocessing error. Token '{0}' does not exist.</value>
+  </data>
   <data name="Lamentation8" xml:space="preserve">
     <value>Implementation error. Some tokens of the {0} sentence have already been specified.</value>
+  </data>
+  <data name="Lamentation80" xml:space="preserve">
+    <value>Preprocessing error. Cannot declare the locations of values in sentences in the master grammar as it is up to the compiler to determine which.</value>
+  </data>
+  <data name="Lamentation81" xml:space="preserve">
+    <value>Preprocessing error. Where in hell do you think you could get the tokens from to form sentences?</value>
+  </data>
+  <data name="Lamentation82" xml:space="preserve">
+    <value>Preprocessing error. Grammar is absolutely empty.</value>
+  </data>
+  <data name="Lamentation83" xml:space="preserve">
+    <value>The intermediate representation lexicon is absent. Get one online or reinstall Lilian.</value>
   </data>
   <data name="Lamentation9" xml:space="preserve">
     <value>Syntax error. The token '{0}' cannot exist in its current position of the {1} sentence.</value>
