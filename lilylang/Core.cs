@@ -264,8 +264,9 @@ public static class Programme
         LaunchUI();
 
         if (!File.Exists("maingram.cgd")) { ErrorScreen(new Lamentation(0x58)); Environment.Exit(0); }
+        RegulateCompilation = true;
         Preprocess(File.ReadAllLines("maingram.cgd"));
-
+        RegulateCompilation = false;
         // Welcome screen
         DisplayScreen(
             Properties.CoreContent.WelcomeScreenBody,
@@ -4476,6 +4477,8 @@ public static class Coco
 
                         GrammarSection = false;
                         GrammarDefined = true;
+
+                        if (basetok is Token or not null) CurrentTokens.Add(basetok); // last thing to be added
                     }
                     else if (Regex.IsMatch(preprocline, @"tokens"))
                     {
@@ -4527,13 +4530,17 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?"))
+                    else if (Regex.IsMatch(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?"))
                     {
-                        var mat = Regex.Match(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?").Groups;
+                        var mat = Regex.Match(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?").Groups;
                         string nom = mat["TokenName"].Value;
-                        string pat = "^" + mat["Pattern"].Value + "$";
+                        string pat = mat["Pattern"].Value;
+                        List<string> toknom = new();
+                        var stuff = Regex.Matches(pat, @"<(?<Name>[^<>\n]*)>");
+                        foreach (Match thingy in stuff) toknom.Add(thingy.Value);
+                        string rick = "^(?:" + string.Join('|', toknom) + ")$";
 
-                        var thing = new Token { Name = nom, Value = pat, Look = mat["Recurse"].Success };
+                        var thing = new Token { Name = nom, Value = rick, Look = mat["Recurse"].Success };
                         if (MasterMode)
                         {
                             if (mat["Base"].Success)
@@ -4545,7 +4552,7 @@ public static class Coco
                             else
                             {
                                 if (!CurrentTokens.Exists(tok => tok.Name == nom))
-                                    CurrentTokens.Add(new() { Name = nom, Value = pat });
+                                    CurrentTokens.Add(thing);
                                 else throw new Lamentation(0x53);
                             }
                         }

@@ -78,8 +78,7 @@
 		/symbol		[SMCL]	<;>
 		/symbol		[COLN]	<:>
 		/sequence	[QUOT]	<"[^"\n]*">
-		/sequence	[SQUT]	<'[^'\n]'>
-		/sequence	[SQUT]	<'`.'>
+		/sequence	[SQUT]	<'[^'\n]'> <'`.'>
 		/sequence	[INTL]	<[0-9]+>					recurse
 		/sequence	[FPIN]	<[0-9]+\.[0-9]+>			recurse
 		/sequence	[LABL]	<@[A-Za-z][A-Za-z0-9]*>		recurse
