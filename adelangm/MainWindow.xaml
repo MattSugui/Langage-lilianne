@@ -1,0 +1,15 @@
+﻿<Window x:Class="fonder.Adelaide.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:fonder.Adelaide"
+        mc:Ignorable="d"
+        Title="Adelaide Environment" Height="450" Width="800">
+    <Grid>
+        <Label Content="adelaide" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Variable Display" FontWeight="Bold" FontSize="48"/>
+        <Label x:Name="vername" Content="Version name" HorizontalAlignment="Left" Margin="201,47,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Left"/>
+        <Label Content="bonjour" HorizontalAlignment="Left" Margin="10,114,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

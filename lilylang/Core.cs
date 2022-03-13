@@ -4538,7 +4538,7 @@ public static class Coco
                         string pat = mat["Pattern"].Value;
                         List<string> toknom = new();
                         var stuff = Regex.Matches(pat, @"<(?<Name>[^<>\n]*)>");
-                        foreach (Match thingy in stuff) toknom.Add(thingy.Value);
+                        foreach (Match thingy in stuff) toknom.Add(thingy.Groups["Name"].Value);
                         string rick = "^(?:" + string.Join('|', toknom) + ")$";
 
                         var thing = new Token { Name = nom, Value = rick, Look = mat["Recurse"].Success };

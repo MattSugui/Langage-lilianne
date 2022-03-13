@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<!--<AssemblyName>lilylang</AssemblyName>-->
+		<RootNamespace>fonder.Adelaide</RootNamespace>
+		<Deterministic>True</Deterministic>
+		<!-- we don't use auto versions anymore so let's turn back -->
+		<!--<ImplicitUsings>Enable</ImplicitUsings>-->
+
+		<AssemblyTitle>Adelaide Language</AssemblyTitle>
+		<AssemblyVersion>0.0.1.0</AssemblyVersion>
+		<FileVersion>0.0.1.0</FileVersion>
+		<InformationalVersion>Milestone 1 220313-2139</InformationalVersion>
+		<Authors>Matt Sugui</Authors>
+		<Copyright>Created and given TLC, 2022. Released under the GNU Public Licence v3.</Copyright>
+		<!-- 'Lilian' and 'Coco' are characters from the game Animal Crossing, a registered trademark of Nintendo Co Ltd. No infringement is intended, and no profit is made from the production of this product.</Copyright>-->
+		<ProductName>SAdekalaide language developeenvironment</ProductName>
+		<RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="archive\**" />
+		<EmbeddedResource Remove="archive\**" />
+		<None Remove="archive\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="spl\m1.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SplashScreen Include="spl\m1.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </SplashScreen>
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -pre -projectname 'adelangm' -ProjectType 0 -IsRelease $false -Platform 1&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="powershell -command &quot;&amp; '$(SolutionDir)scripts\events.ps1' -IncrementBuild -projectname 'adelangm' -ProjectType 0 -IsRelease $false -Platform 1&quot;" />
+	</Target>
+
+</Project>
