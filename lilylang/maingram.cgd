@@ -172,7 +172,7 @@
 		/sentence   [FurnishFloatExpl]						{ [FRNS] [FLOT] [IDNT] [SMCL] }
 		/sentence   [FurnishDoubleExpl]						{ [FRNS] [DOUB] [IDNT] [SMCL] }
 		/sentence   [FurnishDecimalExpl]					{ [FRNS] [DECM] [IDNT] [SMCL] }
-		/sentence   [FurnishBooleanExpl]					{ [FRNS] [BOOL] [IDNT] [SMCL] }
+		/sentence   [FurnishAdelaideBooleanExpl]			{ [FRNS] [BOOL] [NAME] [SMCL] }
 		/sentence   [FurnishAdelaideByteExpl]				{ [FRNS] [BYTE] [NAME] [SMCL] }
 		/sentence   [FurnishAdelaideSByteExpl]				{ [FRNS] [SBYT] [NAME] [SMCL] }
 		/sentence   [FurnishAdelaideIntegerExpl]			{ [FRNS] [INTG] [NAME] [SMCL] }

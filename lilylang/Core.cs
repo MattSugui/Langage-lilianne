@@ -4477,8 +4477,6 @@ public static class Coco
 
                         GrammarSection = false;
                         GrammarDefined = true;
-
-                        if (basetok is Token or not null) CurrentTokens.Add(basetok); // last thing to be added
                     }
                     else if (Regex.IsMatch(preprocline, @"^tokens$"))
                     {
@@ -4490,6 +4488,9 @@ public static class Coco
                         if (!GrammarSection || !TokensSection) throw new Lamentation(0x47);
                         TokensSection = false;
                         TokensDefined = true;
+
+                        if (basetok is Token or not null) CurrentTokens.Add(basetok); // last thing to be added
+                        basetok = null;
                     }
                     else if (Regex.IsMatch(preprocline, @"^sentences$"))
                     {
@@ -4565,7 +4566,7 @@ public static class Coco
 
                         if (MasterMode)
                             if (!CurrentTokens.Exists(tok => tok.Name == nom))
-                                CurrentTokens.Add(new() { Name = nom, Value = pat });
+                                CurrentTokens.Add(new() { Name = nom, Value = pat, IgnoreOnRefinement = true });
                             else throw new Lamentation(0x53);
                     }
                     else if (Regex.IsMatch(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}$"))
@@ -4577,7 +4578,7 @@ public static class Coco
                         var stuff = Regex.Matches(pat, @"\[(?<Name>[^\[\]\n]*)\](?<ValueLoc>!)?");
                         for (int i = 0; i < stuff.Count; i++)
                         {
-                            if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value) || basetok.Name == stuff[i].Groups["Name"].Value) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
+                            if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value)) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
                             if (MasterMode && stuff[i].Groups["ValueLoc"].Success) throw new Lamentation(0x54, stuff[i].Groups["Name"].Value);
                             toknom.Add(stuff[i].Value);
                         }
