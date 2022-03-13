@@ -4577,7 +4577,7 @@ public static class Coco
                         var stuff = Regex.Matches(pat, @"\[(?<Name>[^\[\]\n]*)\](?<ValueLoc>!)?");
                         for (int i = 0; i < stuff.Count; i++)
                         {
-                            if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value)) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
+                            if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value) || basetok.Name == stuff[i].Groups["Name"].Value) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
                             if (MasterMode && stuff[i].Groups["ValueLoc"].Success) throw new Lamentation(0x54, stuff[i].Groups["Name"].Value);
                             toknom.Add(stuff[i].Value);
                         }
