@@ -4457,18 +4457,18 @@ public static class Coco
                     }
 #endregion
 #region Grammar definition macros
-                    else if (Regex.IsMatch(preprocline, @"grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?"))
+                    else if (Regex.IsMatch(preprocline, @"^grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?$"))
                     {
                         if (GrammarSection) throw new Lamentation(0x45);
                         if (GrammarDefined) throw new Lamentation(0x46);
 
                         GrammarSection = true;
 
-                        var mat = Regex.Match(preprocline, @"grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?").Groups;
+                        var mat = Regex.Match(preprocline, @"^grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?$").Groups;
                         if (mat["GrammarSystem"].Value == "master") MasterMode = true;
 
                     }
-                    else if (Regex.IsMatch(preprocline, @"endgrammar"))
+                    else if (Regex.IsMatch(preprocline, @"^endgrammar$"))
                     {
                         if (!GrammarSection) throw new Lamentation(0x47);
 
@@ -4480,35 +4480,35 @@ public static class Coco
 
                         if (basetok is Token or not null) CurrentTokens.Add(basetok); // last thing to be added
                     }
-                    else if (Regex.IsMatch(preprocline, @"tokens"))
+                    else if (Regex.IsMatch(preprocline, @"^tokens$"))
                     {
                         if (!GrammarSection || TokensDefined || TokensSection) throw new Lamentation(0x47);
                         TokensSection = true;
                     }
-                    else if (Regex.IsMatch(preprocline, @"endtokens"))
+                    else if (Regex.IsMatch(preprocline, @"^endtokens$"))
                     {
                         if (!GrammarSection || !TokensSection) throw new Lamentation(0x47);
                         TokensSection = false;
                         TokensDefined = true;
                     }
-                    else if (Regex.IsMatch(preprocline, @"sentences"))
+                    else if (Regex.IsMatch(preprocline, @"^sentences$"))
                     {
                         if (!GrammarSection || SentencesDefined || SentencesSection) throw new Lamentation(0x47);
                         if (!TokensDefined || CurrentTokens.Count == 0) throw new Lamentation(0x56);
 
                         SentencesSection = true;
                     }
-                    else if (Regex.IsMatch(preprocline, @"endsentences"))
+                    else if (Regex.IsMatch(preprocline, @"^endsentences$"))
                     {
                         if (!GrammarSection || !SentencesSection) throw new Lamentation(0x47);
                         SentencesSection = false;
                         SentencesDefined = true;
                     }
-                    else if (Regex.IsMatch(preprocline, @"keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>"))
+                    else if (Regex.IsMatch(preprocline, @"^keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>$"))
                     {
                         if (!TokensSection) throw new Lamentation(0x47);
 
-                        var mat = Regex.Match(preprocline, @"keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>").Groups;
+                        var mat = Regex.Match(preprocline, @"^keyword\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.*)>$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = "^" + mat["Pattern"].Value + "$";
 
@@ -4517,11 +4517,11 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>"))
+                    else if (Regex.IsMatch(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>$"))
                     {
                         if (!TokensSection) throw new Lamentation(0x47);
 
-                        var mat = Regex.Match(preprocline, @"symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>").Groups;
+                        var mat = Regex.Match(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = "^" + mat["Pattern"].Value + "$";
 
@@ -4530,9 +4530,9 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?"))
+                    else if (Regex.IsMatch(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?$"))
                     {
-                        var mat = Regex.Match(preprocline, @"sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?").Groups;
+                        var mat = Regex.Match(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = mat["Pattern"].Value;
                         List<string> toknom = new();
@@ -4557,9 +4557,9 @@ public static class Coco
                             }
                         }
                     }
-                    else if (Regex.IsMatch(preprocline, @"ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?"))
+                    else if (Regex.IsMatch(preprocline, @"^ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?$"))
                     {
-                        var mat = Regex.Match(preprocline, @"ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?").Groups;
+                        var mat = Regex.Match(preprocline, @"^ignore\s+<(?<Pattern>.*)>(?:\s+(?<Recurse>recurse))?$").Groups;
                         string nom = $"0x{new Random().NextInt64():XXXXXXXX}";
                         string pat = "^" + mat["Pattern"].Value + "$";
 
@@ -4568,9 +4568,9 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}"))
+                    else if (Regex.IsMatch(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}$"))
                     {
-                        var mat = Regex.Match(preprocline, @"sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}").Groups;
+                        var mat = Regex.Match(preprocline, @"^sentence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+{\s*(?<Pattern>(?:\[[^\[\]\n]*\]!?\s*)+)\s*}$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = mat["Pattern"].Value;
                         List<string> toknom = new();
