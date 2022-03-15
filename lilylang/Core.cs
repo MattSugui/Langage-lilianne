@@ -852,6 +852,11 @@ public static class Interpreter
             /// If true, this token will end the scanning for that instruction and moves onto another.
             /// </summary>
             public bool Terminate;
+
+            /// <summary>
+            /// If true, this token will trigger token recognition.
+            /// </summary>
+            public bool Symbol;
         }
 
         /// <summary>
@@ -1367,7 +1372,14 @@ public static class Interpreter
         {
             CurrentColumn++;
 
-            if (char.IsWhiteSpace(source[i]))
+            Token check = null; TokenFruit hold = null;
+
+            if (CurrentTokens.Locate(thing => Regex.IsMatch(CurrentIntToken.ToString() + source[i].ToString(), thing.Value) && thing.Symbol, out check) ||
+                (
+                    CurrentTokens.Locate(thing => Regex.IsMatch(CurrentIntToken.ToString(), thing.Value), out check)
+                    && CurrentTokens.Locate(thing => Regex.IsMatch(source[i].ToString(), thing.Value) && thing.Symbol, out check)
+                )    
+            )
             {
                 if (source[i] == '\n')
                 {
@@ -1375,315 +1387,329 @@ public static class Interpreter
                     CurrentColumn = 0;
                 }
 
+                if (check?.IgnoreOnRefinement == true && CurrentIntToken.Length == 0) continue;
+
+                if (check?.Symbol == true && check?.IgnoreOnRefinement == false)
+                {
+                    hold = new() { AssociatedToken = check, Value = source[i].ToString() };
+                    if (CurrentIntToken.Length == 0) goto MatchEvaluator;
+                }
+
                 if (CurrentTokens.Locate(thing => Regex.IsMatch(CurrentIntToken.ToString(), thing.Value), out Token tok))
                 {
                     CurrentIntSentence.Add(new() { AssociatedToken = tok, Value = CurrentIntToken.ToString() });
                     CurrentIntToken.Clear();
-
-                    string[] lefthand = (from thing in CurrentIntSentence select thing.AssociatedToken.Name).ToArray();
-                    if (CurrentSentenceStructures.Locate(thing => lefthand.SequenceEqual(thing.TokenStruct), out SentenceStructure sents))
-                    {
-                        CurrentSentenceFruit = new() { AssociatedSentence = sents, Value = (from stuf in CurrentIntSentence select stuf.Value).ToArray() };
-                        switch (CurrentSentenceFruit.Value[0])
-                        {
-                            case "think":
-                                CurrentAssumedAction = new();
-                                break;
-                            case "push":
-                                dynamic val;
-                                if (CurrentSentenceFruit.Value[1] == "boolean" && bool.TryParse(CurrentSentenceFruit.Value[2], out bool valF)) val = valF;
-                                else if (CurrentSentenceFruit.Value[1] == "sbyte" && sbyte.TryParse(CurrentSentenceFruit.Value[2], out sbyte valG)) val = valG;
-                                else if (CurrentSentenceFruit.Value[1] == "byte" && byte.TryParse(CurrentSentenceFruit.Value[2], out byte valH)) val = valH;
-                                else if (CurrentSentenceFruit.Value[1] == "short" && short.TryParse(CurrentSentenceFruit.Value[2], out short valI)) val = valI;
-                                else if (CurrentSentenceFruit.Value[1] == "ushort" && ushort.TryParse(CurrentSentenceFruit.Value[2], out ushort valJ)) val = valJ;
-                                else if (CurrentSentenceFruit.Value[1] == "integer" && int.TryParse(CurrentSentenceFruit.Value[2], out int valK)) val = valK;
-                                else if (CurrentSentenceFruit.Value[1] == "uinteger" && uint.TryParse(CurrentSentenceFruit.Value[2], out uint valL)) val = valL;
-                                else if (CurrentSentenceFruit.Value[1] == "long" && long.TryParse(CurrentSentenceFruit.Value[2], out long valM)) val = valM;
-                                else if (CurrentSentenceFruit.Value[1] == "ulong" && ulong.TryParse(CurrentSentenceFruit.Value[2], out ulong valN)) val = valN;
-                                else if (CurrentSentenceFruit.Value[1] == "half" && Half.TryParse(CurrentSentenceFruit.Value[2], out Half valO)) val = valO;
-                                else if (CurrentSentenceFruit.Value[1] == "float" && float.TryParse(CurrentSentenceFruit.Value[2], out float valP)) val = valP;
-                                else if (CurrentSentenceFruit.Value[1] == "double" && double.TryParse(CurrentSentenceFruit.Value[2], out double valQ)) val = valQ;
-                                else if (CurrentSentenceFruit.Value[1] == "quadruple" && decimal.TryParse(CurrentSentenceFruit.Value[2], out decimal valR)) val = valR;
-                                else if (CurrentSentenceFruit.Value[1] == "character" && char.TryParse(CurrentSentenceFruit.Value[2], out char valS)) val = valS;
-                                else if (CurrentSentenceFruit.Value[1] == "string" && CurrentSentenceFruit.Value[2].Contains('"')) val = CurrentSentenceFruit.Value[2].Trim('"');
-                                else if (bool.TryParse(CurrentSentenceFruit.Value[1], out bool val1)) val = val1;
-                                else if (sbyte.TryParse(CurrentSentenceFruit.Value[1], out sbyte val2)) val = val2;
-                                else if (byte.TryParse(CurrentSentenceFruit.Value[1], out byte val3)) val = val3;
-                                else if (short.TryParse(CurrentSentenceFruit.Value[1], out short val4)) val = val4;
-                                else if (ushort.TryParse(CurrentSentenceFruit.Value[1], out ushort val5)) val = val5;
-                                else if (int.TryParse(CurrentSentenceFruit.Value[1], out int val6)) val = val6;
-                                else if (uint.TryParse(CurrentSentenceFruit.Value[1], out uint val7)) val = val7;
-                                else if (long.TryParse(CurrentSentenceFruit.Value[1], out long val8)) val = val8;
-                                else if (ulong.TryParse(CurrentSentenceFruit.Value[1], out ulong val9)) val = val9;
-                                else if (Half.TryParse(CurrentSentenceFruit.Value[1], out Half valA)) val = valA;
-                                else if (float.TryParse(CurrentSentenceFruit.Value[1], out float valB)) val = valB;
-                                else if (double.TryParse(CurrentSentenceFruit.Value[1], out double valC)) val = valC;
-                                else if (decimal.TryParse(CurrentSentenceFruit.Value[1], out decimal valD)) val = valD;
-                                else if (char.TryParse(CurrentSentenceFruit.Value[1], out char valE)) val = valE;
-                                else if (CurrentSentenceFruit.Value[1].Contains('"')) val = CurrentSentenceFruit.Value[1].Trim('"');
-                                else val = null;
-                                CurrentAssumedAction = new(FELActionType.push, val);
-                                break;
-                            case "print":
-                                CurrentAssumedAction = new(FELActionType.print);
-                                break;
-                            case "pop":
-                                CurrentAssumedAction = new(FELActionType.pop);
-                                break;
-                            case "add":
-                                CurrentAssumedAction = new(FELActionType.add);
-                                break;
-                            case "subtract":
-                                CurrentAssumedAction = new(FELActionType.sub);
-                                break;
-                            case "multiply":
-                                CurrentAssumedAction = new(FELActionType.mul);
-                                break;
-                            case "divide":
-                                CurrentAssumedAction = new(FELActionType.div);
-                                break;
-                            case "remainder":
-                                CurrentAssumedAction = new(FELActionType.mod);
-                                break;
-                            case "lshift":
-                                CurrentAssumedAction = new(FELActionType.lst);
-                                break;
-                            case "rshift":
-                                CurrentAssumedAction = new(FELActionType.rst);
-                                break;
-                            case "and":
-                                CurrentAssumedAction = new(FELActionType.and);
-                                break;
-                            case "or":
-                                CurrentAssumedAction = new(FELActionType.or);
-                                break;
-                            case "xor":
-                                CurrentAssumedAction = new(FELActionType.xor);
-                                break;
-                            case "store":
-                                CurrentAssumedAction = new(
-                                    FELActionType.store,
-                                    CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
-                                    (CurrentSentenceFruit.Value[1].StartsWith('&') ?
-                                        (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
-                                        throw new Lamentation()
-                                    ));
-                                break;
-                            case "load":
-                                CurrentAssumedAction = new(
-                                    FELActionType.load,
-                                    CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
-                                    (CurrentSentenceFruit.Value[1].StartsWith('&') ?
-                                        (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
-                                        throw new Lamentation()
-                                    )); break;
-                            case "remove":
-                                CurrentAssumedAction = new(
-                                    FELActionType.remove,
-                                    CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
-                                    (CurrentSentenceFruit.Value[1].StartsWith('&') ?
-                                        (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int ded) ? ded : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
-                                        throw new Lamentation()
-                                    )); break;
-                            case "beq":
-                                CurrentAssumedAction = new(
-                                    FELActionType.beq,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z1) ? z1 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bne":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bne,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z2) ? z2 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bgt":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bgt,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z3) ? z3 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bge":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bge,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z4) ? z4 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "blt":
-                                CurrentAssumedAction = new(
-                                    FELActionType.blt,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z5) ? z5 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "ble":
-                                CurrentAssumedAction = new(
-                                    FELActionType.beq,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z6) ? z6 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "btr":
-                                CurrentAssumedAction = new(
-                                    FELActionType.btr,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z7) ? z7 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bfl":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bfl,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z8) ? z8 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bsa":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bsa,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int z9) ? z9 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "bso":
-                                CurrentAssumedAction = new(
-                                    FELActionType.bso,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int zA) ? zA : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "goto":
-                                CurrentAssumedAction = new(
-                                    FELActionType.@goto,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int zB) ? zB : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "end":
-                                CurrentAssumedAction = new(FELActionType.end); break;
-                            case "take":
-                                CurrentAssumedAction = new(FELActionType.take); break;
-                            case "ask":
-                                CurrentAssumedAction = new(FELActionType.ask); break;
-                            case "narrow":
-                                CurrentAssumedAction = new(FELActionType.narrow); break;
-                            case "widen":
-                                CurrentAssumedAction = new(FELActionType.widen); break;
-                            case "realise":
-                                CurrentAssumedAction = new(FELActionType.realise); break;
-                            case "catch":
-                                CurrentAssumedAction = new(
-                                    FELActionType.@catch,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int zC) ? zC : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "call":
-                                if (CurrentSentenceFruit.Value[1].StartsWith('@'))
-                                    CurrentAssumedAction = new(
-                                        FELActionType.gotolabel,
-                                        CurrentSentenceFruit.Value[1].TrimStart('@')
-                                        );
-                                else CurrentAssumedAction = new(
-                                    FELActionType.@call,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int zD) ? zD : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "return":
-                                CurrentAssumedAction = new(FELActionType.@return); break;
-                            case "throw":
-                                dynamic exval = null;
-                                if (CurrentSentenceFruit.Value.Length == 2)
-                                {
-                                    if (int.TryParse(CurrentSentenceFruit.Value[1], out int exval6)) exval = exval6;
-                                    else if (CurrentSentenceFruit.Value[1].Contains('"')) exval = CurrentSentenceFruit.Value[1].Trim('"');
-                                }
-                                else exval = null;
-                                CurrentAssumedAction = new(exval is not null ? FELActionType.@throwc : FELActionType.@throw, exval); break;
-                            case "title":
-                                CurrentAssumedAction = new(FELActionType.settitle, CurrentSentenceFruit.Value[1].Trim('"')); break;
-                            case "pause":
-                                CurrentAssumedAction = new(
-                                    FELActionType.pause,
-                                    int.TryParse(CurrentSentenceFruit.Value[1], out int zE) ? zE : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
-                                    ); break;
-                            case "wait":
-                                CurrentAssumedAction = new(FELActionType.wait); break;
-                            case "define":
-                                CurrentAssumedAction = new(
-                                    FELActionType.define,
-                                    CurrentSentenceFruit.Value[1].TrimStart('&')
-                                    ); break;
-                            case "furnish":
-                                string proposedType;
-                                if (CurrentSentenceFruit.Value[1] == "boolean"
-                                    || CurrentSentenceFruit.Value[1] == "sbyte"
-                                    || CurrentSentenceFruit.Value[1] == "byte"
-                                    || CurrentSentenceFruit.Value[1] == "short"
-                                    || CurrentSentenceFruit.Value[1] == "ushort"
-                                    || CurrentSentenceFruit.Value[1] == "integer"
-                                    || CurrentSentenceFruit.Value[1] == "uinteger"
-                                    || CurrentSentenceFruit.Value[1] == "long"
-                                    || CurrentSentenceFruit.Value[1] == "ulong"
-                                    || CurrentSentenceFruit.Value[1] == "half"
-                                    || CurrentSentenceFruit.Value[1] == "float"
-                                    || CurrentSentenceFruit.Value[1] == "double"
-                                    || CurrentSentenceFruit.Value[1] == "quadruple"
-                                    || CurrentSentenceFruit.Value[1] == "character"
-                                    || CurrentSentenceFruit.Value[1] == "string") proposedType = CurrentSentenceFruit.Value[1];
-                                else throw new Lamentation("Custom types are not yet supported for properties at this time.");
-                                CurrentAssumedAction = new(
-                                    FELActionType.furnish,
-                                    new object[]
-                                    {
-                            proposedType,
-                            CurrentSentenceFruit.Value[2].TrimStart('#')
-                                    }
-                                    ); break;
-                            case "finalise":
-                                CurrentAssumedAction = new(FELActionType.finalise); break;
-                            case "shelve":
-                                CurrentAssumedAction = new(FELActionType.shelve); break;
-                            case "create":
-                                CurrentAssumedAction = new(
-                                    FELActionType.create,
-                                    CurrentSentenceFruit.Value[1].TrimStart('&')
-                                    ); break;
-                            case "delete":
-                                CurrentAssumedAction = new(
-                                    FELActionType.delete,
-                                    CurrentSentenceFruit.Value[1].TrimStart('*')
-                                    ); break;
-                            case "present":
-                                CurrentAssumedAction = new(
-                                    FELActionType.present,
-                                    CurrentSentenceFruit.Value[1].TrimStart('*')
-                                    ); break;
-                            case "get":
-                                CurrentAssumedAction = new(
-                                    FELActionType.@get,
-                                    new object[]
-                                    {
-                            CurrentSentenceFruit.Value[1] == "!"? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*'),
-                            CurrentSentenceFruit.Value[2].TrimStart('#')
-                                    }
-                                    ); break;
-                            case "set":
-                                CurrentAssumedAction = new(
-                                    FELActionType.@set,
-                                    new object[]
-                                    {
-                            CurrentSentenceFruit.Value[1] == "!"? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*'),
-                            CurrentSentenceFruit.Value[2].TrimStart('#')
-                                    }
-                                    ); break;
-                            case "save":
-                                break;
-                                CurrentAssumedAction = new(
-                                    FELActionType.save,
-                                    CurrentSentenceFruit.Value[1].TrimStart('*')
-                                    );
-                            case "put":
-                                object ident = CurrentSentenceFruit.Value[1] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*');
-                                object newname = CurrentSentenceFruit.Value[2] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[2].TrimStart('#');
-                                CurrentAssumedAction = new(
-                                    FELActionType.put,
-                                    new object[] { ident, newname }
-                                    ); break;
-                            default:
-                                if (CurrentSentenceFruit.Value[0].StartsWith('@'))
-                                    CurrentAssumedAction = new(
-                                        FELActionType.label,
-                                        CurrentSentenceFruit.Value[0].TrimStart('@')
-                                        );
-                                else
-                                    throw new Lamentation(0x16, string.Join(' ', CurrentSentenceFruit.Value));
-                                break;
-                        }
-                        CurrentIntSentence.Clear();
-
-                        CurrentEffects.Add(CurrentAssumedAction);
-                        CurrentAssumedAction = default;
-                    }
+                    if (hold is not null) CurrentIntSentence.Add(hold);
+                    goto MatchEvaluator;
                 }
+
+                MatchEvaluator:
+                string[] lefthand = (from thing in CurrentIntSentence select thing.AssociatedToken.Name).ToArray();
+                if (CurrentSentenceStructures.Locate(thing => lefthand.SequenceEqual(thing.TokenStruct), out SentenceStructure sents))
+                {
+                    CurrentSentenceFruit = new() { AssociatedSentence = sents, Value = (from stuf in CurrentIntSentence select stuf.Value).ToArray() };
+                    switch (CurrentSentenceFruit.Value[0])
+                    {
+                        case "think":
+                            CurrentAssumedAction = new();
+                            break;
+                        case "push":
+                            dynamic val;
+                            if (CurrentSentenceFruit.Value[1] == "boolean" && bool.TryParse(CurrentSentenceFruit.Value[2], out bool valF)) val = valF;
+                            else if (CurrentSentenceFruit.Value[1] == "sbyte" && sbyte.TryParse(CurrentSentenceFruit.Value[2], out sbyte valG)) val = valG;
+                            else if (CurrentSentenceFruit.Value[1] == "byte" && byte.TryParse(CurrentSentenceFruit.Value[2], out byte valH)) val = valH;
+                            else if (CurrentSentenceFruit.Value[1] == "short" && short.TryParse(CurrentSentenceFruit.Value[2], out short valI)) val = valI;
+                            else if (CurrentSentenceFruit.Value[1] == "ushort" && ushort.TryParse(CurrentSentenceFruit.Value[2], out ushort valJ)) val = valJ;
+                            else if (CurrentSentenceFruit.Value[1] == "integer" && int.TryParse(CurrentSentenceFruit.Value[2], out int valK)) val = valK;
+                            else if (CurrentSentenceFruit.Value[1] == "uinteger" && uint.TryParse(CurrentSentenceFruit.Value[2], out uint valL)) val = valL;
+                            else if (CurrentSentenceFruit.Value[1] == "long" && long.TryParse(CurrentSentenceFruit.Value[2], out long valM)) val = valM;
+                            else if (CurrentSentenceFruit.Value[1] == "ulong" && ulong.TryParse(CurrentSentenceFruit.Value[2], out ulong valN)) val = valN;
+                            else if (CurrentSentenceFruit.Value[1] == "half" && Half.TryParse(CurrentSentenceFruit.Value[2], out Half valO)) val = valO;
+                            else if (CurrentSentenceFruit.Value[1] == "float" && float.TryParse(CurrentSentenceFruit.Value[2], out float valP)) val = valP;
+                            else if (CurrentSentenceFruit.Value[1] == "double" && double.TryParse(CurrentSentenceFruit.Value[2], out double valQ)) val = valQ;
+                            else if (CurrentSentenceFruit.Value[1] == "quadruple" && decimal.TryParse(CurrentSentenceFruit.Value[2], out decimal valR)) val = valR;
+                            else if (CurrentSentenceFruit.Value[1] == "character" && char.TryParse(CurrentSentenceFruit.Value[2], out char valS)) val = valS;
+                            else if (CurrentSentenceFruit.Value[1] == "string" && CurrentSentenceFruit.Value[2].Contains('"')) val = CurrentSentenceFruit.Value[2].Trim('"');
+                            else if (bool.TryParse(CurrentSentenceFruit.Value[1], out bool val1)) val = val1;
+                            else if (sbyte.TryParse(CurrentSentenceFruit.Value[1], out sbyte val2)) val = val2;
+                            else if (byte.TryParse(CurrentSentenceFruit.Value[1], out byte val3)) val = val3;
+                            else if (short.TryParse(CurrentSentenceFruit.Value[1], out short val4)) val = val4;
+                            else if (ushort.TryParse(CurrentSentenceFruit.Value[1], out ushort val5)) val = val5;
+                            else if (int.TryParse(CurrentSentenceFruit.Value[1], out int val6)) val = val6;
+                            else if (uint.TryParse(CurrentSentenceFruit.Value[1], out uint val7)) val = val7;
+                            else if (long.TryParse(CurrentSentenceFruit.Value[1], out long val8)) val = val8;
+                            else if (ulong.TryParse(CurrentSentenceFruit.Value[1], out ulong val9)) val = val9;
+                            else if (Half.TryParse(CurrentSentenceFruit.Value[1], out Half valA)) val = valA;
+                            else if (float.TryParse(CurrentSentenceFruit.Value[1], out float valB)) val = valB;
+                            else if (double.TryParse(CurrentSentenceFruit.Value[1], out double valC)) val = valC;
+                            else if (decimal.TryParse(CurrentSentenceFruit.Value[1], out decimal valD)) val = valD;
+                            else if (char.TryParse(CurrentSentenceFruit.Value[1], out char valE)) val = valE;
+                            else if (CurrentSentenceFruit.Value[1].Contains('"')) val = CurrentSentenceFruit.Value[1].Trim('"');
+                            else val = null;
+                            CurrentAssumedAction = new(FELActionType.push, val);
+                            break;
+                        case "print":
+                            CurrentAssumedAction = new(FELActionType.print);
+                            break;
+                        case "pop":
+                            CurrentAssumedAction = new(FELActionType.pop);
+                            break;
+                        case "add":
+                            CurrentAssumedAction = new(FELActionType.add);
+                            break;
+                        case "subtract":
+                            CurrentAssumedAction = new(FELActionType.sub);
+                            break;
+                        case "multiply":
+                            CurrentAssumedAction = new(FELActionType.mul);
+                            break;
+                        case "divide":
+                            CurrentAssumedAction = new(FELActionType.div);
+                            break;
+                        case "remainder":
+                            CurrentAssumedAction = new(FELActionType.mod);
+                            break;
+                        case "lshift":
+                            CurrentAssumedAction = new(FELActionType.lst);
+                            break;
+                        case "rshift":
+                            CurrentAssumedAction = new(FELActionType.rst);
+                            break;
+                        case "and":
+                            CurrentAssumedAction = new(FELActionType.and);
+                            break;
+                        case "or":
+                            CurrentAssumedAction = new(FELActionType.or);
+                            break;
+                        case "xor":
+                            CurrentAssumedAction = new(FELActionType.xor);
+                            break;
+                        case "store":
+                            CurrentAssumedAction = new(
+                                FELActionType.store,
+                                CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
+                                (CurrentSentenceFruit.Value[1].StartsWith('&') ?
+                                    (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
+                                    throw new Lamentation()
+                                ));
+                            break;
+                        case "load":
+                            CurrentAssumedAction = new(
+                                FELActionType.load,
+                                CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
+                                (CurrentSentenceFruit.Value[1].StartsWith('&') ?
+                                    (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
+                                    throw new Lamentation()
+                                )); break;
+                        case "remove":
+                            CurrentAssumedAction = new(
+                                FELActionType.remove,
+                                CurrentSentenceFruit.Value[1].StartsWith('#') ? CurrentSentenceFruit.Value[1].TrimStart('#') :
+                                (CurrentSentenceFruit.Value[1].StartsWith('&') ?
+                                    (int.TryParse(CurrentSentenceFruit.Value[1].TrimStart('&'), out int ded) ? ded : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])) :
+                                    throw new Lamentation()
+                                )); break;
+                        case "beq":
+                            CurrentAssumedAction = new(
+                                FELActionType.beq,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z1) ? z1 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bne":
+                            CurrentAssumedAction = new(
+                                FELActionType.bne,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z2) ? z2 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bgt":
+                            CurrentAssumedAction = new(
+                                FELActionType.bgt,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z3) ? z3 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bge":
+                            CurrentAssumedAction = new(
+                                FELActionType.bge,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z4) ? z4 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "blt":
+                            CurrentAssumedAction = new(
+                                FELActionType.blt,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z5) ? z5 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "ble":
+                            CurrentAssumedAction = new(
+                                FELActionType.beq,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z6) ? z6 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "btr":
+                            CurrentAssumedAction = new(
+                                FELActionType.btr,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z7) ? z7 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bfl":
+                            CurrentAssumedAction = new(
+                                FELActionType.bfl,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z8) ? z8 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bsa":
+                            CurrentAssumedAction = new(
+                                FELActionType.bsa,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int z9) ? z9 : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "bso":
+                            CurrentAssumedAction = new(
+                                FELActionType.bso,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int zA) ? zA : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "goto":
+                            CurrentAssumedAction = new(
+                                FELActionType.@goto,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int zB) ? zB : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "end":
+                            CurrentAssumedAction = new(FELActionType.end); break;
+                        case "take":
+                            CurrentAssumedAction = new(FELActionType.take); break;
+                        case "ask":
+                            CurrentAssumedAction = new(FELActionType.ask); break;
+                        case "narrow":
+                            CurrentAssumedAction = new(FELActionType.narrow); break;
+                        case "widen":
+                            CurrentAssumedAction = new(FELActionType.widen); break;
+                        case "realise":
+                            CurrentAssumedAction = new(FELActionType.realise); break;
+                        case "catch":
+                            CurrentAssumedAction = new(
+                                FELActionType.@catch,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int zC) ? zC : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "call":
+                            if (CurrentSentenceFruit.Value[1].StartsWith('@'))
+                                CurrentAssumedAction = new(
+                                    FELActionType.gotolabel,
+                                    CurrentSentenceFruit.Value[1].TrimStart('@')
+                                    );
+                            else CurrentAssumedAction = new(
+                                FELActionType.@call,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int zD) ? zD : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "return":
+                            CurrentAssumedAction = new(FELActionType.@return); break;
+                        case "throw":
+                            dynamic exval = null;
+                            if (CurrentSentenceFruit.Value.Length == 2)
+                            {
+                                if (int.TryParse(CurrentSentenceFruit.Value[1], out int exval6)) exval = exval6;
+                                else if (CurrentSentenceFruit.Value[1].Contains('"')) exval = CurrentSentenceFruit.Value[1].Trim('"');
+                            }
+                            else exval = null;
+                            CurrentAssumedAction = new(exval is not null ? FELActionType.@throwc : FELActionType.@throw, exval); break;
+                        case "title":
+                            CurrentAssumedAction = new(FELActionType.settitle, CurrentSentenceFruit.Value[1].Trim('"')); break;
+                        case "pause":
+                            CurrentAssumedAction = new(
+                                FELActionType.pause,
+                                int.TryParse(CurrentSentenceFruit.Value[1], out int zE) ? zE : throw new Lamentation(0x21, CurrentSentenceFruit.Value[1])
+                                ); break;
+                        case "wait":
+                            CurrentAssumedAction = new(FELActionType.wait); break;
+                        case "define":
+                            CurrentAssumedAction = new(
+                                FELActionType.define,
+                                CurrentSentenceFruit.Value[1].TrimStart('&')
+                                ); break;
+                        case "furnish":
+                            string proposedType;
+                            if (CurrentSentenceFruit.Value[1] == "boolean"
+                                || CurrentSentenceFruit.Value[1] == "sbyte"
+                                || CurrentSentenceFruit.Value[1] == "byte"
+                                || CurrentSentenceFruit.Value[1] == "short"
+                                || CurrentSentenceFruit.Value[1] == "ushort"
+                                || CurrentSentenceFruit.Value[1] == "integer"
+                                || CurrentSentenceFruit.Value[1] == "uinteger"
+                                || CurrentSentenceFruit.Value[1] == "long"
+                                || CurrentSentenceFruit.Value[1] == "ulong"
+                                || CurrentSentenceFruit.Value[1] == "half"
+                                || CurrentSentenceFruit.Value[1] == "float"
+                                || CurrentSentenceFruit.Value[1] == "double"
+                                || CurrentSentenceFruit.Value[1] == "quadruple"
+                                || CurrentSentenceFruit.Value[1] == "character"
+                                || CurrentSentenceFruit.Value[1] == "string") proposedType = CurrentSentenceFruit.Value[1];
+                            else throw new Lamentation("Custom types are not yet supported for properties at this time.");
+                            CurrentAssumedAction = new(
+                                FELActionType.furnish,
+                                new object[]
+                                {
+                        proposedType,
+                        CurrentSentenceFruit.Value[2].TrimStart('#')
+                                }
+                                ); break;
+                        case "finalise":
+                            CurrentAssumedAction = new(FELActionType.finalise); break;
+                        case "shelve":
+                            CurrentAssumedAction = new(FELActionType.shelve); break;
+                        case "create":
+                            CurrentAssumedAction = new(
+                                FELActionType.create,
+                                CurrentSentenceFruit.Value[1].TrimStart('&')
+                                ); break;
+                        case "delete":
+                            CurrentAssumedAction = new(
+                                FELActionType.delete,
+                                CurrentSentenceFruit.Value[1].TrimStart('*')
+                                ); break;
+                        case "present":
+                            CurrentAssumedAction = new(
+                                FELActionType.present,
+                                CurrentSentenceFruit.Value[1].TrimStart('*')
+                                ); break;
+                        case "get":
+                            CurrentAssumedAction = new(
+                                FELActionType.@get,
+                                new object[]
+                                {
+                        CurrentSentenceFruit.Value[1] == "!"? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*'),
+                        CurrentSentenceFruit.Value[2].TrimStart('#')
+                                }
+                                ); break;
+                        case "set":
+                            CurrentAssumedAction = new(
+                                FELActionType.@set,
+                                new object[]
+                                {
+                        CurrentSentenceFruit.Value[1] == "!"? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*'),
+                        CurrentSentenceFruit.Value[2].TrimStart('#')
+                                }
+                                ); break;
+                        case "save":
+                            break;
+                            CurrentAssumedAction = new(
+                                FELActionType.save,
+                                CurrentSentenceFruit.Value[1].TrimStart('*')
+                                );
+                        case "put":
+                            object ident = CurrentSentenceFruit.Value[1] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*');
+                            object newname = CurrentSentenceFruit.Value[2] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[2].TrimStart('#');
+                            CurrentAssumedAction = new(
+                                FELActionType.put,
+                                new object[] { ident, newname }
+                                ); break;
+                        default:
+                            if (CurrentSentenceFruit.Value[0].StartsWith('@'))
+                                CurrentAssumedAction = new(
+                                    FELActionType.label,
+                                    CurrentSentenceFruit.Value[0].TrimStart('@')
+                                    );
+                            else
+                                throw new Lamentation(0x16, string.Join(' ', CurrentSentenceFruit.Value));
+                            break;
+                    }
+                    CurrentIntSentence.Clear();
+
+                    CurrentEffects.Add(CurrentAssumedAction);
+                    CurrentAssumedAction = default;
+                }
+
+                continue;
+                
             }
 
             CurrentIntToken.Append(source[i]);
@@ -4510,17 +4536,20 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>$"))
+                    else if (Regex.IsMatch(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?$"))
                     {
                         if (!TokensSection) throw new Lamentation(0x47);
 
-                        var mat = Regex.Match(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>.)>$").Groups;
+                        var mat = Regex.Match(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = "^" + mat["Pattern"].Value + "$";
 
                         if (MasterMode)
                             if (!CurrentTokens.Exists(tok => tok.Name == nom))
-                                CurrentTokens.Add(new() { Name = nom, Value = pat });
+                                if (mat["Ignore"].Success)
+                                    CurrentTokens.Add(new() { Name = nom, Symbol = true, Value = pat, IgnoreOnRefinement = true });
+                                else                                      
+                                    CurrentTokens.Add(new() { Name = nom, Symbol = true, Value = pat });
                             else throw new Lamentation(0x53);
                     }
                     else if (Regex.IsMatch(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?$"))
@@ -4561,7 +4590,7 @@ public static class Coco
                         {
                             if (!CurrentTokens.Exists(tok => tok.Name == stuff[i].Groups["Name"].Value)) throw new Lamentation(0x53, stuff[i].Groups["Name"].Value);
                             if (MasterMode && stuff[i].Groups["ValueLoc"].Success) throw new Lamentation(0x54, stuff[i].Groups["Name"].Value);
-                            toknom.Add(stuff[i].Value);
+                            toknom.Add(stuff[i].Groups["Name"].Value);
                         }
 
                         if (MasterMode)
@@ -4970,7 +4999,7 @@ public static class Extensions
     /// Returns <paramref name="obj"/> that is found in the list if true, otherwise, the <see langword="default"/> value.</returns>
     public static bool Locate<T>(this List<T> list, Predicate<T> match, out T obj)
     {
-        if (list.Count == 0) { obj = default; return false; }
+        if (list.Count == 0 || list is null) { obj = default; return false; }
 
         if (list.Exists(match)) { obj = list.Find(match); return true; } else { obj = default; return false; }
     }
