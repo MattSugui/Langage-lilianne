@@ -909,11 +909,92 @@ namespace fonder.Lilian.New.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Syntax error. The compiler cannot resolve the current sequence and has plunged into parsing runaway. (from line {0} column {1} onwards).
+        /// </summary>
+        internal static string Lamentation84 {
+            get {
+                return ResourceManager.GetString("Lamentation84", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Syntax error. A definition has never been terminated..
+        /// </summary>
+        internal static string Lamentation85 {
+            get {
+                return ResourceManager.GetString("Lamentation85", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This type has nothing in it..
+        /// </summary>
+        internal static string Lamentation86 {
+            get {
+                return ResourceManager.GetString("Lamentation86", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This type does not contain the definition for &apos;{0}&apos;..
+        /// </summary>
+        internal static string Lamentation87 {
+            get {
+                return ResourceManager.GetString("Lamentation87", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cannot convert primitive &apos;{0}&apos; into primitive &apos;{1}&apos;..
+        /// </summary>
+        internal static string Lamentation88 {
+            get {
+                return ResourceManager.GetString("Lamentation88", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cannot convert composite/object type &apos;{0}&apos; into primitive &apos;{1}&apos;..
+        /// </summary>
+        internal static string Lamentation89 {
+            get {
+                return ResourceManager.GetString("Lamentation89", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Syntax error. The token &apos;{0}&apos; cannot exist in its current position of the {1} sentence..
         /// </summary>
         internal static string Lamentation9 {
             get {
                 return ResourceManager.GetString("Lamentation9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cannot initialise this static field with nothing in it by default..
+        /// </summary>
+        internal static string Lamentation90 {
+            get {
+                return ResourceManager.GetString("Lamentation90", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à An abstract field cannot exist..
+        /// </summary>
+        internal static string Lamentation91 {
+            get {
+                return ResourceManager.GetString("Lamentation91", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This field cannot be written to as it is constant..
+        /// </summary>
+        internal static string Lamentation92 {
+            get {
+                return ResourceManager.GetString("Lamentation92", resourceCulture);
             }
         }
         

@@ -1,7 +1,7 @@
 @main:
 	push				"Hello subroutines!";
 	print;
-	poop;
+	pop;
 
 	take;
 	store				#lol;

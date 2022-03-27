@@ -418,8 +418,35 @@ Now press any key to exit and relaunch this compiler with these apples!</value>
   <data name="Lamentation83" xml:space="preserve">
     <value>The intermediate representation lexicon is absent. Get one online or reinstall Lilian.</value>
   </data>
+  <data name="Lamentation84" xml:space="preserve">
+    <value>Syntax error. The compiler cannot resolve the current sequence and has plunged into parsing runaway. (from line {0} column {1} onwards)</value>
+  </data>
+  <data name="Lamentation85" xml:space="preserve">
+    <value>Syntax error. A definition has never been terminated.</value>
+  </data>
+  <data name="Lamentation86" xml:space="preserve">
+    <value>This type has nothing in it.</value>
+  </data>
+  <data name="Lamentation87" xml:space="preserve">
+    <value>This type does not contain the definition for '{0}'.</value>
+  </data>
+  <data name="Lamentation88" xml:space="preserve">
+    <value>Cannot convert primitive '{0}' into primitive '{1}'.</value>
+  </data>
+  <data name="Lamentation89" xml:space="preserve">
+    <value>Cannot convert composite/object type '{0}' into primitive '{1}'.</value>
+  </data>
   <data name="Lamentation9" xml:space="preserve">
     <value>Syntax error. The token '{0}' cannot exist in its current position of the {1} sentence.</value>
+  </data>
+  <data name="Lamentation90" xml:space="preserve">
+    <value>Cannot initialise this static field with nothing in it by default.</value>
+  </data>
+  <data name="Lamentation91" xml:space="preserve">
+    <value>An abstract field cannot exist.</value>
+  </data>
+  <data name="Lamentation92" xml:space="preserve">
+    <value>This field cannot be written to as it is constant.</value>
   </data>
   <data name="LinkingStatus" xml:space="preserve">
     <value>Linking named references...</value>

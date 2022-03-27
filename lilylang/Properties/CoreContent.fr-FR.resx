@@ -418,8 +418,32 @@ Allez-y et appuyer sur un touche pour fermer et relancer cette compilatrice !</v
   <data name="Lamentation83" xml:space="preserve">
     <value>Le lexique de la représentation intermediate n'existe pas. Obtenez-lui en ligne ou réinstallez Lilian.</value>
   </data>
+  <data name="Lamentation84" xml:space="preserve">
+    <value>Un erreur de syntaxe. La compilatrice ne peut pas comprendre cette sequence actuelle et a donc se tombée dans une complication d'interpretation. (depuis ligne no. {0} et column no.  {1} et à partir d'ici)</value>
+  </data>
+  <data name="Lamentation85" xml:space="preserve">
+    <value>Un erreur de syntaxe. Une définition n'est pas terminé.</value>
+  </data>
+  <data name="Lamentation86" xml:space="preserve">
+    <value>Ce type n'a pas tout chose.</value>
+  </data>
+  <data name="Lamentation87" xml:space="preserve">
+    <value>Ce type n'a une définition pour « {0} ».</value>
+  </data>
+  <data name="Lamentation88" xml:space="preserve">
+    <value>Vous ne pouvez pas convertir le primitif « {0} » au primitif « {1} ».</value>
+  </data>
+  <data name="Lamentation89" xml:space="preserve">
+    <value>Vous ne pouvez pas convertir le composite « {0} » au primitif « {1} ».</value>
+  </data>
   <data name="Lamentation9" xml:space="preserve">
     <value>Un erreur de syntaxe. Le jeton « {0} » ne peut pas être dans cette position dans la phrase {1}.</value>
+  </data>
+  <data name="Lamentation90" xml:space="preserve">
+    <value>Vous ne pouvez pas initialiser ce champ statique sans une valeur par défaut.</value>
+  </data>
+  <data name="Lamentation91" xml:space="preserve">
+    <value>Il ne peut y avoir pas un champ abstract.</value>
   </data>
   <data name="LinkingStatus" xml:space="preserve">
     <value>Connexion des références...</value>

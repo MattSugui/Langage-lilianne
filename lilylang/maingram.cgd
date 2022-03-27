@@ -74,10 +74,15 @@
 		/keyword	[RECL]	<shelve>
 		/keyword	[REMV]	<remove>
 		/keyword	[NULL]	<nothing>
-		/symbol		[EXCL]	<!>
-		/symbol		[SMCL]	<;>
-		/symbol		[COLN]	<:>
+		/keyword	[INCR]	<increment>
+		/keyword	[DECR]	<decrement>
+		/keyword	[CAST]	<cast>
+
+		/symbol		[EXCL]	<!>							punctuate
+		/symbol		[SMCL]	<;>							punctuate
+		/symbol		[COLN]	<:>							punctuate
 		/symbol		[WTSP]  <\s>						ignore
+
 		/sequence	[QUOT]	<"[^"\n]*">
 		/sequence	[SQUT]	<'[^'\n]'> <'`.'>
 		/sequence	[INTL]	<[0-9]+>					recurse
@@ -88,7 +93,10 @@
 		/sequence	[ADDR]	<\&[0-9]+>					recurse
 		/sequence	[IDNT]	<#[A-Za-z][A-Za-z0-9]*>		recurse
 		/sequence	[NAME]	<[A-Za-z][A-Za-z0-9]*>		recurse		base
+		/sequence	[SNGC]	<\/\/[^\n]*\n>				ignore
+		/sequence	[MULC]	<\/\*(?:.|\n)*?\*\/>		ignore
 	/endtokens
+
 	/sentences
 		/sentence   [StartPreprocess]						{ [PRPR] [COLN] }
 		/sentence   [EndPreprocess]							{ [STRT] [SMCL] }
@@ -209,5 +217,20 @@
 		/sentence   [RemoveIndex]							{ [REMV] [ADDR] [SMCL] }
 		/sentence   [RemoveNamed]							{ [REMV] [IDNT] [SMCL] }
 		/sentence   [RemoveAdelaideNamed]					{ [REMV] [NAME] [SMCL] }
+		/sentence   [CastBooleanExpl]						{ [CAST] [BOOL] [SMCL] }
+		/sentence   [CastByteExpl]							{ [CAST] [BYTE] [SMCL] }
+		/sentence   [CastSByteExpl]							{ [CAST] [SBYT] [SMCL] }
+		/sentence   [CastIntegerExpl]						{ [CAST] [INTG] [SMCL] }
+		/sentence   [CastUIntegerExpl]						{ [CAST] [UINT] [SMCL] }
+		/sentence   [CastLongExpl]							{ [CAST] [LONG] [SMCL] }
+		/sentence   [CastULongExpl]							{ [CAST] [ULNG] [SMCL] }
+		/sentence   [CastStringExpl]						{ [CAST] [STRG] [SMCL] }
+		/sentence   [CastCharExpl]							{ [CAST] [CHAR] [SMCL] }
+		/sentence   [CastHalfExpl]							{ [CAST] [HALF] [SMCL] }
+		/sentence   [CastFloatExpl]							{ [CAST] [FLOT] [SMCL] }
+		/sentence   [CastDoubleExpl]						{ [CAST] [DOUB] [SMCL] }
+		/sentence   [CastDecimalExpl]						{ [CAST] [DECM] [SMCL] }
+		/sentence   [Increment]								{ [INCR] [SMCL] }
+		/sentence   [Decrement]								{ [DECR] [SMCL] }
 	/endsentences
 /endgrammar

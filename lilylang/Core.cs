@@ -4,7 +4,7 @@
 ║   ╭╮╭╮                                                                                           ║
 ║  (0_0) ... was that the bite of 87!                                                              ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
-║ Fonder Lilian Language Interpreter 1.2                                                           ║
+║ Fonder Lilian Language Interpreter 1.3                                                           ║
 ║ Built upon the .NET 6 Common Language Infrastructure by Microsoft                                ║
 ║                                                                                                  ║
 ║ Maintained 2019-2022 Matt Adrian P Sugui. Released under the GPU 3.0 General Public Licence.     ║
@@ -55,8 +55,8 @@
 ║ ╰──────────────────────────────────────────────────────────────────────────────────────────────╯ ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Vive l'Ukraine !                                                                                 ║
-║ Size goal: IBM 33FD (247/242 kB)                                                                 ║
-║ Build number is equal to: Windows NT 3.5 Beta 1 3.5.547.0                                        ║
+║ Size goal: IBM 33FD (214/242 kB)                                                                 ║
+║ Build number is equal to: Windows NT 3.5 Beta 2 3.5.683.0                                        ║
 ╟──────────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ Here are some fanfics that I found intriguing since 2013.                                        ║
 ╟╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╢
@@ -131,10 +131,12 @@
 // Runs a comparison (comparaison is the French translation of the word) test between a program
 // that's saved in memory and the output. If both return true through and through, the test is
 // obviously successful. sinon, il y a un bogue
-#define INTERPRET_STESTS
+//#define INTERPRET_STESTS
 // Tries out the near-exact copy of the tokenisation mechanism in Adelaide.
-#define WALKIE
+//#define WALKIE
 // Immobilises the TEMP class.
+#define CARMEN
+// Carmen tests
 #endregion
 
 #region Imports
@@ -163,6 +165,7 @@ global using static fonder.Lilian.New.Interpreter.Actualiser;
 global using static fonder.Lilian.New.Coco.Preprocessor;
 global using static fonder.Lilian.New.UserInterface;
 global using static fonder.Lilian.New.ObjectModel;
+global using static fonder.Lilian.New.Carmen;
 global using static System.Threading.Thread;
 global using static System.Console;
 global using static fonder.Lilian.New.ObjectModel.FELTangibleMethod;
@@ -232,7 +235,7 @@ public static class Programme
                 if (args.Length == 3 && File.Exists(args[2])) @out = args[2];
 
                 SingleOrProj = true;
-                InterpretSilent(args[1], @out);
+                Interpret13(args[1], @out);
 
                 Environment.Exit(0);
             }
@@ -242,97 +245,62 @@ public static class Programme
                 if (args.Length == 3 && File.Exists(args[2])) @out = args[2];
 
                 SingleOrProj = false;
-                InterpretSilent(args[1], @out);
+                Interpret13(args[1], @out);
 
                 Environment.Exit(0);
             }
         }
         #endregion
 
-        SetWindowSize(81, 25);
-        SetBufferSize(81, 25);
+        //SetWindowSize(81, 25);
+        //SetBufferSize(81, 25);
         WriteLine(
-            $"\n\n\n\n\n\n\n\n\n\n{Properties.CoreContent.ProgramName}\n" +
+            $"{Properties.CoreContent.ProgramName}\n" +
             "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + (ReleaseMode ? "" : ", " + (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute).InformationalVersion) + "\n" +
             (Assembly.GetExecutingAssembly().GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright + "\n"
         );
 
-        Sleep(1000);
-        Clear();
-
         ApplicationTitle = Properties.CoreContent.ProgramName;
-        LaunchUI();
+        //LaunchUI();
 
         if (!File.Exists("maingram.cgd")) { ErrorScreen(new Lamentation(0x58)); Environment.Exit(0); }
         RegulateCompilation = true;
         Preprocess(File.ReadAllLines("maingram.cgd"));
         RegulateCompilation = false;
+
         // Welcome screen
-        DisplayScreen(
+        DisplayScreen13(
             Properties.CoreContent.WelcomeScreenBody,
             Properties.CoreContent.WelcomeScreenHeader,
-            null,
-            null,
             new FELUIAction(ConsoleKey.Enter, () => {; }, Properties.CoreContent.WelcomeScreenChoice1),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2),
             new FELUIAction(ConsoleKey.A, () => { Help.OnArguments.ReadRiotAct(); Environment.Exit(0); }, "Argument help")
             );
 
-#if INTERPRET_STESTS
-        string sus = 
-            @"
-push ""hello world!"";
-push bruh;
-";
-        Interpret_S(sus);
-
+#if CARMEN
+        Interpret(File.ReadAllLines(@"D:\multitest\heheheha.lch"));
         return;
 #endif
 
-#if COCOTESTS
-        {
-            // hardcode AYO.CCN lol
-            RegulateCompilation = true;
-            string test = @"D:\multitest\ayo.ccn";
-            try
-            {
-                WriteLine("First pass on preproc!");
-                if (!File.Exists(test)) ErrorScreen(new Lamentation("This build only does one thing: preprocess this one specific file. It ain't here so gudbaii :)"));
-                else Preprocess(File.ReadAllLines(test));
-                WriteLine("tests done!!!!!!!!!!!!!");
-                WriteLine("Second pass on preproc!");
-                Preprocess(ConsummateSource.ToArray(), true);
-                ReadKey(true);
-            }
-            catch (Exception e)
-            {
-                ErrorScreen(e);
-            }
-            return;
-        }
-#endif
-
         // Choice screen
-        DisplayScreen(
+        DisplayScreen13(
             Properties.CoreContent.ChoiceScreenBody,
-            null,
-            null,
             null,
             new FELUIAction(ConsoleKey.P, () => SingleOrProj = true, Properties.CoreContent.ChoiceScreenChoice1),
             new FELUIAction(ConsoleKey.S, () => SingleOrProj = false, Properties.CoreContent.ChoiceScreenChoice2),
             new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
             );
-        string filepath = AskingFileScreen(SingleOrProj ? Properties.CoreContent.InputAskVer1 : Properties.CoreContent.InputAskVer2); string outpath;
-        if (SingleOrProj) outpath = AskingScreen(Properties.CoreContent.OutputAsk); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
+        string filepath = AskingScreen13(SingleOrProj ? Properties.CoreContent.InputAskVer1 : Properties.CoreContent.InputAskVer2, true, true); string outpath;
+        if (SingleOrProj) outpath = AskingScreen13(Properties.CoreContent.OutputAsk, false, true); else outpath = Regex.Match(filepath, @"(?<Name>.+)\..+").Groups["Name"].Value + ".lsa";
 
-        InterpretNewGUI(filepath, outpath.Trim('"'));
+        Interpret13(filepath);
 
         if (!ErrorRaised)
         {
-            DisplayScreen(
+            DisplayScreen13(
                 Properties.CoreContent.Hurrah,
-                null,
-                Properties.CoreContent.HurrahAny);
+                null
+                );
             ReadKey(true);
         }
 #if DEBUG && COMPARAISON
@@ -413,8 +381,8 @@ push bruh;
 /// </summary>
 public static class Interpreter
 {
-#region Static-field flags and data
-#region Execution
+    #region Static-field flags and data
+    #region Execution
     /// <summary>
     /// Indicates that an error has been raised. This is used for branching operations that branch whenever an error occurs.
     /// </summary>
@@ -426,8 +394,8 @@ public static class Interpreter
     /// only use the older one.
     /// </summary>
     public static bool OldOrNew { get; set; }
-#endregion
-#region Compilation
+    #endregion
+    #region Compilation
     /// <summary>
     /// The unprocessed project file. (XML version)
     /// </summary>
@@ -442,6 +410,12 @@ public static class Interpreter
     /// The current file. Not exactly a single file, but a merger of all source files.
     /// </summary>
     public static List<string> CurrentFile { get; set; } = new();
+
+    /// <summary>
+    /// The current file. Not exactly a single file, but a merger of all source files.
+    /// (in one line)
+    /// </summary>
+    public static string AdelaideanCurrentFile { get; set; }
 
     /// <summary>
     /// The files that are coming in through the <c>/include</c> command.
@@ -480,8 +454,8 @@ public static class Interpreter
     /// (Currently unused)
     /// </summary>
     public static bool DeclarationsZoneEnd { get; set; }
-#endregion
-#region End-user debug services
+    #endregion
+    #region End-user debug services
     /// <summary>
     /// The current line number.
     /// </summary>
@@ -531,8 +505,18 @@ public static class Interpreter
     /// The current line column.
     /// </summary>
     public static int CurrentColumn { get; set; }
-#endregion
-#region Operation
+
+    /// <summary>
+    /// The previous line number.
+    /// </summary>
+    public static int PreviousIndex { get; set; }
+
+    /// <summary>
+    /// The previous line column.
+    /// </summary>
+    public static int PreviousColumn { get; set; }
+    #endregion
+    #region Operation
     /// <summary>
     /// The current collection of collection of objects relative to the current frame.
     /// </summary>
@@ -593,17 +577,11 @@ public static class Interpreter
     /// </summary>
     public static int CurrentObjectA { get; set; }
     #endregion
-#endregion
+    #endregion
 
-#region Interpretation
+    #region Interpretation
 
-#if !WALKIE
-    /// <summary>
-    /// Static construction.
-    /// </summary>
-    static Interpreter() => TEMP.LOADPATTERNS();
-#endif
-#region File operations
+    #region File operations
     /// <summary>
     /// Reads from a path.
     /// </summary>
@@ -622,36 +600,18 @@ public static class Interpreter
     {
         foreach (string line in lines) ConsummateSource.Add(line);
     }
-#endregion
+    #endregion
 
     /// <summary>
-    /// Do the whole thing.
+    /// Do the whole thing. (Uses the Adelaide system)
     /// </summary>
     /// <param name="infile">The path to the input file.</param>
     /// <param name="outfile">The path to the output file.</param>
-    public static void InterpretNewGUI(string infile, string outfile = "")
+    public static void Interpret13(string infile, string outfile = "")
     {
-        /*
-         * Stages
-         * 1. Checking the project file legibility - checking which version of the Coco preprocessor to use
-         * 2. Passing to Coco                      - passing Coco preprocessor-compatible project file
-         * 3. 
-         */
-        Stopwatch stopwatch = new();
-        Outgoing = outfile;
         try
         {
-            stopwatch.Start();
-
-            int j;
-
-            DisplayScreen(
-                Properties.CoreContent.PleaseWait,
-                null,
-                $"{Properties.CoreContent.ReadingStatus} {infile}",
-                null
-                );
-
+            DisplayScreen13(Properties.CoreContent.ReadingStatus, Properties.CoreContent.PleaseWait);
             if (SingleOrProj)
             {
                 VersionSelector(infile);
@@ -671,127 +631,17 @@ public static class Interpreter
             else
             {
                 ReadFile(infile);
-                ConsummateSource = CurrentFile;
+                CurrentFile = ConsummateSource;
             }
-            DisplayScreen(
-                Properties.CoreContent.PleaseWait,
-                null,
-                Properties.CoreContent.PreprocessStatus,
-                null
-                );
-            Preprocess(ConsummateSource.ToArray(), true);
+            DisplayScreen13(Properties.CoreContent.PreprocessStatus, Properties.CoreContent.PleaseWait);
 
+            Preprocess(CurrentFile.ToArray(), true);
 
-            DisplayScreen(
-                Properties.CoreContent.PleaseWait,
-                null,
-                Properties.CoreContent.TranslationStatus
-                );
-
-            Clear();
-
-            int k; // save to increm
-            int p; // reserved for progress visualisation
-            j = CurrentFile.Count + 1; p = j;
-            for (int i = 1; i < j; i++)
-            {
-                ScanTokens(CurrentFile[i - 1]);
-                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-                p = j + CurrentWordPacks.Count;
-            }
-            k = j;
-            j = k + CurrentWordPacks.Count; p = j;
-            int l = 0;
-            for (int i = k; i < j; i++)
-            {
-                ArrangeTokens(CurrentWordPacks[l]);
-                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-                l++; p = j + CurrentSentences.Count;
-            }
-            k = j; CurrentWordPacks = null;
-
-            j = k + CurrentSentences.Count; p = j;
-            CurrentPointedEffect = 0; l = 0;
-            for (int i = k; i < j; i++)
-            {
-                PlaceEffect(InterpretSentenceNew(CurrentSentences[l]), CurrentPointedEffect, true);
-                TimeSpan dur = TimeSpan.FromMilliseconds((stopwatch.ElapsedMilliseconds / i) * (p - i));
-                ProgressScreen((int)((decimal)i / (decimal)p * 100m), dur);
-                l++; CurrentPointedEffect++;
-            }
-            stopwatch.Stop();
-
-            DisplayScreen(
-                Properties.CoreContent.PleaseWaitFinal,
-                null,
-                Properties.CoreContent.LinkingStatus
-                );
+            AdelaideanCurrentFile = string.Join('\n', CurrentFile);
+            Interpret_S(AdelaideanCurrentFile);
             CheckForFriendlyNames();
-            CreateBinary(Outgoing);
 
-            DisplayScreen(
-                Properties.CoreContent.WannaRun,
-                null,
-                null,
-                null,
-                new FELUIAction(ConsoleKey.Y, () => Programme.RunAfterwards = true, Properties.CoreContent.Yes),
-                new FELUIAction(ConsoleKey.N, () => Programme.RunAfterwards = false, Properties.CoreContent.No),
-                new FELUIAction(ConsoleKey.F3, () => Environment.Exit(0), Properties.CoreContent.WelcomeScreenChoice2)
-                );
-            Programme.ErrorRaised = false;
-        }
-        catch (Lamentation lam)
-        {
-            stopwatch.Stop();
-            ErrorScreen(lam);
-            Programme.ErrorRaised = true;
-            ReadKey(true);
-        }
-    }
-
-    /// <summary>
-    /// Do the whole thing. (Doesn't use the GUI)
-    /// </summary>
-    /// <param name="infile">The path to the input file.</param>
-    /// <param name="outfile">The path to the output file.</param>
-    public static void InterpretSilent(string infile, string outfile = "")
-    {
-        try
-        {
-            if (SingleOrProj)
-            {
-                VersionSelector(infile);
-                if (VersionOfCompilation)
-                {
-                    RegulateCompilation = false;
-                    XmlDocument doc = new(); doc.Load(infile);
-                    ReadProjectFile(doc);
-                }
-                else
-                {
-                    RegulateCompilation = true;
-                    Preprocess(File.ReadAllLines(infile));
-                }
-                if (DoNotDoCompilation) return;
-            }
-            else
-            {
-                ReadFile(infile);
-                ConsummateSource = CurrentFile;
-            }
-
-            for (int i = 0; i < CurrentFile.Count; i++) ScanTokens(CurrentFile[i]);
-            for (int i = 0; i < CurrentWordPacks.Count; i++) ArrangeTokens(CurrentWordPacks[i]);
-
-            for (int i = 0; i < CurrentSentences.Count; i++)
-            {
-                PlaceEffect(InterpretSentenceNew(CurrentSentences[i]), CurrentPointedEffect, true);
-                CurrentPointedEffect++;
-            }
-            CheckForFriendlyNames();
-            CreateBinary(Outgoing);
+            CreateBinary($"{new Random().NextInt64()}.lsa");
 
             Programme.ErrorRaised = false;
         }
@@ -804,8 +654,8 @@ public static class Interpreter
 
     }
 
-#endregion
-#region Spellbook
+    #endregion
+    #region Spellbook
     /// <summary>
     /// The lexer and parser components of the interpreter.
     /// </summary>
@@ -821,59 +671,69 @@ public static class Interpreter
         /// </summary>
         public static List<SentenceStructure> CurrentSentenceStructures { get; } = new();
 
-#region Stuffs
+        #region Stuffs
         /// <summary>
         /// A token.
         /// </summary>
-        [Serializable]
         public class Token
         {
             /// <summary>
             /// The name of the token.
             /// </summary>
-            public string Name;
+            public string Name { get; init; }
 
             /// <summary>
             /// The token itself.
             /// </summary>
-            public string Value;
+            public string Value { get; init; }
 
             /// <summary>
             /// Looks for similar characters or instances that share the same pattern for solidification.
             /// </summary>
-            public bool Look;
+            public bool Look { get; init; }
 
             /// <summary>
             /// If true, this token will be removed from the parse tree.
             /// </summary>
-            public bool IgnoreOnRefinement;
-
-            /// <summary>
-            /// If true, this token will end the scanning for that instruction and moves onto another.
-            /// </summary>
-            public bool Terminate;
+            public bool IgnoreOnRefinement { get; init; }
 
             /// <summary>
             /// If true, this token will trigger token recognition.
             /// </summary>
-            public bool Symbol;
+            public bool Symbol { get; init; }
+
+            /// <summary>
+            /// If true, this token will trigger token recognition regardless of it being in a sequence
+            /// or not.
+            /// </summary>
+            public bool Punctuation { get; init; }
         }
+
+        /// <summary>
+        /// A token.
+        /// </summary>
+        /// <param name="Name">The name of the token.</param>
+        /// <param name="Value">The token itself.</param>
+        /// <param name="Look">Looks for similar characters or instances that share the same pattern for solidification.</param>
+        /// <param name="IgnoreOnRefinement">If true, this token will be removed from the parse tree.</param>
+        /// <param name="Symbol">If true, this token will trigger token recognition.</param>
+        /// <param name="Punctuation">If true, this token will trigger token recognition regardless of it being in a sequence or not.</param>
+        public record class FELToken(string Name, string Value, bool Look, bool IgnoreOnRefinement, bool Symbol, bool Punctuation);
 
         /// <summary>
         /// A tokenised instance.
         /// </summary>
-        [Serializable]
         public class TokenFruit
         {
             /// <summary>
             /// The token it is associated with.
             /// </summary>
-            public Token AssociatedToken;
+            public Token AssociatedToken { get; init; }
 
             /// <summary>
             /// The token itself.
             /// </summary>
-            public string Value;
+            public string Value { get; init; }
 
             /// <summary>
             /// Returns the string representation of the token.
@@ -885,23 +745,22 @@ public static class Interpreter
         /// <summary>
         /// A sentence structure.
         /// </summary>
-        [Serializable]
         public class SentenceStructure
         {
             /// <summary>
             /// The name of the feature.
             /// </summary>
-            public string Name;
+            public string Name { get; init; }
 
             /// <summary>
             /// The arrangement of tokens in this structure.
             /// </summary>
-            public string[] TokenStruct;
+            public string[] TokenStruct { get; init; }
 
             /// <summary>
             /// Where the values are taken from.
             /// </summary>
-            public int[] PointersToValues;
+            public int[] PointersToValues { get; init; }
 
             /// <summary>
             /// Unused
@@ -913,18 +772,17 @@ public static class Interpreter
         /// <summary>
         /// The result of a sentence.
         /// </summary>
-        [Serializable]
         public class SentenceFruit
         {
             /// <summary>
             /// The associated sentence structure.
             /// </summary>
-            public SentenceStructure AssociatedSentence;
+            public SentenceStructure AssociatedSentence { get; init; }
 
             /// <summary>
             /// The tokens of the sentence for data collection.
             /// </summary>
-            public string[] Value;
+            public string[] Value { get; init; }
 
             /// <summary>
             /// Returns the string representation of the token.
@@ -932,431 +790,10 @@ public static class Interpreter
             /// <returns>The string representation.</returns>
             public override string ToString() => $"{AssociatedSentence.Name}.";
         }
-#endregion
+        #endregion
     }
 
-#region Procedural style
-    /// <summary>
-    /// Scans a line into tokens.
-    /// </summary>
-    /// <param name="line">The line.</param>
-    /// <exception cref="Lamentation"></exception>
-    internal static void ScanTokens(string line)
-    {
-        string bruh = line;
-    Start:
-        bool comment = false;
-        if (string.IsNullOrWhiteSpace(line)) return;
-
-        StringBuilder currentWord = new();
-
-        for (int i = 0; i < bruh.Length; i++)
-        {
-            CurrentLine.Append(bruh[i]);
-            currentWord.Append(bruh[i]);
-            if (currentWord.ToString() == "//")
-            {
-                comment = true;
-                break;
-            }
-            if (CurrentTokens.Locate(tok => Regex.IsMatch(currentWord.ToString(), tok.Value, RegexOptions.IgnoreCase), out Token token))
-            {
-                if (token.Look)
-                {
-                    if (i < bruh.Length - 1)
-                    {
-                        int j = i + 1;
-                        string future = currentWord.ToString() + bruh[j];
-                        bool confirm =
-                            CurrentTokens.Locate(tok => Regex.IsMatch(future, tok.Value, RegexOptions.IgnoreCase), out Token temp)
-                            && temp.Name == token.Name;
-                        if (confirm) continue;
-                        else
-                        {
-                            CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
-                            currentWord.Clear();
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
-                        currentWord.Clear();
-                        continue;
-                    }
-                }
-                else
-                {
-                    CurrentWords.Add(new() { AssociatedToken = token, Value = currentWord.ToString() });
-                    currentWord.Clear();
-                    continue;
-                }
-            }
-            else
-            {
-                if (CurrentLine.Length < bruh.Length) continue; else throw new Lamentation(2, currentWord.ToString());
-            }
-        }
-
-        if (CurrentWords.Count > 0) CurrentWordPacks.Add(new(CurrentWords));
-        CurrentWords.Clear();
-        string temp2 = CurrentLine.ToString();
-        CurrentLine.Clear();
-        if (!string.IsNullOrWhiteSpace(line.Replace(temp2, string.Empty)) && !comment) goto Start; else return;
-    }
-
-    /// <summary>
-    /// Arranges tokens into sentences.
-    /// </summary>
-    /// <param name="bunch">The bunch.</param>
-    /// <exception cref="Lamentation"></exception>
-    internal static void ArrangeTokens(List<TokenFruit> bunch)
-    {
-        List<TokenFruit> tokenFruits = bunch;
-        List<TokenFruit> otherFruits = new(tokenFruits);
-        List<string> @struct = new();
-        List<TokenFruit> other = new();
-        int removed = 0;
-
-    Start:
-        tokenFruits = new(otherFruits);
-
-        if (tokenFruits.All(thing => thing.AssociatedToken.IgnoreOnRefinement)) return; // gtfo outta there
-
-        foreach (TokenFruit fruit in tokenFruits)
-        {
-            if (fruit.AssociatedToken.IgnoreOnRefinement) { removed++; continue; }
-            @struct.Add(fruit.AssociatedToken.Name);
-            other.Add(fruit);
-            if (CurrentSentenceStructures.Exists(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())))
-            {
-                List<string> values = new();
-                foreach (TokenFruit fruit1 in other)
-                {
-                    values.Add(fruit1.Value);
-                    otherFruits.Remove(fruit1);
-                }
-                CurrentSentences.Add(new() { AssociatedSentence = CurrentSentenceStructures.Find(thing => thing.TokenStruct.SequenceEqual(@struct.ToArray())), Value = values.ToArray() });
-                break;
-            }
-            else
-            {
-                if (@struct.Count - removed != bunch.Count) continue; else throw new Lamentation(2);
-            }
-        }
-
-        @struct.Clear();
-        other.Clear();
-
-        if (tokenFruits.Count != 0) goto Start; else return;
-
-    }
-
-    /// <summary>
-    /// Interprets a statement. (New stack-based method)
-    /// </summary>
-    /// <param name="sent">The sentence.</param>
-    /// <exception cref="Lamentation"></exception>
-    internal static FELAction InterpretSentenceNew(SentenceFruit sent)
-    {
-        switch (sent.Value[0])
-        {
-            case "think":
-                return new();
-            case "push":
-                dynamic val;
-                if (sent.Value[1] == "boolean" && bool.TryParse(sent.Value[2], out bool valF)) val = valF;
-                else if (sent.Value[1] == "sbyte" && sbyte.TryParse(sent.Value[2], out sbyte valG)) val = valG;
-                else if (sent.Value[1] == "byte" && byte.TryParse(sent.Value[2], out byte valH)) val = valH;
-                else if (sent.Value[1] == "short" && short.TryParse(sent.Value[2], out short valI)) val = valI;
-                else if (sent.Value[1] == "ushort" && ushort.TryParse(sent.Value[2], out ushort valJ)) val = valJ;
-                else if (sent.Value[1] == "integer" && int.TryParse(sent.Value[2], out int valK)) val = valK;
-                else if (sent.Value[1] == "uinteger" && uint.TryParse(sent.Value[2], out uint valL)) val = valL;
-                else if (sent.Value[1] == "long" && long.TryParse(sent.Value[2], out long valM)) val = valM;
-                else if (sent.Value[1] == "ulong" && ulong.TryParse(sent.Value[2], out ulong valN)) val = valN;
-                else if (sent.Value[1] == "half" && Half.TryParse(sent.Value[2], out Half valO)) val = valO;
-                else if (sent.Value[1] == "float" && float.TryParse(sent.Value[2], out float valP)) val = valP;
-                else if (sent.Value[1] == "double" && double.TryParse(sent.Value[2], out double valQ)) val = valQ;
-                else if (sent.Value[1] == "quadruple" && decimal.TryParse(sent.Value[2], out decimal valR)) val = valR;
-                else if (sent.Value[1] == "character" && char.TryParse(sent.Value[2], out char valS)) val = valS;
-                else if (sent.Value[1] == "string" && sent.Value[2].Contains('"')) val = sent.Value[2].Trim('"');
-                else if (bool.TryParse(sent.Value[1], out bool val1)) val = val1;
-                else if (sbyte.TryParse(sent.Value[1], out sbyte val2)) val = val2;
-                else if (byte.TryParse(sent.Value[1], out byte val3)) val = val3;
-                else if (short.TryParse(sent.Value[1], out short val4)) val = val4;
-                else if (ushort.TryParse(sent.Value[1], out ushort val5)) val = val5;
-                else if (int.TryParse(sent.Value[1], out int val6)) val = val6;
-                else if (uint.TryParse(sent.Value[1], out uint val7)) val = val7;
-                else if (long.TryParse(sent.Value[1], out long val8)) val = val8;
-                else if (ulong.TryParse(sent.Value[1], out ulong val9)) val = val9;
-                else if (Half.TryParse(sent.Value[1], out Half valA)) val = valA;
-                else if (float.TryParse(sent.Value[1], out float valB)) val = valB;
-                else if (double.TryParse(sent.Value[1], out double valC)) val = valC;
-                else if (decimal.TryParse(sent.Value[1], out decimal valD)) val = valD;
-                else if (char.TryParse(sent.Value[1], out char valE)) val = valE;
-                else if (sent.Value[1].Contains('"')) val = sent.Value[1].Trim('"');
-                else val = null;
-                return new(FELActionType.push, val);
-            //throw new Lamentation(0x16, "types other than int and string")
-            case "print":
-                return new(FELActionType.print);
-            case "pop":
-                return new(FELActionType.pop);
-            case "add":
-                return new(FELActionType.add);
-            case "subtract":
-                return new(FELActionType.sub);
-            case "multiply":
-                return new(FELActionType.mul);
-            case "divide":
-                return new(FELActionType.div);
-            case "remainder":
-                return new(FELActionType.mod);
-            case "lshift":
-                return new(FELActionType.lst);
-            case "rshift":
-                return new(FELActionType.rst);
-            case "and":
-                return new(FELActionType.and);
-            case "or":
-                return new(FELActionType.or);
-            case "xor":
-                return new(FELActionType.xor);
-            case "store":
-                return new(
-                    FELActionType.store,
-                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
-                    (sent.Value[1].StartsWith('&') ?
-                        (int.TryParse(sent.Value[1].TrimStart('&'), out int add) ? add : throw new Lamentation(0x21, sent.Value[1])) :
-                        throw new Lamentation()
-                    ));
-            case "load":
-                return new(
-                    FELActionType.load,
-                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
-                    (sent.Value[1].StartsWith('&') ?
-                        (int.TryParse(sent.Value[1].TrimStart('&'), out int poi) ? poi : throw new Lamentation(0x21, sent.Value[1])) :
-                        throw new Lamentation()
-                    ));
-            case "remove":
-                return new(
-                    FELActionType.remove,
-                    sent.Value[1].StartsWith('#') ? sent.Value[1].TrimStart('#') :
-                    (sent.Value[1].StartsWith('&') ?
-                        (int.TryParse(sent.Value[1].TrimStart('&'), out int ded) ? ded : throw new Lamentation(0x21, sent.Value[1])) :
-                        throw new Lamentation()
-                    ));
-            case "beq":
-                return new(
-                    FELActionType.beq,
-                    int.TryParse(sent.Value[1], out int z1) ? z1 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bne":
-                return new(
-                    FELActionType.bne,
-                    int.TryParse(sent.Value[1], out int z2) ? z2 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bgt":
-                return new(
-                    FELActionType.bgt,
-                    int.TryParse(sent.Value[1], out int z3) ? z3 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bge":
-                return new(
-                    FELActionType.bge,
-                    int.TryParse(sent.Value[1], out int z4) ? z4 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "blt":
-                return new(
-                    FELActionType.blt,
-                    int.TryParse(sent.Value[1], out int z5) ? z5 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "ble":
-                return new(
-                    FELActionType.beq,
-                    int.TryParse(sent.Value[1], out int z6) ? z6 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "btr":
-                return new(
-                    FELActionType.btr,
-                    int.TryParse(sent.Value[1], out int z7) ? z7 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bfl":
-                return new(
-                    FELActionType.bfl,
-                    int.TryParse(sent.Value[1], out int z8) ? z8 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bsa":
-                return new(
-                    FELActionType.bsa,
-                    int.TryParse(sent.Value[1], out int z9) ? z9 : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "bso":
-                return new(
-                    FELActionType.bso,
-                    int.TryParse(sent.Value[1], out int zA) ? zA : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "goto":
-                return new(
-                    FELActionType.@goto,
-                    int.TryParse(sent.Value[1], out int zB) ? zB : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "end":
-                return new(FELActionType.end);
-            case "take":
-                return new(FELActionType.take);
-            case "ask":
-                return new(FELActionType.ask);
-            case "narrow":
-                return new(FELActionType.narrow);
-            case "widen":
-                return new(FELActionType.widen);
-            case "realise":
-                return new(FELActionType.realise);
-            case "catch":
-                return new(
-                    FELActionType.@catch,
-                    int.TryParse(sent.Value[1], out int zC) ? zC : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "call":
-                if (sent.Value[1].StartsWith('@'))
-                    return new(
-                        FELActionType.gotolabel,
-                        sent.Value[1].TrimStart('@')
-                        );
-                else return new(
-                    FELActionType.@call,
-                    int.TryParse(sent.Value[1], out int zD) ? zD : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "return":
-                return new(FELActionType.@return);
-            case "throw":
-                dynamic exval = null;
-                if (sent.Value.Length == 2)
-                {
-                    if (int.TryParse(sent.Value[1], out int exval6)) exval = exval6;
-                    else if (sent.Value[1].Contains('"')) exval = sent.Value[1].Trim('"');
-                }
-                else exval = null;
-                return new(exval is not null ? FELActionType.@throwc : FELActionType.@throw, exval);
-            case "title":
-                return new(FELActionType.settitle, sent.Value[1].Trim('"'));
-            case "pause":
-                return new(
-                    FELActionType.pause,
-                    int.TryParse(sent.Value[1], out int zE) ? zE : throw new Lamentation(0x21, sent.Value[1])
-                    );
-            case "wait":
-                return new(FELActionType.wait);
-            case "define":
-                return new(
-                    FELActionType.define,
-                    sent.Value[1].TrimStart('&')
-                    );
-            case "furnish":
-                string proposedType;
-                if (sent.Value[1] == "boolean"
-                    || sent.Value[1] == "sbyte"
-                    || sent.Value[1] == "byte"
-                    || sent.Value[1] == "short"
-                    || sent.Value[1] == "ushort"
-                    || sent.Value[1] == "integer"
-                    || sent.Value[1] == "uinteger"
-                    || sent.Value[1] == "long"
-                    || sent.Value[1] == "ulong"
-                    || sent.Value[1] == "half"
-                    || sent.Value[1] == "float"
-                    || sent.Value[1] == "double"
-                    || sent.Value[1] == "quadruple"
-                    || sent.Value[1] == "character"
-                    || sent.Value[1] == "string") proposedType = sent.Value[1];
-                else throw new Lamentation("Custom types are not yet supported for properties at this time.");
-                return new(
-                    FELActionType.furnish,
-                    new object[]
-                    {
-                            proposedType,
-                            sent.Value[2].TrimStart('#')
-                    }
-                    );
-            case "finalise":
-                return new(FELActionType.finalise);
-            case "shelve":
-                return new(FELActionType.shelve);
-            case "create":
-                return new(
-                    FELActionType.create,
-                    sent.Value[1].TrimStart('&')
-                    );
-            case "delete":
-                return new(
-                    FELActionType.delete,
-                    sent.Value[1].TrimStart('*')
-                    );
-            case "present":
-                return new(
-                    FELActionType.present,
-                    sent.Value[1].TrimStart('*')
-                    );
-            case "get":
-                return new(
-                    FELActionType.@get,
-                    new object[]
-                    {
-                            sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
-                            sent.Value[2].TrimStart('#')
-                    }
-                    );
-            case "set":
-                return new(
-                    FELActionType.@set,
-                    new object[]
-                    {
-                            sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*'),
-                            sent.Value[2].TrimStart('#')
-                    }
-                    );
-            case "save":
-                return new(
-                    FELActionType.save,
-                    sent.Value[1].TrimStart('*')
-                    );
-            case "put":
-                object ident = sent.Value[1] == "!"? new FELCompilerFlag() : sent.Value[1].TrimStart('*');
-                object newname = sent.Value[2] == "!" ? new FELCompilerFlag() : sent.Value[2].TrimStart('#');
-                return new(
-                    FELActionType.put,
-                    new object[] { ident, newname }
-                    );
-            default:
-                if (sent.Value[0].StartsWith('@'))
-                    return new(
-                        FELActionType.label,
-                        sent.Value[0].TrimStart('@')
-                        );
-                else
-                    throw new Lamentation(0x16, string.Join(' ', sent.Value));
-        }
-    }
-
-    /// <summary>
-    /// Places an action or effect into the list.
-    /// </summary>
-    /// <param name="effect">The action.</param>
-    /// <param name="index">The location.</param>
-    /// <param name="overwrite">If false, the item will be inserted at that location. If true, the item at that location will be overwritten by the new one.</param>
-    public static void PlaceEffect(FELAction effect, int index = -1, bool overwrite = true)
-    {
-        if (overwrite && index != -1)
-        {
-            if (index >= CurrentEffects.Count) CurrentEffects.Add(effect);
-            else CurrentEffects[index] = effect;
-        }
-        else CurrentEffects.Insert(index != -1 ? index : CurrentEffects.Count, effect);
-    }
-#endregion
-
-#region Adelaide Compact
+    #region Adelaide Compact
     /// <summary>
     /// Completely interprets an entire file; all processes are merged within. Result
     /// of studying cancelled project Adelaide.
@@ -1378,7 +815,9 @@ public static class Interpreter
                 (
                     CurrentTokens.Locate(thing => Regex.IsMatch(CurrentIntToken.ToString(), thing.Value), out check)
                     && CurrentTokens.Locate(thing => Regex.IsMatch(source[i].ToString(), thing.Value) && thing.Symbol, out check)
-                )    
+                )
+                || i == source.Length - 1
+                || CurrentTokens.Locate(thing => Regex.IsMatch(source[i].ToString(), thing.Value) && thing.Punctuation, out check)
             )
             {
                 if (source[i] == '\n')
@@ -1387,9 +826,12 @@ public static class Interpreter
                     CurrentColumn = 0;
                 }
 
+                if (i < source.Length - 1) { PreviousIndex = CurrentIndex; PreviousColumn = CurrentColumn; }
+
                 if (check?.IgnoreOnRefinement == true && CurrentIntToken.Length == 0) continue;
 
-                if (check?.Symbol == true && check?.IgnoreOnRefinement == false)
+                if ((check?.Symbol == true || check?.Punctuation == true)
+                    && check?.IgnoreOnRefinement == false)
                 {
                     hold = new() { AssociatedToken = check, Value = source[i].ToString() };
                     if (CurrentIntToken.Length == 0) goto MatchEvaluator;
@@ -1397,13 +839,15 @@ public static class Interpreter
 
                 if (CurrentTokens.Locate(thing => Regex.IsMatch(CurrentIntToken.ToString(), thing.Value), out Token tok))
                 {
+                    if (tok.IgnoreOnRefinement) goto MatchEvaluator;
+
                     CurrentIntSentence.Add(new() { AssociatedToken = tok, Value = CurrentIntToken.ToString() });
                     CurrentIntToken.Clear();
                     if (hold is not null) CurrentIntSentence.Add(hold);
                     goto MatchEvaluator;
                 }
 
-                MatchEvaluator:
+            MatchEvaluator:
                 string[] lefthand = (from thing in CurrentIntSentence select thing.AssociatedToken.Name).ToArray();
                 if (CurrentSentenceStructures.Locate(thing => lefthand.SequenceEqual(thing.TokenStruct), out SentenceStructure sents))
                 {
@@ -1680,11 +1124,10 @@ public static class Interpreter
                                 }
                                 ); break;
                         case "save":
-                            break;
                             CurrentAssumedAction = new(
                                 FELActionType.save,
                                 CurrentSentenceFruit.Value[1].TrimStart('*')
-                                );
+                                ); break;
                         case "put":
                             object ident = CurrentSentenceFruit.Value[1] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[1].TrimStart('*');
                             object newname = CurrentSentenceFruit.Value[2] == "!" ? new FELCompilerFlag() : CurrentSentenceFruit.Value[2].TrimStart('#');
@@ -1692,6 +1135,12 @@ public static class Interpreter
                                 FELActionType.put,
                                 new object[] { ident, newname }
                                 ); break;
+                        case "increment":
+                            CurrentAssumedAction = new(FELActionType.inc); break;
+                        case "decrement":
+                            CurrentAssumedAction = new(FELActionType.dec); break;
+                        case "cast":
+                            CurrentAssumedAction = new(FELActionType.cast, CurrentSentenceFruit.Value[1]); break;
                         default:
                             if (CurrentSentenceFruit.Value[0].StartsWith('@'))
                                 CurrentAssumedAction = new(
@@ -1702,14 +1151,18 @@ public static class Interpreter
                                 throw new Lamentation(0x16, string.Join(' ', CurrentSentenceFruit.Value));
                             break;
                     }
-                    CurrentIntSentence.Clear();
+                    CurrentIntSentence.Clear(); CurrentSentenceFruit = null;
 
-                    CurrentEffects.Add(CurrentAssumedAction);
+                    PlaceEffect(CurrentAssumedAction);
                     CurrentAssumedAction = default;
+                }
+                else
+                {
+                    if (i < source.Length - 1) continue; else throw new Lamentation(0x59, PreviousIndex.ToString(), PreviousColumn.ToString());
                 }
 
                 continue;
-                
+
             }
 
             CurrentIntToken.Append(source[i]);
@@ -1721,7 +1174,23 @@ public static class Interpreter
         WriteLine(string.Join(", ", from pear in CurrentEffects select pear.ToString()));
 #endif
     }
-#endregion
+    #endregion
+
+    /// <summary>
+    /// Places an action or effect into the list.
+    /// </summary>
+    /// <param name="effect">The action.</param>
+    /// <param name="index">The location. If -1, the latest index.</param>
+    /// <param name="overwrite">If false, the item will be inserted at that location. If true, the item at that location will be overwritten by the new one.</param>
+    public static void PlaceEffect(FELAction effect, int index = -1, bool overwrite = true)
+    {
+        if (overwrite && index != -1)
+        {
+            if (index >= CurrentEffects.Count) CurrentEffects.Add(effect);
+            else CurrentEffects[index] = effect;
+        }
+        else CurrentEffects.Insert(index != -1 ? index : CurrentEffects.Count, effect);
+    }
 
     /// <summary>
     /// Checks the <see cref="CurrentEffects"/> list for any labels and replaces them with their physical addresses instead.
@@ -1766,8 +1235,8 @@ public static class Interpreter
             else currentEffect = 0; // reset
         }
     }
-#endregion
-#region Execution
+    #endregion
+    #region Execution
     /// <summary>
     /// Runs the currently-loaded binary.
     /// </summary>
@@ -1779,8 +1248,8 @@ public static class Interpreter
 
         while (CurrentPointedEffect < CurrentEffects.Count) CurrentEffects[CurrentPointedEffect].Invoke();
     }
-#endregion
-#region Lamentation
+    #endregion
+    #region Lamentation
     /// <summary>
     /// A compiler error to Lilian. However, it can also occur <em>during runtime</em>.
     /// </summary>
@@ -1875,6 +1344,14 @@ public static class Interpreter
             def.Add(0x0056, Properties.CoreContent.Lamentation81);
             def.Add(0x0057, Properties.CoreContent.Lamentation82);
             def.Add(0x0058, Properties.CoreContent.Lamentation83);
+            def.Add(0x0059, Properties.CoreContent.Lamentation84);
+            def.Add(0x005A, Properties.CoreContent.Lamentation85);
+            def.Add(0x005B, Properties.CoreContent.Lamentation86);
+            def.Add(0x005C, Properties.CoreContent.Lamentation87);
+            def.Add(0x005D, Properties.CoreContent.Lamentation88);
+            def.Add(0x005E, Properties.CoreContent.Lamentation89);
+            def.Add(0x005F, Properties.CoreContent.Lamentation90);
+            def.Add(0x0060, Properties.CoreContent.Lamentation91);
         }
 
         /// <summary>
@@ -1978,8 +1455,8 @@ public static class Interpreter
         }
     }
 
-#endregion
-#region Operation
+    #endregion
+    #region Operation
     /// <summary>
     /// The main opcode interpretation class.
     /// </summary>
@@ -2015,24 +1492,24 @@ public static class Interpreter
                 {
                     switch (ActionType)
                     {
-#region Default
+                        #region Default
                         case FELActionType.nop:
                             goto GoForward;
-#endregion
-#region Stack operations
+                        #endregion
+                        #region Stack operations
                         case FELActionType.push:
                             if (Value is not null) CurrentFrame[CurrentFrameIndex].StackFrame.Push(Value); // nah do nothing instead of crying
                             goto GoForward;
                         case FELActionType.pop:
                             if (CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0) CurrentFrame[CurrentFrameIndex].StackFrame.Pop(); // do nothing if the stack is empty
                             goto GoForward;
-#endregion
-#region Print
+                        #endregion
+                        #region Print
                         case FELActionType.print:
                             WriteLine(CurrentFrame[CurrentFrameIndex].StackFrame.Count != 0 ? CurrentFrame[CurrentFrameIndex].StackFrame.Peek() : "There is nothing to print.");
                             goto GoForward;
-#endregion
-#region Arithmetic operations
+                        #endregion
+                        #region Arithmetic operations
                         case FELActionType.add:
                             try
                             {
@@ -2199,8 +1676,8 @@ public static class Interpreter
                                 throw new Lamentation(0x17, ex.Message);
                             }
                             goto GoForward;
-#endregion
-#region Variable management operations
+                        #endregion
+                        #region Variable management operations
                         case FELActionType.store:
                             dynamic x = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             if (Value is string @string) CurrentStore.Add(new(CurrentStore.Count, @string, x));
@@ -2249,8 +1726,8 @@ public static class Interpreter
                                     }
                                 ));
                             goto GoForward;
-#endregion
-#region Branching operations
+                        #endregion
+                        #region Branching operations
                         case FELActionType.beq:
                             dynamic z = Value!;
                             if (z is int index)
@@ -2521,8 +1998,8 @@ public static class Interpreter
                         case FELActionType.end:
                             Environment.Exit(0);
                             return;
-#endregion
-#region User interaction operations
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.take:
                             Write("-> ");
                             string? asked = ReadLine();
@@ -2553,8 +2030,8 @@ public static class Interpreter
                             if (!string.IsNullOrEmpty(asked2)) content2 = asked2!;
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(content2);
                             goto GoForward;
-#endregion
-#region Data manipulation operations
+                        #endregion
+                        #region Data manipulation operations
                         case FELActionType.narrow:
                             dynamic narrowand = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
                             unchecked
@@ -2632,15 +2109,15 @@ public static class Interpreter
                             CurrentFrame[CurrentFrameIndex].StackFrame.Push(realisand!);
 
                             goto GoForward;
-#endregion
-#region Lamentations
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@catch:
                             if (!ErrorRaised) goto GoForward;
                             ErrorRaised = false;
                             CurrentPointedEffect = Value!;
                             return;
-#endregion
-#region Branching operations
+                        #endregion
+                        #region Branching operations
                         case FELActionType.call:
                             dynamic zC = Value!;
                             if (zC is int indexC)
@@ -2671,8 +2148,8 @@ public static class Interpreter
                             }
                             else goto case FELActionType.end; // redirect to end
                             goto GoForward;
-#endregion
-#region Lamentations
+                        #endregion
+                        #region Lamentations
                         case FELActionType.@throw:
                             throw new Lamentation(0x2F);
                         case FELActionType.throwc:
@@ -2680,13 +2157,13 @@ public static class Interpreter
                             if (bruh is string msg) throw new Lamentation(0x2D, msg);
                             else if (bruh is int code) throw new Lamentation(code);
                             goto GoForward;
-#endregion
-#region Cosmetics
+                        #endregion
+                        #region Cosmetics
                         case FELActionType.settitle:
                             Title = Value!;
                             goto GoForward;
-#endregion
-#region User interaction operations
+                        #endregion
+                        #region User interaction operations
                         case FELActionType.pause:
                             dynamic pause = Value!;
                             if (pause is int duration) Thread.Sleep(duration);
@@ -2695,8 +2172,8 @@ public static class Interpreter
                         case FELActionType.wait:
                             ReadKey(true);
                             goto GoForward;
-#endregion
-#region Object model operations
+                        #endregion
+                        #region Object model operations
                         case FELActionType.define:
                             string Name = Value!;
                             TypeRegistry.Insert(CurrentType, new(Name, new()));
@@ -2734,7 +2211,7 @@ public static class Interpreter
                             string BruhName = Value!;
                             FELStructType AssociatedType = TypeRegistry.Find(t => t.Name == BruhName);
                             if (AssociatedType is null) throw new Lamentation(0x49, BruhName);
-                             
+
                             RawStructure = new(0, string.Empty, AssociatedType, new());
                             foreach ((string objn, Type bruh1) in AssociatedType.PropertyList)
                                 RawStructure.Values.Add(objn, default);
@@ -2819,15 +2296,83 @@ public static class Interpreter
                             }
 
                             if (Value![1] is FELCompilerFlag) CurrentStore.Add(thing);
-                            else if (Value![1] is string newnamee) CurrentStore.Add(thing with { Name = newnamee});
+                            else if (Value![1] is string newnamee) CurrentStore.Add(thing with { Name = newnamee });
                             goto GoForward;
-#endregion
-#region Otherwise
+                        #endregion
+                        #region Arithmetic operations
+                        case FELActionType.inc:
+                            try
+                            {
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct) throw new Lamentation(0x50);
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(++a); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+
+                            goto GoForward;
+                        case FELActionType.dec:
+                            try
+                            {
+                                dynamic a = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                                if (a is FELStruct) throw new Lamentation(0x50);
+                                CurrentFrame[CurrentFrameIndex].StackFrame.Push(--a); // rely on implementation...
+                            }
+                            catch (Lamentation bruhMoment) when (bruhMoment.ErrorCode == 0x50)
+                            {
+                                throw;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Lamentation(0x17, ex.Message);
+                            }
+
+                            goto GoForward;
+                        #endregion
+                        #region Object model operations
+                        case FELActionType.cast:
+                            string propos = Value!;
+
+                            dynamic aa = CurrentFrame[CurrentFrameIndex].StackFrame.Pop();
+                            if (aa is FELStruct) throw new Lamentation(0x50);
+
+                            dynamic res = null;
+
+                            if (!aa.Cast(res, false, propos switch
+                            {
+                                "boolean" => typeof(bool),
+                                "sbyte" => typeof(sbyte),
+                                "byte" => typeof(byte),
+                                "short" => typeof(short),
+                                "ushort" => typeof(ushort),
+                                "integer" => typeof(int),
+                                "uinteger" => typeof(uint),
+                                "long" => typeof(long),
+                                "ulong" => typeof(ulong),
+                                "half" => typeof(Half),
+                                "float" => typeof(float),
+                                "double" => typeof(double),
+                                "quadruple" => typeof(decimal),
+                                "character" => typeof(char),
+                                "string" => typeof(string),
+                                _ => throw new Lamentation(0x5d)
+                            }
+                            )) throw new Lamentation(0x5e);
+
+                            goto GoForward;
+                        #endregion
+                        #region Otherwise
                         default: throw new Lamentation(0x16, ActionType.ToString());
-#endregion
+                            #endregion
                     }
                 }
-#region when shit go
+                #region when shit go
                 catch (Lamentation cry)
                 {
                     WriteLine(cry.ToString());
@@ -2844,7 +2389,7 @@ public static class Interpreter
                         WriteLine(cry.ToString()); ErrorRaised = true;
                     }
                 }
-#endregion
+            #endregion
             GoForward: CurrentPointedEffect++;
             }
         }
@@ -2884,7 +2429,8 @@ public static class Interpreter
                     (act.ActionType >= FELActionType.create &&
                     act.ActionType <= FELActionType.carry) ||
                     act.ActionType == FELActionType.present ||
-                    act.ActionType == FELActionType.remove
+                    act.ActionType == FELActionType.remove ||
+                    act.ActionType == FELActionType.cast
                     )
                 {
                     writer.Write((byte)act.ActionType);
@@ -2973,7 +2519,8 @@ public static class Interpreter
                     (opcode >= 64 &&
                     opcode <= 68) ||
                     opcode == 71 ||
-                    opcode == 75
+                    opcode == 75 ||
+                    opcode == 78
                     )
                 {
                     byte marker = reader.ReadByte();
@@ -3441,7 +2988,22 @@ public static class Interpreter
             /// <summary>
             /// Removes an object from the store. Now your dad can't get the milk
             /// </summary>
-            remove
+            remove,
+
+            /// <summary>
+            /// Increments an object by 1.
+            /// </summary>
+            inc,
+
+            /// <summary>
+            /// Decrements an object by 1.
+            /// </summary>
+            dec,
+
+            /// <summary>
+            /// Converts a type manually.
+            /// </summary>
+            cast
         }
 
         /* example:
@@ -3451,7 +3013,7 @@ public static class Interpreter
          * pop;
          */
     }
-#endregion
+    #endregion
 }
 #endregion
 
@@ -3608,7 +3170,7 @@ public static class ObjectModel
         /// Another requirement to satisfy shit
         /// </summary>
         /// <returns>0x075AC211</returns>
-        public override int GetHashCode() => (69420 ^ 123456789) & (555-678-4084);
+        public override int GetHashCode() => (69420 ^ 123456789) & (555 - 678 - 4084);
     }
 
     /// <summary>
@@ -3887,6 +3449,50 @@ public static class UserInterface
     }
 
     /// <summary>
+    /// Launches a screen. (Version 1.3)
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <param name="header">The header.</param>
+    /// <param name="actions">If possible, the keyboard shortcuts at the current screen.</param>
+    public static void DisplayScreen13(string content, string header = "", params FELUIAction[] actions)
+    {
+        if (string.IsNullOrWhiteSpace(content)) return;
+        bool activate = false;
+        if (actions.Length > 0)
+        {
+            activate = true;
+            foreach (FELUIAction act in actions) Actions.Add(act);
+        }
+
+        if (!string.IsNullOrEmpty(header)) WriteLine($"{header}\n****");
+
+        WriteLine(content + "\n");
+
+        if (activate)
+        {
+            foreach (FELUIAction act in Actions)
+                WriteLine($"\t{act.Key} - {act.Description}");
+            WriteLine();
+
+            int l, t;
+            l = CursorLeft; t = CursorTop;
+            while (true)
+            {
+                SetCursorPosition(l, t);
+
+                ConsoleKey pressed = ReadKey(true).Key;
+                if (Actions.Exists(x => x.Key == pressed))
+                {
+                    Actions.Find(x => x.Key == pressed).Invoke();
+                    Actions.Clear();
+                    return;
+                }
+                else continue;
+            }
+        }
+    }
+
+    /// <summary>
     /// Presents a screen wherein user input is needed. (Text)
     /// </summary>
     /// <param name="Description">The text to be displayed before the prompt.</param>
@@ -3926,6 +3532,38 @@ public static class UserInterface
 
             Clear();
             WriteLine($"{Properties.CoreContent.FileDoesNotExist}\n");
+            WriteLine($"{Properties.CoreContent.PressAny}\n");
+            ReadKey(true);
+            goto Start;
+        }
+    }
+    /// <summary>
+    /// Presents a screen wherein user input is needed. (Text) (Adelaide)
+    /// </summary>
+    /// <param name="Description">The text to be displayed before the prompt.</param>
+    /// <param name="Required">If true, the screen will not move until it is satisfied with an input.</param>
+    /// <param name="File">If true, the screen will check if the input corresponds with a filename.</param>
+    /// <returns>The input.</returns>
+    public static string AskingScreen13(string Description, bool Required = false, bool File = false)
+    {
+    Start:
+        WriteLine(Description + "\n");
+        if (File) WriteLine(Properties.CoreContent.ThisProgIsAsk);
+        Write("> ");
+        string input = ReadLine();
+
+        if (Required) { if (!string.IsNullOrEmpty(input)) goto FileCheck; else goto Start; }
+
+        if (File && string.IsNullOrEmpty(input)) return string.Empty;
+
+        FileCheck:
+        if (System.IO.File.Exists(input.Trim('"'))) return input.Trim('"');
+        else
+        {
+            ForegroundColor = ConsoleColor.Gray; BackgroundColor = ConsoleColor.DarkRed;
+
+            Clear();
+            WriteLine($"{Properties.CoreContent.FileDoesNotExist}");
             WriteLine($"{Properties.CoreContent.PressAny}\n");
             ReadKey(true);
             goto Start;
@@ -4015,13 +3653,13 @@ public static class UserInterface
 /// </summary>
 public static class Coco
 {
-#region Coco preprocessor
+    #region Coco preprocessor
     /// <summary>
     /// The main class for the preprocessor.
     /// </summary>
     public static class Preprocessor
     {
-#region Flags
+        #region Flags
         /// <summary>
         /// If true, enable the preprocessor. If false, all directive lines will be ignored.
         /// </summary>
@@ -4043,7 +3681,7 @@ public static class Coco
         /// If true, the compiler will report that there was no output path specified.
         /// </summary>
         public static bool NoOutputFound { get; set; }
-#endregion
+        #endregion
 
         /// <summary>
         /// Determines the project version to use.
@@ -4062,7 +3700,7 @@ public static class Coco
             finally { if (ver! == true) VersionOfCompilation = true; else VersionOfCompilation = false; }
         }
 
-#region Faux Coco
+        #region Faux Coco
         /// <summary>
         /// Takes a project file and processes it.
         /// </summary>
@@ -4109,7 +3747,7 @@ public static class Coco
             else
                 RegulateCompilation = false;
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// The resulting consummate or arranged source file.
@@ -4137,10 +3775,10 @@ public static class Coco
         /// </summary>
         public static string Outgoing { get; set; }
 
-#region Vrai Coco
+        #region Vrai Coco
         /// <summary>
         /// Preprocesses the file. This only works if the submitted file is primarily in Lilian.
-        /// If the file is primarily in Coco (i.e., no dot delimiter), this will think that all lines are normal Lilian.
+        /// If the file is primarily in Coco (i.e., no slash delimiter), this will think that all lines are normal Lilian.
         /// </summary>
         /// <param name="file">The raw file.</param>
         /// <param name="Pass">If true, the project macros are not checked. (Second-pass)</param>
@@ -4151,6 +3789,8 @@ public static class Coco
             Dictionary<string, string> symbols = new();
             List<(string? symval, List<string> lines)> lignes = new();
             List<string> IncludeFilepaths = new();
+
+            CurrentFile.Clear();
 
             string currval = string.Empty;
             string currsym = string.Empty;
@@ -4186,7 +3826,7 @@ public static class Coco
                 return;
             }
 
-            if (Array.Exists(file, s => s.TrimStart().StartsWith('.'))) throw new Lamentation(0x3f);
+            //if (Array.Exists(file, s => s.TrimStart().StartsWith('.'))) throw new Lamentation(0x3f);
 
             if (!RegulateCompilation && !Pass)
             {
@@ -4199,11 +3839,11 @@ public static class Coco
 
             foreach (string line in file)
             {
-                if (line.TrimStart().StartsWith("//")) continue; // comment
+                if (line.TrimStart().StartsWith("//") || line.TrimStart().StartsWith('.')) continue; // comment
 
                 if (!line.TrimStart().StartsWith('/'))
                 {
-                    if ((Pass && !string.IsNullOrWhiteSpace(line)) && collect) // pass GO; collect $200
+                    if (Pass && !string.IsNullOrWhiteSpace(line) && collect) // pass GO; collect $200
                         lignes[currindx].lines.Add(line);
                     else if (Pass && !string.IsNullOrWhiteSpace(line)) // just visiting
                         CurrentFile.Add(line);
@@ -4213,7 +3853,7 @@ public static class Coco
 
                 string preprocline = line.TrimStart().TrimStart('/');
 
-#region Original macros
+                #region Original macros
                 if (Regex.IsMatch(preprocline, @"define\s+(?<SymbolName>[0-9A-Za-z]+)"))
                 {
                     if (ProjectSection) throw new Lamentation(0x42);
@@ -4402,10 +4042,10 @@ public static class Coco
                     lignes = new();
                     currindx = -1;
                 }
-#endregion
+                #endregion
                 else if (!Pass)
                 {
-#region Project macros
+                    #region Project macros
                     if (Regex.IsMatch(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)"))
                     {
                         var mat = Regex.Match(preprocline, @"use\s+(?<Major>[0-9]+)\.(?<Minor>[0-9]+)");
@@ -4473,8 +4113,8 @@ public static class Coco
 
                         OutputPresent = true;
                     }
-#endregion
-#region Grammar definition macros
+                    #endregion
+                    #region Grammar definition macros
                     else if (Regex.IsMatch(preprocline, @"^grammar\s+\[(?<GrammarName>[^\[\]\n]*)\]\s+(?<GrammarSystem>master|slave)\s+(?<GrammarAddition>append|override)?$"))
                     {
                         if (GrammarSection) throw new Lamentation(0x45);
@@ -4536,25 +4176,22 @@ public static class Coco
                                 CurrentTokens.Add(new() { Name = nom, Value = pat });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?$"))
+                    else if (Regex.IsMatch(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?(?:\s+(?<Punctuation>punctuate))?$"))
                     {
                         if (!TokensSection) throw new Lamentation(0x47);
 
-                        var mat = Regex.Match(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?$").Groups;
+                        var mat = Regex.Match(preprocline, @"^symbol\s+\[(?<TokenName>[^\[\]\n]*)\]\s+<(?<Pattern>(?:\\)?.)>(?:\s+(?<Ignore>ignore))?(?:\s+(?<Punctuation>punctuate))?$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = "^" + mat["Pattern"].Value + "$";
 
                         if (MasterMode)
                             if (!CurrentTokens.Exists(tok => tok.Name == nom))
-                                if (mat["Ignore"].Success)
-                                    CurrentTokens.Add(new() { Name = nom, Symbol = true, Value = pat, IgnoreOnRefinement = true });
-                                else                                      
-                                    CurrentTokens.Add(new() { Name = nom, Symbol = true, Value = pat });
+                                CurrentTokens.Add(new() { Name = nom, Symbol = true, Value = pat, IgnoreOnRefinement = mat["Ignore"].Success, Punctuation = mat["Punctuation"].Success });
                             else throw new Lamentation(0x53);
                     }
-                    else if (Regex.IsMatch(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?$"))
+                    else if (Regex.IsMatch(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?(?:\s+(?<Ignore>ignore))?$"))
                     {
-                        var mat = Regex.Match(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?$").Groups;
+                        var mat = Regex.Match(preprocline, @"^sequence\s+\[(?<TokenName>[^\[\]\n]*)\]\s+(?<Pattern>(?:<[^<>\n]*>!?\s*)+)(?:\s+(?<Recurse>recurse))?(?:\s+(?<Base>base))?(?:\s+(?<Ignore>ignore))?$").Groups;
                         string nom = mat["TokenName"].Value;
                         string pat = mat["Pattern"].Value;
                         List<string> toknom = new();
@@ -4562,7 +4199,7 @@ public static class Coco
                         foreach (Match thingy in stuff) toknom.Add(thingy.Groups["Name"].Value);
                         string rick = "^(?:" + string.Join('|', toknom) + ")$";
 
-                        var thing = new Token { Name = nom, Value = rick, Look = mat["Recurse"].Success };
+                        Token thing = new() { Name = nom, Value = rick, Look = mat["Recurse"].Success, IgnoreOnRefinement = mat["Ignore"].Success };
                         if (MasterMode)
                         {
                             if (mat["Base"].Success)
@@ -4598,7 +4235,7 @@ public static class Coco
                                 CurrentSentenceStructures.Add(new() { Name = nom, TokenStruct = toknom.ToArray() });
                             else throw new Lamentation(0x53);
                     }
-#endregion
+                    #endregion
                     else throw new Lamentation(0x32);
                 }
                 else throw new Lamentation(0x32);
@@ -4640,9 +4277,9 @@ public static class Coco
 #endif
         }
 
-#endregion
+        #endregion
     }
-#endregion
+    #endregion
 }
 #endregion
 
@@ -4652,299 +4289,552 @@ public static class Coco
 /// </summary>
 public static class Carmen
 {
+    /// <summary>
+    /// Interprets a file for Carmen statements.
+    /// </summary>
+    /// <param name="file">The file.</param>
+    public static void Interpret(string[] file)
+    {
+        if (!Array.Exists(file, s => s.TrimStart().StartsWith('.')))
+        {
+            CurrentFile = new(file);
+            return;
+        }
 
+        byte gear = 0;
+        Stack<byte> gears = new();
+        /*
+         0 - class
+         1 - struct
+         2 - module
+         3 - method
+         4 - property
+         */
+        ObjectStates state = ObjectStates.None;
+        bool open = false;
+
+        foreach (string line in file)
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            if (gears.Count > 0) if (gears.Peek() == 3 && !line.Trim().StartsWith('.')) { bruhList.Add(line); continue; }
+
+            var bruh = Regex.Match(line.Trim().TrimStart('.'), Pattern).Groups;
+
+
+            switch (bruh["LexicalType"].Value)
+            {
+                case "class":
+                    Context.Add(new()); level++;
+                    Context[level].Add(new CarmenClass(bruh["LexicalName"].Value));
+                    gears.Push(0);
+                    open = true;
+                    break;
+                case "method":
+                    Context.Add(new()); level++;
+                    Context[level].Add(new CarmenMethod(bruh["LexicalName"].Value));
+                    gears.Push(3);
+                    open = true;
+                    break;
+                case "field":
+                    Context.Add(new()); level++;
+                    Context[level].Add(new CarmenField(bruh["LexicalName"].Value)); // dunno what to do lmao
+                    goto default;
+                default:
+                    if (!open) break;
+                    level--;
+
+                    if (bruh["End"].Success)
+                    {
+
+                        switch (gear)
+                        {
+                            case 0: // class
+                            case 1:
+                            case 2:
+                                open = false;
+                                gears.Pop();
+                                break;
+                            case 3: // method
+                                Interpret_S(string.Join('\n', bruhList));
+                                CarmenMethod thingy = new(Context[level + 1][^1].Name);
+                                thingy.MethodBody = new(CurrentEffects);
+                                CurrentEffects.Clear(); // empty here
+                                Context[level + 1][^1] = thingy;
+                                gears.Pop();
+                                break;
+                        }
+                    }
+                    if (level == -1 /* base level */)
+                    {
+                        CarmenModule thing = ConsummateLevel with { Contents = new(Context[0]) };
+                        ConsummateLevel = thing; // tf??
+                    }
+                    else
+                    {
+                        if (Context[level][^1].Contents is null) Context[level][^1].Maternity();
+                        Context[level][^1].Contents.AddRange(Context[level + 1]); // how tho!
+                    }
+                    Context.RemoveAt(level + 1);
+
+                    break;
+            }
+        }
+
+        if (level != -1) throw new Lamentation(0x59); // brUh
+    }
 
     /// <summary>
-    /// All the enums
+    /// The pattern used by <see cref="Interpret(string[])"/>.
     /// </summary>
-    public static class States
+    public const string Pattern = @"(?<LexicalType>class|method|field)(?:\s+\[(?<TypeName>[A-Za-z0-9]+)\])?\s+(?:<(?<LexicalName>[A-Za-z0-9]+)>)?(?:\s+=\s+(?<Value>[0-9]+(?:\.[0-9]+)?|""[^""\n]*"")?)?|(?<End>end)";
+
+    /// <summary>
+    /// The context
+    /// </summary>
+    internal static List<List<ICarmenGrammaticalObject>> Context { get; set; } = new();
+
+    /// <summary>
+    /// The base type where everything resides (similar to the top-level in C/C++/C# 10).
+    /// </summary>
+    public static CarmenModule ConsummateLevel { get; set; } = new("main");
+
+    /// <summary>
+    /// All method bodies that are recorded in the interpretation.
+    /// </summary>
+    internal static Dictionary<string, List<string>> Bodies { get; set; } = new();
+
+    /// <summary>
+    /// The current recorder.
+    /// </summary>
+    private static readonly List<string> bruhList = new();
+
+    /// <summary>
+    /// uhhh
+    /// </summary>
+    internal static int level = -1;
+
+    /// <summary>
+    /// hmmm
+    /// </summary>
+    internal static int point = 0;
+
+    /// <summary>
+    /// An object in the heap. Does not translate to bytes, but are more like variably-sized
+    ///blocks in a line.
+    /// </summary>
+    /// <param name="AssociatedField">The field this is attached to.</param>
+    /// <param name="Name">The name of the field.</param>
+    /// <param name="Value">The value of the field.</param>
+    public record struct HeapResident(string AssociatedField, string Name, dynamic? Value = null);
+
+    /// <summary>
+    /// The heap. Different from <see cref="FELFrame.StackFrame"/> in that the stack
+    ///frame is literally what it is.
+    /// </summary>
+    public static List<HeapResident> Residents { get; set; } = new();
+
+    /// <summary>
+    /// An object.
+    /// </summary>
+    public interface ICarmenGrammaticalObject
     {
         /// <summary>
-        /// How properties are dealt with in inheritance.
+        /// The name of the object.
         /// </summary>
-        public enum ModifiabilityLevel
+        public string Name { get; }
+
+        /// <summary>
+        /// All inner members.
+        /// </summary>
+        public List<ICarmenGrammaticalObject> Contents { get; set; }
+
+        /// <summary>
+        /// The object's modifiers. See <see cref="ObjectStates"/> for more info.
+        /// </summary>
+        public ObjectStates State { get; }
+
+        /// <summary>
+        /// Gets an object of a name in the type.
+        /// </summary>
+        /// <param name="ObjectName">The name of the type.</param>
+        /// <returns>The type with the name.</returns>
+        public ICarmenGrammaticalObject this[string ObjectName] { get; }
+
+        /// <summary>
+        /// Initialises the contents list.
+        /// </summary>
+        public void Maternity();
+    }
+
+    /// <summary>
+    /// A type that can hold stuff.
+    /// </summary>
+    public interface ICarmenMother: ICarmenGrammaticalObject
+    {
+        /// <summary>
+        /// All the inherited/implemented objects.
+        /// </summary>
+        public string[] InheritedObjects { get; }
+    }
+
+    /// <summary>
+    /// Something that holds data.
+    /// </summary>
+    public interface ICarmenField: ICarmenGrammaticalObject
+    {
+        /// <summary>
+        /// The default data as the field initialises.
+        /// </summary>
+        public dynamic? DefaultValue { get; }
+
+        /// <summary>
+        /// The value of the object.
+        /// </summary>
+        public dynamic? Value { get; set; }
+    }
+
+    /// <summary>
+    /// static class lel
+    /// </summary>
+    public struct CarmenModule: ICarmenMother
+    {
+        /// <summary>
+        /// Initialises a new module with only a name.
+        /// </summary>
+        /// <param name="name">The name of the type.</param>
+        public CarmenModule(string name) => Name = name;
+
+        /// <summary>
+        /// Initialises a new module with a name and modifiers.
+        /// </summary>
+        /// <param name="name">The name of the type.</param>
+        /// <param name="states">The modifiers of the type.</param>
+        public CarmenModule(string name, params ObjectStates[] states)
         {
-            /// <summary>
-            /// The property is inheritable and can be modified.
-            /// </summary>
-            Normal,
+            Name = name;
+            ObjectStates etat = ObjectStates.None;
+            foreach (ObjectStates est in states) etat |= est;
+            State |= etat;
+        }
 
-            /// <summary>
-            /// The property is undefined and must be inherited (<see langword="abstract"/>).
-            /// </summary>
-            MustInherit,
+        public void Maternity() => Contents = new();
+        public string Name { get; }
+        public ObjectStates State { get; } = ObjectStates.Static;
+        public List<ICarmenGrammaticalObject> Contents { get; set; } = null;
+        public ICarmenGrammaticalObject this[string ObjectName]
+        {
+            get
+            {
+                if (Contents is null) throw new Lamentation("haha no she's empty");
 
-            /// <summary>
-            /// The property is fixed at this point (<see langword="sealed"/>).
-            /// </summary>
-            NotInheritable,
+                if (Contents.Locate(x => x.Name == ObjectName, out ICarmenGrammaticalObject thing)) return thing;
+                else throw new Lamentation("haha no we cannae find it");
+            }
+        }
+        public string[] InheritedObjects { get; } = null;
 
-            /// <summary>
-            /// The property hides a similarly-named member (<see langword="new"/>).
-            /// </summary>
-            Shadows
+        /// <summary>
+        /// Turns a Module into a Class. (removes static property only from module itself)
+        /// </summary>
+        /// <param name="mod"></param>
+        public static implicit operator CarmenClass(CarmenModule mod) => new CarmenClass(mod.Name, mod.State) with { Contents = mod.Contents };
+    }
+
+    /// <summary>
+    /// A class object.
+    /// </summary>
+    public struct CarmenClass: ICarmenMother
+    {
+        /// <summary>
+        /// Initialises a new class type with only a name.
+        /// </summary>
+        /// <param name="name">The name of the type.</param>
+        public CarmenClass(string name) => Name = name;
+
+        /// <summary>
+        /// Initialises a new class type with a name and modifiers.
+        /// </summary>
+        /// <param name="name">The name of the type.</param>
+        /// <param name="states">The modifiers of the type.</param>
+        public CarmenClass(string name, params ObjectStates[] states)
+        {
+            Name = name;
+            foreach (ObjectStates est in states) State |= est;
+        }
+
+        public static implicit operator CarmenModule(CarmenClass cls) => new CarmenModule(cls.Name, cls.State, ObjectStates.Static) with { Contents = cls.Contents };
+
+        public void Maternity() => Contents = new();
+
+        public string Name { get; }
+        public ObjectStates State { get; } = ObjectStates.None;
+        public List<ICarmenGrammaticalObject> Contents { get; set; } = null;
+        public ICarmenGrammaticalObject this[string ObjectName]
+        {
+            get
+            {
+                if (Contents is null) throw new Lamentation(0x5A);
+
+                if (Contents.Locate(x => x.Name == ObjectName, out ICarmenGrammaticalObject thing)) return thing;
+                else throw new Lamentation(0x5b, ObjectName);
+            }
+        }
+        public string[] InheritedObjects { get; } = null;
+    }
+
+    /// <summary>
+    /// A method body.
+    /// </summary>
+    public struct CarmenMethod: ICarmenGrammaticalObject
+    {
+        /// <summary>
+        /// Initialises an empty method with a name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        public CarmenMethod(string name) => Name = name;
+
+        public ICarmenGrammaticalObject this[string ObjectName] => throw new Lamentation("You cannot index this object by string. Index it by integer.");
+        public string Name { get; set; }
+        public List<ICarmenGrammaticalObject> Contents { get; set; } = null;
+        public ObjectStates State { get; } = ObjectStates.None;
+        public void Maternity() => Contents = new();
+
+        /// <summary>
+        /// The method body of the method.
+        /// </summary>
+        public List<FELAction> MethodBody { get; set; } = new();
+
+        /// <summary>
+        /// If true, the last opcode of the body should NOT be an arithmetic operation or a popping. 
+        /// In essence, when the execution pointer leaves, there should be something on the stack.
+        /// </summary>
+        public bool Returns { get; } = false;
+    }
+
+    /// <summary>
+    /// A field.
+    /// </summary>
+    public struct CarmenField: ICarmenField
+    {
+        /// <summary>
+        /// Initialises a new field with nothing in it.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        public CarmenField(string name)
+        {
+            Name = name;
+            DefaultValue = default;
+            Value = DefaultValue;
         }
 
         /// <summary>
-        /// The visibility of the object.
+        /// Initialises a new field with something in it.
         /// </summary>
-        public enum AccessibilityLevel
+        /// <param name="name">The name of the field.</param>
+        /// <param name="obj">The value that comes with the default value.</param>
+        public CarmenField(string name, dynamic? obj)
         {
-            /// <summary>
-            /// Anyone can get to it.
-            /// </summary>
-            Public,
-
-            /// <summary>
-            /// Only the stuff inside the type can get to it.
-            /// </summary>
-            Private,
-
-            /// <summary>
-            /// Only the containing assembly can get to it.
-            /// </summary>
-            Internal,
-            
-            /// <summary>
-            /// Only the stuff inside the type and its inheritors can get to it.
-            /// </summary>
-            Protected,
+            Name = name;
+            DefaultValue = obj;
+            Value = DefaultValue;
         }
-    }
-}
-#endregion
 
-#if !WALKIE
-#region Preloader
-/// <summary>
-/// Hard-coded structures.
-/// </summary>
-public static class TEMP
-{
+        /// <summary>
+        /// Initialises a new field with modifiers and nothing in it.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="states">
+        /// The modifiers of the type. If you pass
+        /// <see cref="ObjectStates.Static"/>,
+        /// you die.</param>
+        public CarmenField(string name, params ObjectStates[] states)
+        {
+            Name = name;
+            DefaultValue = default;
+            Value = DefaultValue;
+            foreach (ObjectStates est in states) State |= est;
+            if ((State & ObjectStates.Static) == ObjectStates.Static) throw new Lamentation(0x5F);
+            if ((State & ObjectStates.Abstract) == ObjectStates.Abstract) throw new Lamentation(0x60);
+        }
+
+        /// <summary>
+        /// Initialises a new field with modifiers and something in it.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="obj">The value that comes with the default value.</param>
+        /// <param name="states">The modifiers of the type.</param>
+        public CarmenField(string name, dynamic? obj, params ObjectStates[] states)
+        {
+            Name = name;
+            DefaultValue = obj;
+            Value = DefaultValue;
+            foreach (ObjectStates est in states) State |= est;
+            if ((State & ObjectStates.Abstract) == ObjectStates.Abstract) throw new Lamentation(0x60);
+        }
+
+
+        public ICarmenGrammaticalObject this[string ObjectName] => throw new Lamentation("You cannot index this object.");
+        public string Name { get; set; }
+        public List<ICarmenGrammaticalObject> Contents { get; set; } = null;
+        public ObjectStates State { get; } = ObjectStates.None;
+        public dynamic? DefaultValue { get; }
+        public dynamic? Value { get; set; }
+
+        public void Maternity() => Contents = new();
+    }
+
     /// <summary>
-    /// Load patterns.
+    /// A constant field.
     /// </summary>
-    public static void LOADPATTERNS()
+    public struct CarmenConst: ICarmenField
     {
-        //----------------------- Name              Value                               Look            IgnoreOnRefinement          Terminate
-        // Keywords
-        CurrentTokens.Add(new() { Name = "PRNT", Value = "^print$" });
-        CurrentTokens.Add(new() { Name = "PRPR", Value = @"^preprocess$" });
-        CurrentTokens.Add(new() { Name = "STRT", Value = @"^start$" });
-        CurrentTokens.Add(new() { Name = "LET", Value = @"^let$" });
-        CurrentTokens.Add(new() { Name = "PUSH", Value = @"^push$" });
-        CurrentTokens.Add(new() { Name = "POP", Value = @"^pop$" });
-        CurrentTokens.Add(new() { Name = "ADDO", Value = @"^add$" });
-        CurrentTokens.Add(new() { Name = "SUBO", Value = @"^subtract$" });
-        CurrentTokens.Add(new() { Name = "MULO", Value = @"^multiply$" });
-        CurrentTokens.Add(new() { Name = "DIVO", Value = @"^divide$" });
-        CurrentTokens.Add(new() { Name = "MODO", Value = @"^remainder$" });
-        CurrentTokens.Add(new() { Name = "LSFT", Value = @"^lshift$" });
-        CurrentTokens.Add(new() { Name = "RSFT", Value = @"^rshift$" });
-        CurrentTokens.Add(new() { Name = "STOR", Value = @"^store$" });
-        CurrentTokens.Add(new() { Name = "LOAD", Value = @"^load$" });
-        CurrentTokens.Add(new() { Name = "BEQ", Value = @"^beq$" });
-        CurrentTokens.Add(new() { Name = "BNE", Value = @"^bne$" });
-        CurrentTokens.Add(new() { Name = "BGT", Value = @"^bgt$" });
-        CurrentTokens.Add(new() { Name = "BGE", Value = @"^bge$" });
-        CurrentTokens.Add(new() { Name = "BLT", Value = @"^blt$" });
-        CurrentTokens.Add(new() { Name = "BLE", Value = @"^ble$" });
-        CurrentTokens.Add(new() { Name = "GOTO", Value = @"^goto$" });
-        CurrentTokens.Add(new() { Name = "AND", Value = @"^and$" });
-        CurrentTokens.Add(new() { Name = "OR", Value = @"^or$" });
-        CurrentTokens.Add(new() { Name = "XOR", Value = @"^xor$" });
-        CurrentTokens.Add(new() { Name = "BTRU", Value = @"^btr$" });
-        CurrentTokens.Add(new() { Name = "BFLS", Value = @"^bfl$" });
-        CurrentTokens.Add(new() { Name = "END", Value = @"^end$" });
-        CurrentTokens.Add(new() { Name = "ASKN", Value = @"^take$" });
-        CurrentTokens.Add(new() { Name = "ASKL", Value = @"^ask$" });
-        CurrentTokens.Add(new() { Name = "NARW", Value = @"^narrow$" });
-        CurrentTokens.Add(new() { Name = "WIDN", Value = @"^widen$" });
-        CurrentTokens.Add(new() { Name = "REAL", Value = @"^realise$" });
-        CurrentTokens.Add(new() { Name = "CTCH", Value = @"^catch$" });
-        CurrentTokens.Add(new() { Name = "CALL", Value = @"^call$" });
-        CurrentTokens.Add(new() { Name = "RETN", Value = @"^return$" });
-        CurrentTokens.Add(new() { Name = "THNK", Value = @"^think$" });
-        CurrentTokens.Add(new() { Name = "THRW", Value = @"^throw$" });
-        CurrentTokens.Add(new() { Name = "TITL", Value = @"^title$" });
-        CurrentTokens.Add(new() { Name = "PAUS", Value = @"^pause$" });
-        CurrentTokens.Add(new() { Name = "WAIT", Value = @"^wait$" });
-        CurrentTokens.Add(new() { Name = "TRUE", Value = @"^true$" });
-        CurrentTokens.Add(new() { Name = "FAUX", Value = @"^false$" });
-        CurrentTokens.Add(new() { Name = "DEFN", Value = @"^define$" });
-        CurrentTokens.Add(new() { Name = "FRNS", Value = @"^furnish$" });
-        CurrentTokens.Add(new() { Name = "FINS", Value = @"^finalise$" });
-        CurrentTokens.Add(new() { Name = "CREA", Value = @"^create$" });
-        CurrentTokens.Add(new() { Name = "BOOL", Value = @"^boolean$" });
-        CurrentTokens.Add(new() { Name = "BYTE", Value = @"^byte$" });
-        CurrentTokens.Add(new() { Name = "SBYT", Value = @"^sbyte$" });
-        CurrentTokens.Add(new() { Name = "SHRT", Value = @"^short$" });
-        CurrentTokens.Add(new() { Name = "USHT", Value = @"^ushort$" });
-        CurrentTokens.Add(new() { Name = "INTG", Value = @"^integer$" });
-        CurrentTokens.Add(new() { Name = "UINT", Value = @"^uinteger$" });
-        CurrentTokens.Add(new() { Name = "LONG", Value = @"^long$" });
-        CurrentTokens.Add(new() { Name = "ULNG", Value = @"^ulong$" });
-        CurrentTokens.Add(new() { Name = "HALF", Value = @"^half$" });
-        CurrentTokens.Add(new() { Name = "FLOT", Value = @"^float$" });
-        CurrentTokens.Add(new() { Name = "STRG", Value = @"^string$" });
-        CurrentTokens.Add(new() { Name = "CHAR", Value = @"^character$" });
-        CurrentTokens.Add(new() { Name = "DECM", Value = @"^quadruple$" });
-        CurrentTokens.Add(new() { Name = "DOUB", Value = @"^double$" });
-        CurrentTokens.Add(new() { Name = "SAVE", Value = @"^save$" });
-        CurrentTokens.Add(new() { Name = "DELT", Value = @"^delete$" });
-        CurrentTokens.Add(new() { Name = "GET", Value = @"^get$" });
-        CurrentTokens.Add(new() { Name = "SET", Value = @"^set$" });
-        CurrentTokens.Add(new() { Name = "PUT", Value = @"^put$" });
-        CurrentTokens.Add(new() { Name = "PRSN", Value = @"^present$" });
-        CurrentTokens.Add(new() { Name = "RECL", Value = @"^shelve$" });
-        CurrentTokens.Add(new() { Name = "REMV", Value = @"^remove$" });
-        CurrentTokens.Add(new() { Name = "NULL", Value = @"^nothing$" });
+        /// <summary>
+        /// Initialises a new constant field with something in it.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="obj">The value that comes with the default value.</param>
+        public CarmenConst(string name, dynamic? obj)
+        {
+            Name = name;
+            DefaultValue = obj;
+        }
 
-        // Symbols
-        CurrentTokens.Add(new() { Name = "EXCL", Value = @"^\!$" });
-        CurrentTokens.Add(new() { Name = "SMCL", Value = @"^;$", Terminate = true });
-        CurrentTokens.Add(new() { Name = "COLN", Value = @"^:$", Terminate = true });
-
-        // More sensitive things
-        CurrentTokens.Add(new() { Name = "QUOT", Value = @"^""[^""\n]*""$" });
-        CurrentTokens.Add(new() { Name = "SQUT", Value = @"^'[^'\n]'$|^'`.'$" });
-        CurrentTokens.Add(new() { Name = "INTL", Value = @"^[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "FPIN", Value = @"^[0-9]+\.[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "WTSP", Value = @"^\s+$", Look = true, IgnoreOnRefinement = true });
-        CurrentTokens.Add(new() { Name = "LABL", Value = @"^@[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "STRC", Value = @"^&[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "HEAP", Value = @"^\*[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "ADDR", Value = @"^\&[0-9]+$", Look = true });
-        CurrentTokens.Add(new() { Name = "EQUL", Value = @"^=$" });
-        CurrentTokens.Add(new() { Name = "IDNT", Value = @"^#[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "NAME", Value = @"^[A-Za-z][A-Za-z0-9]*$", Look = true });
-        CurrentTokens.Add(new() { Name = "HSST", Value = @"^#\*$" });
+        /// <summary>
+        /// Initialises a new constant field with modifiers and something in it.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="obj">The value that comes with the default value.</param>
+        /// <param name="states">The modifiers of the type.</param>
+        public CarmenConst(string name, dynamic? obj, params ObjectStates[] states)
+        {
+            Name = name;
+            DefaultValue = obj;
+            foreach (ObjectStates est in states) State |= est;
+            if ((State & ObjectStates.Abstract) == ObjectStates.Abstract) throw new Lamentation(0x60);
+        }
 
 
+        public ICarmenGrammaticalObject this[string ObjectName] => throw new Lamentation("You cannot index this object.");
+        public string Name { get; set; }
+        public List<ICarmenGrammaticalObject> Contents { get; set; } = null;
+        public ObjectStates State { get; } = ObjectStates.Constant;
+        public dynamic? DefaultValue { get; }
+        public dynamic? Value { get => DefaultValue; set => throw new Lamentation(); }
 
-        //----------------------------------- Name                      TokenStruct ----------------                            -----
-        CurrentSentenceStructures.Add(new() { Name = "StartPreprocess", TokenStruct = new string[] { "PRPR", "COLN" } });
-        CurrentSentenceStructures.Add(new() { Name = "EndPreprocess", TokenStruct = new string[] { "STRT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushString", TokenStruct = new string[] { "PUSH", "QUOT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushIntegral", TokenStruct = new string[] { "PUSH", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushAdelaide", TokenStruct = new string[] { "PUSH", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushTrueBoolean", TokenStruct = new string[] { "PUSH", "TRUE", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushFalseBoolean", TokenStruct = new string[] { "PUSH", "FAUX", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushNothing", TokenStruct = new string[] { "PUSH", "NULL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Pop", TokenStruct = new string[] { "POP", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Print", TokenStruct = new string[] { "PRNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Add", TokenStruct = new string[] { "ADDO", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Subtract", TokenStruct = new string[] { "SUBO", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Multiply", TokenStruct = new string[] { "MULO", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Divide", TokenStruct = new string[] { "DIVO", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Modulus", TokenStruct = new string[] { "MODO", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LeftShift", TokenStruct = new string[] { "LSFT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "RightShift", TokenStruct = new string[] { "RSFT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreIndex", TokenStruct = new string[] { "STOR", "ADDR", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreNamed", TokenStruct = new string[] { "STOR", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LoadIndex", TokenStruct = new string[] { "LOAD", "ADDR", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LoadNamed", TokenStruct = new string[] { "LOAD", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "AdelaideStoreIndex", TokenStruct = new string[] { "STOR", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "AdelaideStoreNamed", TokenStruct = new string[] { "STOR", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "AdelaideLoadIndex", TokenStruct = new string[] { "LOAD", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "AdelaideLoadNamed", TokenStruct = new string[] { "LOAD", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "IfThen", TokenStruct = new string[] { "BEQ", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "UnlessThen", TokenStruct = new string[] { "BNE", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GreaterThan", TokenStruct = new string[] { "BGT", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GreaterEqual", TokenStruct = new string[] { "BGE", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LessThan", TokenStruct = new string[] { "BLT", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "LessEqual", TokenStruct = new string[] { "BLE", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Goto", TokenStruct = new string[] { "GOTO", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "And", TokenStruct = new string[] { "AND", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Or", TokenStruct = new string[] { "OR", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Xor", TokenStruct = new string[] { "XOR", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "IfTrue", TokenStruct = new string[] { "BTRU", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "IfFalse", TokenStruct = new string[] { "BFLS", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "End", TokenStruct = new string[] { "END", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "AskString", TokenStruct = new string[] { "ASKN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Ask", TokenStruct = new string[] { "ASKL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Narrowing", TokenStruct = new string[] { "NARW", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Widening", TokenStruct = new string[] { "WIDN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Realisation", TokenStruct = new string[] { "REAL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Catch", TokenStruct = new string[] { "CTCH", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Call", TokenStruct = new string[] { "CALL", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Return", TokenStruct = new string[] { "RETN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "CallNamed", TokenStruct = new string[] { "CALL", "LABL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SubroutineName", TokenStruct = new string[] { "LABL", "COLN" } });
-        CurrentSentenceStructures.Add(new() { Name = "NoOperation", TokenStruct = new string[] { "THNK", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "ThrowGeneric", TokenStruct = new string[] { "THRW", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "ThrowMessage", TokenStruct = new string[] { "THRW", "QUOT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "ThrowCode", TokenStruct = new string[] { "THRW", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetTitle", TokenStruct = new string[] { "TITL", "QUOT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "ThreadSleep", TokenStruct = new string[] { "PAUS", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "Pause", TokenStruct = new string[] { "WAIT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushTrueBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "TRUE", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushFalseBooleanExpl", TokenStruct = new string[] { "PUSH", "BOOL", "FAUX", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushByteExpl", TokenStruct = new string[] { "PUSH", "BYTE", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushSByteExpl", TokenStruct = new string[] { "PUSH", "SBYT", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushIntegerExpl", TokenStruct = new string[] { "PUSH", "INTG", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushUIntegerExpl", TokenStruct = new string[] { "PUSH", "UINT", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushLongExpl", TokenStruct = new string[] { "PUSH", "LONG", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushULongExpl", TokenStruct = new string[] { "PUSH", "ULNG", "INTL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushStringExpl", TokenStruct = new string[] { "PUSH", "STRG", "QUOT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushCharExpl", TokenStruct = new string[] { "PUSH", "CHAR", "SQUT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushHalfExpl", TokenStruct = new string[] { "PUSH", "HALF", "FPIN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushFloatExpl", TokenStruct = new string[] { "PUSH", "FLOT", "FPIN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushDoubleExpl", TokenStruct = new string[] { "PUSH", "DOUB", "FPIN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PushDecimalExpl", TokenStruct = new string[] { "PUSH", "DECM", "FPIN", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishBooleanExpl", TokenStruct = new string[] { "FRNS", "BOOL", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishByteExpl", TokenStruct = new string[] { "FRNS", "BYTE", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishSByteExpl", TokenStruct = new string[] { "FRNS", "SBYT", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishIntegerExpl", TokenStruct = new string[] { "FRNS", "INTG", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishUIntegerExpl", TokenStruct = new string[] { "FRNS", "UINT", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishLongExpl", TokenStruct = new string[] { "FRNS", "LONG", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishULongExpl", TokenStruct = new string[] { "FRNS", "ULNG", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishStringExpl", TokenStruct = new string[] { "FRNS", "STRG", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishCharExpl", TokenStruct = new string[] { "FRNS", "CHAR", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishHalfExpl", TokenStruct = new string[] { "FRNS", "HALF", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishFloatExpl", TokenStruct = new string[] { "FRNS", "FLOT", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishDoubleExpl", TokenStruct = new string[] { "FRNS", "DOUB", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "IDNT", "SMCL" } }); CurrentSentenceStructures.Add(new() { Name = "FurnishBooleanExpl", TokenStruct = new string[] { "FRNS", "BOOL", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideByteExpl", TokenStruct = new string[] { "FRNS", "BYTE", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideSByteExpl", TokenStruct = new string[] { "FRNS", "SBYT", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideIntegerExpl", TokenStruct = new string[] { "FRNS", "INTG", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideUIntegerExpl", TokenStruct = new string[] { "FRNS", "UINT", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideLongExpl", TokenStruct = new string[] { "FRNS", "LONG", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideULongExpl", TokenStruct = new string[] { "FRNS", "ULNG", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideStringExpl", TokenStruct = new string[] { "FRNS", "STRG", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideCharExpl", TokenStruct = new string[] { "FRNS", "CHAR", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideHalfExpl", TokenStruct = new string[] { "FRNS", "HALF", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideFloatExpl", TokenStruct = new string[] { "FRNS", "FLOT", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideDoubleExpl", TokenStruct = new string[] { "FRNS", "DOUB", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FurnishAdelaideDecimalExpl", TokenStruct = new string[] { "FRNS", "DECM", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "DefineStructure", TokenStruct = new string[] { "DEFN", "STRC", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "FinaliseStructure", TokenStruct = new string[] { "FINS", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "CreateStructure", TokenStruct = new string[] { "CREA", "STRC", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "DeleteStructure", TokenStruct = new string[] { "DELT", "HEAP", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SaveStructure", TokenStruct = new string[] { "SAVE", "HEAP", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "PresentStructure", TokenStruct = new string[] { "PRSN", "HEAP", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GetStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GetCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GetAdelaideStructureProperty", TokenStruct = new string[] { "GET", "HEAP", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetAdelaideStructureProperty", TokenStruct = new string[] { "SET", "HEAP", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "GetAdelaideCurrentStructureProperty", TokenStruct = new string[] { "GET", "EXCL", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "SetAdelaideCurrentStructureProperty", TokenStruct = new string[] { "SET", "EXCL", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "ShelveStructure", TokenStruct = new string[] { "RECL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreStructure", TokenStruct = new string[] { "PUT", "HEAP", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreAdelaideStructure", TokenStruct = new string[] { "PUT", "HEAP", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreAdelaideCurrentStructure", TokenStruct = new string[] { "PUT", "EXCL", "NAME", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreStructureSameName", TokenStruct = new string[] { "PUT", "HEAP", "EXCL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "StoreCurrentStructureSameName", TokenStruct = new string[] { "PUT", "EXCL", "EXCL", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "RemoveIndex", TokenStruct = new string[] { "REMV", "ADDR", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "RemoveNamed", TokenStruct = new string[] { "REMV", "IDNT", "SMCL" } });
-        CurrentSentenceStructures.Add(new() { Name = "RemoveAdelaideNamed", TokenStruct = new string[] { "REMV", "NAME", "SMCL" } });
+        public void Maternity() => Contents = new();
+    }
+
+    /// <summary>
+    /// A stack frame.
+    /// </summary>
+    public struct CarmenFrame
+    {
+
+    }
+
+    /// <summary>
+    /// Initialises a new instance.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="field"></param>
+    /// <param name="value"></param>
+    public static void Instantiate<T>(ref ICarmenField field, T value)
+    {
+
+    }
+
+    /// <summary>
+    /// All the modifiers of the object.
+    /// </summary>
+    [Flags] public enum ObjectStates
+    {
+
+
+        /* 0000000000000000
+           FEDCBA9876543210
+
+        0 Public, Inheritable, Instance
+        1 Private
+        2 Protected
+        3 Internal
+        4 Sealed
+        5 Abstract
+        6 Obscura
+        7 Inherited
+        8 Static
+        9 ReadOnly
+        A WriteOnly
+        B Constant
+        C 
+        D
+        E
+        F
+         
+         */  
+
+        /// <summary>
+        /// Public, inheritable and solid object.
+        /// </summary>
+        None = 0b0000000000000000,
+
+        /// <summary>
+        /// Accessible to it and its children only. Cannot be used with <see cref="Internal"/>.
+        /// </summary>
+        Private = 0b0000000000000001,
+
+        /// <summary>
+        /// Accessible to inherited members.
+        /// </summary>
+        Protected = 0b0000000000000010,
+
+        /// <summary>
+        /// Accessible to objects in the same family. Cannot be used with <see cref="Private"/>.
+        /// </summary>
+        Internal = 0b0000000000000100,
+
+        /// <summary>
+        /// If true, this object cannot be changed/inherited.
+        /// </summary>
+        Sealed = 0b0000000000001000,
+
+        /// <summary>
+        /// If true, this object can only be inherited.
+        /// </summary>
+        Abstract = 0b0000000000010000,
+
+        /// <summary>
+        /// If true, this object can coexist with an inherited member of the same name, if any.
+        /// </summary>
+        Obscura = 0b0000000000100000,
+
+        /// <summary>
+        /// This object has been inherited.
+        /// </summary>
+        Inherited = 0b0000000001000000,
+
+        /// <summary>
+        /// This object is static.
+        /// </summary>
+        Static = 0b0000000010000000,
+
+        /// <summary>
+        /// This object can only be read from.
+        /// </summary>
+        ReadOnly = 0b0000000100000000,
+
+        /// <summary>
+        /// This object can only be written to.
+        /// </summary>
+        WriteOnly = 0b0000001000000000,
+
+        /// <summary>
+        /// This object is evaluated and made available during compilation.
+        /// </summary>
+        Constant = 0b0000010000000000
     }
 }
 #endregion
-#endif
 
 #region Help on arguments
 /// <summary>
@@ -5011,5 +4901,43 @@ public static class Extensions
     /// <param name="list">The list.</param>
     /// <returns>true if empty or <see langword="null"/>, false if it contains something.</returns>
     public static bool IsEmpty<T>(this ICollection<T> list) => list.Count == 0 || list is null;
+
+    /// <summary>
+    /// Attempts a conversion and returns a result and status. Generic version for simplification.
+    /// </summary>
+    /// <typeparam name="T">The type of the incoming object.</typeparam>
+    /// <param name="initial">The input value.</param>
+    /// <param name="result">Where the output should be.</param>
+    /// <param name="unchecked">If <see langword="true"/>, the conversion will be unchecked.</param>
+    /// <param name="restype">If the type of the outgoing object is <see langword="dynamic"/> or <see cref="object"/>, the method will use that as a basis.</param>
+    /// <returns><see langword="true"/> if the conversion succeeds, otherwise, <see langword="false"/>.</returns>
+    public static bool CType<T>(this T initial, out dynamic? result, bool @unchecked = false, Type restype = null) where T: notnull
+    {
+        bool truth = true;
+        dynamic resultat = default;
+        try
+        {
+            resultat = @unchecked? unchecked(Convert.ChangeType(initial, restype)) : Convert.ChangeType(initial, restype);
+        }
+        catch
+        {
+            truth = false;
+        }
+
+        result = resultat;
+
+        return truth;
+    }
+
+    /// <summary>
+    /// Performs a singling-out operation.
+    /// </summary>
+    /// <param name="thing">The flags.</param>
+    /// <param name="flag">The flag.</param>
+    /// <returns></returns>
+    public static bool Confirmed(this int thing, int flag)
+    {
+        return (thing & flag) == flag;
+    }
 }
 #endregion
